@@ -1,0 +1,8 @@
+Images
+======
+Barbarian -> https://www.pinterest.com/pin/551198441878043042/
+Bedroom -> https://unsplash.com/photos/JUO3MGEHTrQ
+
+Design
+======
+Sticky Navbar -> https://mattgaskey.com/blog/sticky-nav-in-react/
