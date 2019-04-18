@@ -1,0 +1,3 @@
+[submodule "LW-FrontEnd/dev-lw-react"]
+	path = LW-FrontEnd/dev-lw-react
+	url = https://github.com/KelwinTan/TPA-Website.git
