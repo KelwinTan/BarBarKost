@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import "../../assets/Style.scss";
 import logo from "../../assets/images/logo.png";
 import CariIklan from ".././home/CariIklan";
+import { UserForm } from "../user/UserForm";
+import { Home } from "./Home";
+import { Link } from "react-router-dom";
+import App from "../../App";
 
 class NavBar extends Component {
   constructor(props) {
@@ -36,7 +40,7 @@ class NavBar extends Component {
             <div className="navbar-header">
               <div className="navbar-logo">
                 <img src={logo} alt="Logo" className="logo-image" />
-                <a href="/">BarBar Kost</a>
+                <Link to="/">BarBar Kost</Link>
               </div>
             </div>
             <div className="navbar-links">
@@ -51,7 +55,7 @@ class NavBar extends Component {
               <CariIklan className="dropdown-style" />
               {/* </div> */}
               <a href="#">Promosikan Iklan Anda</a>
-              <a href="#">Masuk</a>
+              <Link to="/userForm">Masuk</Link>
             </div>
           </nav>
           <div className="content-bg">

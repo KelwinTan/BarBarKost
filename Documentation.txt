@@ -6,3 +6,17 @@ Bedroom -> https://unsplash.com/photos/JUO3MGEHTrQ
 Design
 ======
 Sticky Navbar -> https://mattgaskey.com/blog/sticky-nav-in-react/
+Footer -> Canva https://www.canva.com/design/DADXfjIkehU/nlE2TNmcQ4fkyEO3JgMYJA/edit?category=tACFauRB4fU
+User Form Background -> https://unsplash.com/photos/s95oB2n9jng
+
+
+
+References
+==========
+User Form -> https://www.youtube.com/watch?v=4CeTFW4agRw&t=859s
+React Router -> https://www.youtube.com/watch?v=NUQkajBdnmQ
+
+Packages Used
+=============
+react-router-dom
+react-transition-group

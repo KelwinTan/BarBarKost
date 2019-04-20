@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "create-react-context": "^0.2.3",
+    "react-transition-group": "^4.0.0"
+  }
+}
