@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "../../assets/Style.scss";
 import NavBar from "../home/NavBar";
+import { register } from "../user/login-register/UserFunctions";
+import { Link } from "react-router-dom";
 
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -32,22 +34,33 @@ export class UserForm extends Component {
         firstName: "",
         lastName: "",
         email: "",
-        password: ""
+        password: "",
+        confirmPassword: ""
       }
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    // this.onChange = this.onChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // onChange(e) {
+  //   this.setState({ [e.target.name]: e.target.value });
+  // }
+
   handleSubmit = e => {
     e.preventDefault();
+    // if (this.state.confirmPassword !== this.state.password) {
+    //   this.state.formErrors.confirmPassword = "Password must be the same";
+    // } else
     if (formValid(this.state)) {
-      console.log(`--TEST SUBMIT-- 
-      First Name: ${this.state.firstName}
-      Last Name: ${this.state.lastName}
-      Email: ${this.state.email}
-      Password: ${this.state.password}
-      `);
+      const newUser = {
+        name: this.state.firstName + " " + this.state.lastName,
+        email: this.state.email,
+        password: this.state.password
+      };
+      register(newUser).then(res => {
+        this.props.history.push(`/login`);
+      });
     } else {
       console.error("FORM INVALID - DISPLAY ERROR MSG");
     }
@@ -81,9 +94,13 @@ export class UserForm extends Component {
         break;
       case "password":
         formErrors.password =
-          value.length < 6 && value.length > 0
-            ? "Minimum 6 Characters Required"
+          value.length < 8 && value.length > 0
+            ? "Minimum 8 Characters Required"
             : "";
+        break;
+      case "confirmPassword":
+        formErrors.confirmPassword =
+          value != this.state.password ? "Password must match" : "";
         break;
       default:
         break;
@@ -158,9 +175,27 @@ export class UserForm extends Component {
               {formErrors.password.length > 0 && (
                 <span className="errorMsg">{formErrors.password}</span>
               )}
+              <div className="confirmPassword">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  className={
+                    formErrors.confirmPassword.length > 0 ? "errorBox" : null
+                  }
+                  placeholder="Confirm Your Password"
+                  name="confirmPassword"
+                  noValidate
+                  onChange={this.handleChange}
+                />
+              </div>
+              {formErrors.confirmPassword.length > 0 && (
+                <span className="errorMsg">{formErrors.confirmPassword}</span>
+              )}
               <div className="createAccount">
                 <button type="submit">Create Account</button>
-                <small>Already Have An Account ?</small>
+                <Link to="/login">
+                  <small>Already Have An Account ?</small>
+                </Link>
               </div>
             </form>
           </div>

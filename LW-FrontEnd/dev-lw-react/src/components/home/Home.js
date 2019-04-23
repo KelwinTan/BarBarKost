@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { SliderContent } from "./SliderContent";
-import NavBar from "./NavBar";
+// import NavBar from "./NavBar";
 import { Footer } from "./Footer";
+import NavBar from "./NavBar";
 
 export class Home extends Component {
   render() {

@@ -56,8 +56,12 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'cors' => \Barryvdh\Cors\HandleCors::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        // 'jwt.auth' => Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        'jwt.auth' => \App\Http\Middleware\VerifyJWTToken::class,
+        'jwt.refresh' => Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
     ];
 }

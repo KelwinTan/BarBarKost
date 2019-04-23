@@ -10,8 +10,12 @@ import App from "../../App";
 class NavBar extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      displayIklan: false
+    };
     this.handleScroll = this.handleScroll.bind(this);
+    this.showIklan = this.showIklan.bind(this);
+    this.hideIklan = this.hideIklan.bind(this);
   }
 
   handleScroll() {
@@ -30,6 +34,25 @@ class NavBar extends Component {
           "background-color:#17981a; transition: 0.5s ease-in;")
       : (document.querySelector("nav").style.backgroundColor =
           "rgba(0.1,0.1,0.1, 0.05)");
+  }
+
+  showIklan(event) {
+    event.preventDefault();
+    console.log(this.state.displayIklan);
+    if (this.state.displayIklan == false) {
+      this.setState({ displayIklan: true });
+    } else {
+      this.setState({ displayIklan: false });
+    }
+    // this.setState({ displayIklan: true }, () => {
+    //   document.addEventListener("click", this.hideIklan);
+    // });
+  }
+
+  hideIklan() {
+    this.setState({ displayIklan: false }, () => {
+      document.removeEventListener("click", this.hideIklan);
+    });
   }
 
   render() {
@@ -54,8 +77,49 @@ class NavBar extends Component {
               </div> */}
               <CariIklan className="dropdown-style" />
               {/* </div> */}
-              <a href="#">Promosikan Iklan Anda</a>
-              <Link to="/userForm">Masuk</Link>
+              <Link to="/promosi-kost">Promosikan Iklan Anda</Link>
+              {/* <div className="masuk-menu">
+                <ul>
+                  <li>
+                    <Link to="/userForm">Sebagai Pencari </Link>
+                  </li>
+                  <li>
+                    <Link to="#"> Sebagai Pemilik </Link>
+                  </li>
+                </ul>
+              </div> */}
+              {this.state.displayIklan == true ? (
+                <div className="masuk-menu">
+                  <ul>
+                    <li>
+                      <Link to="/userForm">Sebagai Pencari </Link>
+                    </li>
+                    <li>
+                      <Link to="#"> Sebagai Pemilik </Link>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                ""
+              )}
+              <button onClick={this.showIklan}>Masuk</button>
+              {/* <div className="nav-content">
+                <div className="nav-sub">
+                  <ul>
+                    <li>
+                      <a href="#">About Us</a>
+                    </li>
+                    <li>
+                      <a href="#">Do you really care what is here?</a>
+                    </li>
+                    <li>
+                      <a href="#">Of course you do !</a>
+                    </li>
+                  </ul>
+                </div>
+              </div> */}
+
+              {/* <Link to="/userForm">Masuk</Link> */}
             </div>
           </nav>
           <div className="content-bg">
@@ -64,6 +128,12 @@ class NavBar extends Component {
               Dapatkan info kost murah, kost harian, kost bebas, dan info kosan
               lainnya di BarBar Kost!
             </p>
+            {/* <div className="search-kost">
+              <form className="search-kost-box">
+                <div></div>
+
+              </form>
+            </div> */}
           </div>
         </div>
       </React.Fragment>
