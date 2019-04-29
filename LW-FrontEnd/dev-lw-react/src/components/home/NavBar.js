@@ -31,7 +31,7 @@ class NavBar extends Component {
   componentDidUpdate() {
     this.state.scroll > this.state.top
       ? (document.querySelector("nav").style =
-          "background-color:#17981a; transition: 0.5s ease-in;")
+          "background-color:#17981a; transition: 0.5s ease-in; z-index:10;")
       : (document.querySelector("nav").style.backgroundColor =
           "rgba(0.1,0.1,0.1, 0.05)");
   }

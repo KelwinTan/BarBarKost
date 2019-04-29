@@ -306,9 +306,10 @@ nav {
 //   display: table !important;
 // }
 .footer {
-  padding: 0;
-  margin: 0;
-  position: relative;
+  height: 10vh;
+  // padding: 0;
+  // margin: 0;
+  // position: relative;
   text-align: center;
   background-color: gainsboro;
   // background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
@@ -638,6 +639,7 @@ nav {
 .promosi-kost {
   background-color: white;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 .promosi-kost-content h1 {
@@ -1017,48 +1019,123 @@ nav {
   border-bottom: 2px solid #e5e5e5;
 }
 
-.segment-kota-besar {
+// Kota Besar
+.segment {
   padding-top: 2rem;
   padding-bottom: 2rem;
+  height: 580px;
+  // display: flex;
+  // display: inline-block;
+  // clear: both;
 }
 
-.segment-kota-besar-title {
+@media (min-width: 992px) {
+  .col-md-10 {
+    width: 83.33333333%;
+    float: left;
+  }
+  .col-md-offset-1 {
+    margin-left: 8.33333333%;
+  }
+  .col-md-4 {
+    width: 100/3%;
+    float: left;
+  }
+  .card {
+    padding: 2rem;
+  }
+  .card span {
+    font-size: larger;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 768px) {
+  .col-sm-6 {
+    width: 50%;
+    float: left;
+  }
+}
+
+.col-md-10,
+.col-lg-8 {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.title-group {
   text-align: center;
 }
 
-.kota-besar-title {
+.title-group .as-title {
   font-size: 2em;
   color: #27ab27;
   text-transform: uppercase;
   margin-top: 1rem;
 }
 
-.kota-besar-title strong {
-  font-size: 30px;
-  font-weight: 800;
+.as-title strong {
+  font-size: 2em;
 }
 
-.kota-besar-subtitle {
+.title-group h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  margin-top: 24px;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+
+.title-group .as-subtitle {
   font-size: 1.25em;
 }
 
-.kota-besar-gambar {
+.title-group h4 {
+  font-size: 18px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
   display: block;
+  margin-block-start: 1.33em;
+  margin-block-end: 1.33em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
 }
 
-.kota-besar-gambar-row {
+.big-city > .row {
   margin: 0;
 }
 
-.kota-besar-gambar-row-card {
+.row {
+  display: flex;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.col-md-4,
+.col-sm-6 {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
-  // justify-content: center;
+  flex: 1 0 0%;
 }
 
-.kota-besar-gambar-card {
+.card {
   display: flex;
   -webkit-box-align: center;
   align-items: center;
@@ -1069,7 +1146,87 @@ nav {
   border-radius: 5px;
 }
 
-.kota-besar-gambar-card img {
+.material-card-1 {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card img {
   height: 5em;
   vertical-align: middle;
+  border: 0;
+}
+
+.big-city {
+  display: flex;
+  flex-direction: column;
+  width: 100/3%;
+}
+
+.cards a {
+  text-decoration: none;
+  color: #27ab27;
+}
+
+.cards a:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.area-box {
+  display: flex;
+  // flex-direction: row;
+  flex-direction: column;
+  width: 33%;
+  white-space: nowrap;
+  margin: 0;
+  padding: 1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.area-box-child {
+  height: auto;
+  width: inherit;
+}
+
+@media (min-width: 992px) {
+  .area-box-child {
+    width: 41.66666667%;
+    float: left;
+  }
+}
+
+@media (min-width: 768px) {
+  .area-box-child {
+    width: 50%;
+    float: left;
+  }
+}
+
+.area-title {
+  color: #333;
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid #27ab27;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.area-box-child {
+  padding-top: 10px;
+}
+
+.area-box-child a {
+  padding-bottom: 0.4em;
+  color: #333;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.leaflet-container {
+  height: 400px;
+  width: 100%;
 }

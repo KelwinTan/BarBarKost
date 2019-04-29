@@ -14,18 +14,16 @@ export const register = newUser => {
 };
 
 export const login = user => {
-  return axios
-    .post(
-      "api/login",
-      {
-        email: user.email,
-        password: user.password
-      },
-      {
-        headers: { "Content-Type": "application/json" }
-      }
-    )
-   
+  return axios.post(
+    "api/login",
+    {
+      email: user.email,
+      password: user.password
+    },
+    {
+      headers: { "Content-Type": "application/json" }
+    }
+  );
 };
 
 export const getProfile = () => {
@@ -40,4 +38,23 @@ export const getProfile = () => {
     .catch(err => {
       console.log(err);
     });
+};
+
+export const updateProfile = user => {
+  return axios.post(
+    "api/users/update",
+    {
+      email: user.email,
+      updatePassword: user.updatePassword
+    },
+    {
+      headers: { "Content-Type": "application/json" }
+    }
+  );
+};
+
+export const verifyEmail = () => {
+  return axios.get("api/send").catch(err => {
+    console.log(err);
+  });
 };

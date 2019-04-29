@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { getProfile } from "./UserFunctions";
+import { Link } from "react-router-dom";
 
 class Profile extends Component {
   constructor() {
@@ -7,7 +8,7 @@ class Profile extends Component {
     this.state = {
       name: "",
       email: "",
-      password: ""
+      join: ""
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -17,7 +18,9 @@ class Profile extends Component {
       console.log(res);
       this.setState({
         name: res.user.name,
-        email: res.user.email
+        email: res.user.email,
+        join: res.user.created_at,
+        pictureID: res.user.picture_id
       });
     });
   }
@@ -25,6 +28,7 @@ class Profile extends Component {
   render() {
     return (
       <div>
+        <Link to="update-profile">Update Profile</Link>
         <h1>Profile</h1>
         <table>
           <tbody>
@@ -37,8 +41,12 @@ class Profile extends Component {
               <td>{this.state.email}</td>
             </tr>
             <tr>
-              <td>Password</td>
-              <td>{this.state.password}</td>
+              <td>Join Since</td>
+              <td>{this.state.join}</td>
+            </tr>
+            <tr>
+              <td>Picture ID</td>
+              <td>{this.state.pictureID}</td>
             </tr>
           </tbody>
         </table>

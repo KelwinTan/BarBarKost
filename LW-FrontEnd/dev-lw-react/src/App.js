@@ -15,12 +15,15 @@ import Profile from "./components/user/login-register/Profile";
 import TestDropDown from "./components/TestDropDown";
 import KotaBesar from "./components/home/KotaBesar";
 import ModalBox from "./components/ModalBox";
+import UpdateProfile from "./components/user/UpdateProfile";
+import ErrorPage from "./components/ErrorPage";
+import MyLeaflet from "./components/map/MyLeaflet";
 
 class App extends Component {
   render() {
     return (
       <React.Fragment>
-        {
+        {/* {
           <Route
             render={({ location }) => (
               <TransitionGroup>
@@ -35,12 +38,18 @@ class App extends Component {
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/promosi-kost" component={PromosiKost} />
                     <Route exact path="/profile" component={Profile} />
+                    <Route
+                      exact
+                      path="/update-profile"
+                      component={UpdateProfile}
+                    />
+                    <Route path="" component={ErrorPage} />
                   </Switch>
                 </CSSTransition>
               </TransitionGroup>
             )}
           />
-        }
+        } */}
         {/* <PromosiKost /> */}
         {/* <Slider /> */}
         {/* <Promo /> */}
@@ -54,6 +63,7 @@ class App extends Component {
         </BrowserRouter> */}
         {/* <KotaBesar /> */}
         {/* <ModalBox message="Hello" /> */}
+        <MyLeaflet />
       </React.Fragment>
     );
   }
