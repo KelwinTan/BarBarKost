@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   height: ${props => props.height};
 `;
 
-export default class MyLeaflet extends Component {
+class MyLeaflet extends Component {
   componentDidMount() {
     this.map = L.map("map", {
       center: [58, 16],
@@ -28,3 +28,5 @@ export default class MyLeaflet extends Component {
     return <Wrapper width="500px" height="500px" id="map" />;
   }
 }
+
+export default MyLeaflet;

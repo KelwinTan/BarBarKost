@@ -6,7 +6,7 @@ import promo_kost from "../../assets/images/kota-besar/promo_kost.png";
 class HalamanPilihan extends Component {
   render() {
     return (
-      <div className="segment" style={{ height: "320px" }}>
+      <div className="segment" style={{ height: "320px", width: "100%" }}>
         <div className="title-group">
           <h3 className="as-title">
             <strong>HALAMAN PILIHAN</strong>

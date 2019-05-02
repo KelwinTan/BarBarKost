@@ -6,6 +6,8 @@ import NavBar from "./NavBar";
 import KotaBesar from "./KotaBesar";
 import HalamanPilihan from "./HalamanPilihan";
 import ApartmentArea from "./ApartmentArea";
+import PropertyCard from "../property/PropetyCard";
+import KostArea from "./KostArea";
 
 export class Home extends Component {
   render() {
@@ -14,9 +16,11 @@ export class Home extends Component {
         <NavBar />
         <SliderContent />
         <KotaBesar />
+        <PropertyCard />
         <HalamanPilihan />
         <ApartmentArea />
-        {/* <Footer /> */}
+        <KostArea />
+        <Footer />
       </div>
     );
   }

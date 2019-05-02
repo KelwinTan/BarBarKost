@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import apartment_area from "../../assets/images/kota-besar/apartment_area.png";
 
 const divStyle = {
-  height: "auto"
+  height: "auto",
+  paddingTop: "20px"
 };
 
 const apartStyle = {
@@ -25,7 +26,7 @@ const h3Style = {
   fontSize: "1.4em"
 };
 
-class ApartmentArea extends Component {
+class KostArea extends Component {
   render() {
     return (
       <div style={divStyle}>
@@ -126,4 +127,4 @@ class ApartmentArea extends Component {
   }
 }
 
-export default ApartmentArea;
+export default KostArea;

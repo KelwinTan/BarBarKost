@@ -95,7 +95,7 @@ class NavBar extends Component {
                       <Link to="/userForm">Sebagai Pencari </Link>
                     </li>
                     <li>
-                      <Link to="#"> Sebagai Pemilik </Link>
+                      <Link to="/ownerForm"> Sebagai Pemilik </Link>
                     </li>
                   </ul>
                 </div>

@@ -2,13 +2,15 @@ import React, { Component } from "react";
 import Profile from "./login-register/Profile";
 import { updateProfile } from "./login-register/UserFunctions";
 import { verifyEmail } from "./login-register/UserFunctions";
+import LoadingScreen from "../utilities/LoadingScreen";
 
 class UpdateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
-      updatePassword: ""
+      updatePassword: "",
+      loadingScreen: false
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -21,7 +23,8 @@ class UpdateProfile extends Component {
       updatePassword: this.state.updatePassword
     };
     console.log(user);
-    updateProfile(user);
+    this.setState({ loadingScreen: true });
+    updateProfile(user).then(this.setState({ loadingScreen: false }));
     console.log("Nice");
   }
 
@@ -32,32 +35,36 @@ class UpdateProfile extends Component {
   render() {
     return (
       <React.Fragment>
-        <div>
-          <Profile />
+        {this.state.loadingScreen ? (
+          <LoadingScreen />
+        ) : (
           <div>
-            <h1>Update Profile</h1>
-            <form onSubmit={this.onSubmit} noValidate>
-              <label htmlFor="email">Update Email</label>
-              <input
-                type="email"
-                name="email"
-                placeholder="Update Your Email"
-                onChange={this.onChange}
-              />
-              <label htmlFor="updatePassword">Update Password</label>
-              <input
-                type="password"
-                name="updatePassword"
-                placeholder="Update Your Password"
-                onChange={this.onChange}
-              />
+            <Profile />
+            <div>
+              <h1>Update Profile</h1>
+              <form onSubmit={this.onSubmit} noValidate>
+                <label htmlFor="email">Update Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Update Your Email"
+                  onChange={this.onChange}
+                />
+                <label htmlFor="updatePassword">Update Password</label>
+                <input
+                  type="password"
+                  name="updatePassword"
+                  placeholder="Update Your Password"
+                  onChange={this.onChange}
+                />
 
-              <br />
-              <button type="submit">Update Profile</button>
-            </form>
-            <button onClick={verifyEmail}>Verify Email</button>
+                <br />
+                <button type="submit">Update Profile</button>
+              </form>
+              <button onClick={verifyEmail}>Verify Email</button>
+            </div>
           </div>
-        </div>
+        )}
       </React.Fragment>
     );
   }

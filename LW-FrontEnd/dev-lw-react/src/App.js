@@ -3,7 +3,6 @@ import { UserForm } from "./components/user/UserForm";
 import Home from "./components/home/Home";
 import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { Slider } from "./components/image-slider/Slider";
 import { Promo } from "./components/image-slider/Promo";
 import { PromosiKost } from "./components/user/PromosiKost";
 // Testing User Login Register
@@ -17,13 +16,19 @@ import KotaBesar from "./components/home/KotaBesar";
 import ModalBox from "./components/ModalBox";
 import UpdateProfile from "./components/user/UpdateProfile";
 import ErrorPage from "./components/ErrorPage";
-import MyLeaflet from "./components/map/MyLeaflet";
+import MyLeaflet from "./components/map/MyLeaflet.jsx";
+import LoadingScreen from "./components/utilities/LoadingScreen";
+import Card from "./components/image-slider/Card";
+import PropertyCard from "./components/property/PropetyCard";
+import OwnerLogin from "./components/user/login-register/OwnerLogin";
+import Slider from "./components/image-slider/Slider";
+import CariKost from "./components/cari-kost/CariKost";
 
 class App extends Component {
   render() {
     return (
       <React.Fragment>
-        {/* {
+        {
           <Route
             render={({ location }) => (
               <TransitionGroup>
@@ -43,13 +48,15 @@ class App extends Component {
                       path="/update-profile"
                       component={UpdateProfile}
                     />
+                    <Route exact path="/ownerForm" component={OwnerLogin} />
                     <Route path="" component={ErrorPage} />
+                    <Route path="/cari-kost" component={MyLeaflet} />
                   </Switch>
                 </CSSTransition>
               </TransitionGroup>
             )}
           />
-        } */}
+        }
         {/* <PromosiKost /> */}
         {/* <Slider /> */}
         {/* <Promo /> */}
@@ -63,7 +70,9 @@ class App extends Component {
         </BrowserRouter> */}
         {/* <KotaBesar /> */}
         {/* <ModalBox message="Hello" /> */}
-        <MyLeaflet />
+        {/* <MyLeaflet /> */}
+        {/* <LoadingScreen /> */}
+        {/* <PropertyCard /> */}
       </React.Fragment>
     );
   }

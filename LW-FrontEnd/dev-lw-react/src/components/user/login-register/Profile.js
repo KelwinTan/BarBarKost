@@ -29,6 +29,7 @@ class Profile extends Component {
     return (
       <div>
         <Link to="update-profile">Update Profile</Link>
+        <Link to="cari-kost">Cari Kost</Link>
         <h1>Profile</h1>
         <table>
           <tbody>
