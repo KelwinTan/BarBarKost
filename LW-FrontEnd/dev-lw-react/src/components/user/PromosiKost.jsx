@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import logo from "../../assets/images/logo.png";
 import "../../assets/Style.scss";
-import pengguna from "../../assets/images/slider/icons/Group.svg";
-import kost from "../../assets/images/slider/icons/Apart.svg";
+import { Footer } from "../home/Footer";
 
 export class PromosiKost extends Component {
   render() {
@@ -43,6 +42,7 @@ export class PromosiKost extends Component {
                 height={315}
                 frameBorder="0"
                 allowFullScreen
+                title="Youtube Mamikos"
               />
             </div>
             <div className="promosi-kost-content2">
@@ -103,6 +103,7 @@ export class PromosiKost extends Component {
             </div>
           </div>
         </div>
+        <Footer />
       </React.Fragment>
     );
   }

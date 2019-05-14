@@ -2,7 +2,11 @@ import React, { Component } from "react";
 
 class LoadingScreen extends Component {
   render() {
-    return <div id="loading-screen">Loading...</div>;
+  return (
+  <div className="loading-screen-wrapper">
+
+    <div id="loading-screen">Loading...</div>
+  </div>);
   }
 }
 

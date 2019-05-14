@@ -16,20 +16,20 @@ class HalamanPilihan extends Component {
         <div className="big-city">
           <div className="row">
             <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={promo_kost} />
+              <a href="/promo-kost" className="card material-card-1">
+                <img alt="foto-slider" src={promo_kost} />
                 <span>Promo dari Kost</span>
               </a>
             </div>
             <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kost_terbaru} />
+              <a href="/new-kost" className="card material-card-1">
+                <img alt="foto-slider" src={kost_terbaru} />
                 <span>Kost Terbaru</span>
               </a>
             </div>
             <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={promo_event} />
+              <a href="/promo-event" className="card material-card-1">
+                <img alt="foto-slider" src={promo_event} />
                 <span>Promo & Event</span>
               </a>
             </div>

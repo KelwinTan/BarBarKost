@@ -1,21 +1,30 @@
 import React, { Component } from "react";
-import "../../assets/Style.scss";
+import "./Home.scss";
 import logo from "../../assets/images/logo.png";
-import CariIklan from ".././home/CariIklan";
-import { UserForm } from "../user/UserForm";
-import { Home } from "./Home";
 import { Link } from "react-router-dom";
-import App from "../../App";
+import searchBtn from "../../assets/images/loupe.png";
+import ModalBox from "../ModalBox";
+import LoadingScreen from "../utilities/LoadingScreen";
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayIklan: false
+      displayIklan: false,
+      color: "white",
+      displaySearch: false,
+      loadingScreen: false
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.showIklan = this.showIklan.bind(this);
     this.hideIklan = this.hideIklan.bind(this);
+    this.changeColor = this.changeColor.bind(this);
+    this.searchIklan = this.searchIklan.bind(this);
+  }
+
+  changeColor() {
+    var newColor = this.state.color === "white" ? "black" : "white";
+    this.setState({ color: newColor });
   }
 
   handleScroll() {
@@ -39,14 +48,21 @@ class NavBar extends Component {
   showIklan(event) {
     event.preventDefault();
     console.log(this.state.displayIklan);
-    if (this.state.displayIklan == false) {
+    if (this.state.displayIklan === false) {
       this.setState({ displayIklan: true });
     } else {
       this.setState({ displayIklan: false });
     }
-    // this.setState({ displayIklan: true }, () => {
-    //   document.addEventListener("click", this.hideIklan);
-    // });
+  }
+
+  searchIklan(event) {
+    event.preventDefault();
+    console.log(this.state.displaySearch);
+    if (this.state.displaySearch === false) {
+      this.setState({ displaySearch: true });
+    } else {
+      this.setState({ displaySearch: false });
+    }
   }
 
   hideIklan() {
@@ -58,6 +74,8 @@ class NavBar extends Component {
   render() {
     return (
       <React.Fragment>
+        {/* {this.state.displaySearch === true ? <ModalBox /> : null} */}
+        {this.state.loadingScreen === true ? <LoadingScreen /> : null}
         <div className="showcase-bed">
           <nav>
             <div className="navbar-header">
@@ -67,73 +85,46 @@ class NavBar extends Component {
               </div>
             </div>
             <div className="navbar-links">
-              {/* <div className="dropdown-cariKost"> */}
-              {/* <a className="dropBtn" href="#">
+              <a className="navbar-link-cari" onClick={this.searchIklan}>
                 Cari Iklan
               </a>
-              <div className="dropdown-links">
-                <a href="#">Cari Kost</a>
-                <a href="#">Cari Apartment</a>
-              </div> */}
-              <CariIklan className="dropdown-style" />
-              {/* </div> */}
+
               <Link to="/promosi-kost">Promosikan Iklan Anda</Link>
-              {/* <div className="masuk-menu">
-                <ul>
-                  <li>
-                    <Link to="/userForm">Sebagai Pencari </Link>
-                  </li>
-                  <li>
-                    <Link to="#"> Sebagai Pemilik </Link>
-                  </li>
-                </ul>
-              </div> */}
-              {this.state.displayIklan == true ? (
+              <a onClick={this.showIklan}>Masuk</a>
+              {this.state.displayIklan === true ? (
                 <div className="masuk-menu">
                   <ul>
                     <li>
-                      <Link to="/userForm">Sebagai Pencari </Link>
+                      <Link to="/user-form">Sebagai Pencari </Link>
                     </li>
                     <li>
-                      <Link to="/ownerForm"> Sebagai Pemilik </Link>
+                      <Link to="/owner-form"> Sebagai Pemilik </Link>
                     </li>
                   </ul>
                 </div>
               ) : (
                 ""
               )}
-              <button onClick={this.showIklan}>Masuk</button>
-              {/* <div className="nav-content">
-                <div className="nav-sub">
-                  <ul>
-                    <li>
-                      <a href="#">About Us</a>
-                    </li>
-                    <li>
-                      <a href="#">Do you really care what is here?</a>
-                    </li>
-                    <li>
-                      <a href="#">Of course you do !</a>
-                    </li>
-                  </ul>
-                </div>
-              </div> */}
-
-              {/* <Link to="/userForm">Masuk</Link> */}
             </div>
           </nav>
+
           <div className="content-bg">
             <h1>Mau cari kos kosan?</h1>
             <p>
               Dapatkan info kost murah, kost harian, kost bebas, dan info kosan
               lainnya di BarBar Kost!
             </p>
-            {/* <div className="search-kost">
-              <form className="search-kost-box">
-                <div></div>
-
-              </form>
-            </div> */}
+          </div>
+          <div className="search-kost">
+            <div className="search-kost-label">
+              <label>Pilih Lokasi</label>
+            </div>
+            <div className="search-kost-btn" onClick={this.searchIklan}>
+              <img src={searchBtn} alt="Search" style={{ height: "28px" }} />
+              <div className="search-kost-label1">
+                <label>Cari nama tempat atau alamat</label>
+              </div>
+            </div>
           </div>
         </div>
       </React.Fragment>

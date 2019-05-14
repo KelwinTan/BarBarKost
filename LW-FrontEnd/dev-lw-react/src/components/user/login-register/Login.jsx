@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { login } from "./UserFunctions";
-import { Link } from "react-router-dom";
+import LoadingScreen from "../../utilities/LoadingScreen";
+import { Redirect } from "react-router-dom";
 
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -29,7 +30,8 @@ class Login extends Component {
       formErrors: {
         email: "",
         password: ""
-      }
+      },
+      loadingScreen: false
     };
     this.onChange = this.onChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -56,8 +58,8 @@ class Login extends Component {
         break;
       case "password":
         formErrors.password =
-          value.length < 6 && value.length > 0
-            ? "Minimum 6 Characters Required"
+          value.length < 8 && value.length > 0
+            ? "Minimum 8 Characters Required"
             : "";
         break;
       default:
@@ -69,7 +71,7 @@ class Login extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-
+    this.setState({ loadingScreen: true });
     const user = {
       email: this.state.email,
       password: this.state.password
@@ -86,11 +88,27 @@ class Login extends Component {
     });
   }
 
+  handleLoading = () => {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    } else {
+      return null;
+    }
+  };
+
+  authenticateRedirection = () => {
+    if (localStorage.getItem("usertoken") !== null) {
+      return <Redirect to={"/"}> </Redirect>;
+    }
+  };
+
   render() {
     const { formErrors } = this.state;
     return (
       <React.Fragment>
+        {this.authenticateRedirection()}
         <div className="wrapper">
+          {this.handleLoading()}
           <div className="form-wrapper">
             <h1>Please Login</h1>
             <form onSubmit={this.onSubmit} noValidate>
@@ -98,7 +116,6 @@ class Login extends Component {
                 <label htmlFor="email">Email</label>
                 <input
                   type="email"
-                  className={formErrors.email.length > 0 ? "errorBox" : null}
                   placeholder="Input Your Email"
                   name="email"
                   noValidate

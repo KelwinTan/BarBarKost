@@ -26,6 +26,19 @@ export const login = user => {
   );
 };
 
+export const loginOwner = user => {
+  return axios.post(
+    "api/login",
+    {
+      phone: user.phone,
+      password: user.password
+    },
+    {
+      headers: { "Content-Type": "application/json" }
+    }
+  );
+};
+
 export const getProfile = () => {
   return axios
     .get("api/profile", {
@@ -57,4 +70,17 @@ export const verifyEmail = () => {
   return axios.get("api/send").catch(err => {
     console.log(err);
   });
+};
+
+export const registerOwner = newUser => {
+  return axios
+    .post("api/registerOwner", newUser, {
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };

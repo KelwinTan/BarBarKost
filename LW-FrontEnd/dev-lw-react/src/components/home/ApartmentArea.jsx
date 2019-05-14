@@ -2,14 +2,16 @@ import React, { Component } from "react";
 import apartment_area from "../../assets/images/kota-besar/apartment_area.png";
 
 const divStyle = {
-  height: "auto"
+  height: "auto",
+  width: "900px",
+  margin: "0 auto",
+  padding: "50px 0"
 };
 
 const apartStyle = {
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center"
+  alignItems: "center"
 };
 
 const titleStyle = {
@@ -33,7 +35,7 @@ class ApartmentArea extends Component {
           <img src={apartment_area} alt="Apartment" />
         </div>
         <div style={titleStyle}>
-          <h1 style={hStyle}>APARTMENT AREA</h1>
+          <h1 style={hStyle}>Apartment Area</h1>
           <h3 style={h3Style}>Cari apartemen di area yang kamu mau</h3>
         </div>
         <div className="area-box-parent">

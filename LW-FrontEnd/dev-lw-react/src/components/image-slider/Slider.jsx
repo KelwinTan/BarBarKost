@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Card from "./Card";
 import data from "./data";
-// import logo from '../../assets/images/slider/icons'
 import "../../assets/Style.scss";
 
 export class Slider extends Component {

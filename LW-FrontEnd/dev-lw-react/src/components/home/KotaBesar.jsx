@@ -8,6 +8,7 @@ import kota_malang from "../../assets/images/kota-besar/kota_malang.png";
 import kota_jogja from "../../assets/images/kota-besar/kota_jogjakarta.png";
 import kota_makassar from "../../assets/images/kota-besar/kota_makassar.png";
 import kota_semarang from "../../assets/images/kota-besar/kota_semarang.png";
+import "./Home.scss";
 
 class KotaBesar extends Component {
   render() {
@@ -21,61 +22,57 @@ class KotaBesar extends Component {
         </div>
         <div className="big-city">
           <div className="row">
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_jogja} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_jogja} />
                 <span>JOGJAKARTA</span>
               </a>
             </div>
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_malang} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_malang} />
                 <span>MALANG</span>
               </a>
             </div>
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_makassar} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_makassar} />
                 <span>MAKASSAR</span>
               </a>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_jabodetabek} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_jabodetabek} />
                 <span>JABODETABEK</span>
               </a>
             </div>
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_bali} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_bali} />
                 <span>BALI</span>
               </a>
             </div>
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_semarang} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_semarang} />
                 <span>SEMARANG</span>
               </a>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_surabaya} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_surabaya} />
                 <span>SURABAYA</span>
               </a>
             </div>
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_bandung} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_bandung} />
                 <span>BANDUNG</span>
               </a>
             </div>
-            <div className="col-sm-6  col-md-4 cards">
-              <a href="#" className="card material-card-1">
-                <img src={kota_medan} />
+            <div className="col-sm-6 col-4 cards">
+              <a href="/kota-besar" className="card material-card-1">
+                <img alt="kota besar" src={kota_medan} />
                 <span>MEDAN</span>
               </a>
             </div>

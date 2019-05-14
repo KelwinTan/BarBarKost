@@ -30,6 +30,8 @@ Route::post('unfollowUser', 'UserFollowersController@unfollow');
 
 Route::post('verifyEmail', 'VerifyEmailController@verifyUserEmail');
 
+Route::post('fileupload', 'FileUploadController@store');
+
 Route::middleware('auth:api')->get('/user', function(Request $request){
     return $request->user();
 });

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import "../../assets/Style.scss";
-import NavBar from "../home/NavBar";
 import { register } from "../user/login-register/UserFunctions";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import LoadingScreen from "../utilities/LoadingScreen";
 
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -36,22 +36,17 @@ export class UserForm extends Component {
         email: "",
         password: "",
         confirmPassword: ""
-      }
+      },
+      loadingScreen: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    // this.onChange = this.onChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
-  // onChange(e) {
-  //   this.setState({ [e.target.name]: e.target.value });
-  // }
-
   handleSubmit = e => {
     e.preventDefault();
-    // if (this.state.confirmPassword !== this.state.password) {
-    //   this.state.formErrors.confirmPassword = "Password must be the same";
-    // } else
+    this.setState({ loadingScreen: true });
+
     if (formValid(this.state)) {
       const newUser = {
         name: this.state.firstName + " " + this.state.lastName,
@@ -61,6 +56,7 @@ export class UserForm extends Component {
       register(newUser).then(res => {
         this.props.history.push(`/login`);
       });
+      // .then(this.setState({ loadingScreen: false }));
     } else {
       console.error("FORM INVALID - DISPLAY ERROR MSG");
     }
@@ -100,7 +96,7 @@ export class UserForm extends Component {
         break;
       case "confirmPassword":
         formErrors.confirmPassword =
-          value != this.state.password ? "Password must match" : "";
+          value !== this.state.password ? "Password must match" : "";
         break;
       default:
         break;
@@ -109,11 +105,28 @@ export class UserForm extends Component {
     this.setState({ formErrors, [name]: value }, () => console.log(this.state));
   };
 
+  handleLoading = () => {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    } else {
+      return null;
+    }
+  };
+
+  authenticateRedirection = () => {
+    if (localStorage.getItem("usertoken") !== null) {
+      return <Redirect to={"/"}> </Redirect>;
+    }
+  };
+
   render() {
     const { formErrors } = this.state;
     return (
       <React.Fragment>
+        {this.authenticateRedirection()}
+
         <div className="wrapper">
+          {this.handleLoading()}
           <div className="form-wrapper">
             <h1>Create User Account</h1>
             <form onSubmit={this.handleSubmit} noValidate>

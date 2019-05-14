@@ -1,16 +1,17 @@
 import React, { Component } from "react";
-import apartment_area from "../../assets/images/kota-besar/apartment_area.png";
+import kost_area from "../../assets/images/kota-besar/ic_cat_kost.png";
 
 const divStyle = {
   height: "auto",
-  paddingTop: "20px"
+  paddingBottom: "50px",
+  width: "900px",
+  margin: "0 auto"
 };
 
 const apartStyle = {
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center"
+  alignItems: "center"
 };
 
 const titleStyle = {
@@ -31,11 +32,11 @@ class KostArea extends Component {
     return (
       <div style={divStyle}>
         <div style={apartStyle}>
-          <img src={apartment_area} alt="Apartment" />
+          <img src={kost_area} alt="Kost" />
         </div>
         <div style={titleStyle}>
-          <h1 style={hStyle}>APARTMENT AREA</h1>
-          <h3 style={h3Style}>Cari apartemen di area yang kamu mau</h3>
+          <h1 style={hStyle}>Kost Area</h1>
+          <h3 style={h3Style}>Cari kos kosan di area kost yang kamu mau</h3>
         </div>
         <div className="area-box-parent">
           <div className="area-box">
