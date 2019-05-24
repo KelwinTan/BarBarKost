@@ -14,27 +14,34 @@ class CreatePropertiesTable extends Migration
     public function up()
     {
         Schema::create('properties', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('pictures')->nullable();
+            $table->string('banner_picture')->nullable();
+            $table->string('picture_360')->nullable();
+            $table->string('video')->nullable();
             $table->string('description');
-            $table->integer('banner_id');
-            $table->string('video_id');
-            $table->integer('picture360_id');
-            $table->integer('price');
-            $table->string('facilities');
-            $table->string('public_facilities');
-            $table->integer('fee');
-            $table->string('information');
-            $table->integer('city_id');
-            $table->integer('area');
-            $table->integer('total_views');
-            $table->double('longitude');
-            $table->double('latitude');
-            $table->morphs('property');
-            $table->string('status');
-            $table->uuid('owner_id');
+            $table->string('room_facilities')->nullable();
+            $table->integer('room_area')->nullable();
+            $table->string('public_facilities')->nullable();
+            $table->string('parking_facilities')->nullable();
+            $table->string('additional_information')->nullable();
+            $table->integer('additional_fees')->nullable();
+            $table->string('prices');
+            $table->string('city');
+            $table->string('address');
+            $table->integer('total_rooms');
+            $table->integer('room_left');
+            $table->integer('total_views')->nullable();
+            $table->decimal('longitude', 10, 7);
+            $table->decimal('latitude', 10, 7);
+            $table->string('kost_gender')->nullable();
+            $table->string('kost_slug');
+            $table->softDeletes();
             $table->timestamps();
         });
+//            $table->morphs('property');
+//            $table->uuid('owner_id');
     }
 
     /**

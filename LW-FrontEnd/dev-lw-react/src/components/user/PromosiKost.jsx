@@ -9,19 +9,21 @@ export class PromosiKost extends Component {
       <React.Fragment>
         <div className="promosi-kost">
           <div className="navbar-header">
-            <div className="navbar-logo">
-              <img src={logo} alt="Logo" className="logo-image" />
-              <a href="/" style={{ color: "#228B22" }}>
-                BarBar Kost
-              </a>
-            </div>
-            <div className="navbar-links">
-              <a href="/fasilitas" style={{ color: "black" }}>
-                Fasilitas
-              </a>
-              <a href="/testimoni" style={{ color: "black" }}>
-                Testimoni
-              </a>
+            <div className="navbar-wrapper2">
+              <div className="navbar-logo">
+                <img src={logo} alt="Logo" className="logo-image" />
+                <a href="/" style={{ color: "white" }}>
+                  BarBar Kost
+                </a>
+              </div>
+              <div className="navbar-links">
+                <a href="/fasilitas" style={{ color: "white" }}>
+                  Fasilitas
+                </a>
+                <a href="/testimoni" style={{ color: "white" }}>
+                  Testimoni
+                </a>
+              </div>
             </div>
             <div className="promosi-kost-content">
               <h1>Tak sampai satu minggu, langsung penuh bosqu!</h1>

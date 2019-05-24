@@ -107,12 +107,9 @@ body {
 
 @media (max-width: 600px) {
   .navbar-links {
-    // background-color: purple;
-    position: absolute;
     display: block;
     width: 100%;
     background-color: #333;
-    height: 0px;
     transition: all 0.4s ease-in;
     overflow-y: hidden;
     top: 50px;
@@ -253,6 +250,51 @@ body {
   border-radius: 10px;
   box-shadow: 0px 10px 50px #555;
   background-color: #fff;
+}
+
+.form-wrapper1 {
+  width: 1000px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 50px #555;
+  background-color: #fff;
+  form {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  h1 {
+    text-align: center;
+    width: 100%;
+    color: #111;
+    font-size: 2em;
+    font-weight: bolder;
+  }
+  label {
+    font-size: 0.8em;
+    margin-bottom: 0.25em;
+    color: #222;
+    font-weight: bolder;
+  }
+  input {
+    padding: 10px 10px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #efefef;
+    &::placeholder {
+      font-size: 1em;
+      font-weight: lighter;
+      color: #999;
+    }
+    &.error {
+      border: 1px solid red;
+    }
+    &.errorBox {
+      border: 1px solid red;
+    }
+  }
 }
 
 .form-wrapper > form {
@@ -780,6 +822,14 @@ body {
 @media (max-width: 992px) {
   .form-wrapper {
     height: 100vh;
+    box-shadow: none;
+    background: inherit;
+  }
+
+  .form-wrapper1 {
+    height: 100vh;
+    box-shadow: none;
+    background: inherit;
   }
   .col-md-10 {
     width: 83.33333333%;
@@ -845,6 +895,18 @@ body {
   .login-owner-right {
     display: none !important;
   }
+  .firstName,
+  .lastName {
+    width: 100%;
+  }
+  .wrapper {
+    background-image: none;
+  }
+  .owner-input-form-hp {
+    input {
+      width: 100% !important;
+    }
+  }
 }
 
 @media (max-width: 768px) {
@@ -852,6 +914,16 @@ body {
     width: 50%;
     float: left;
   }
+  .navbar-links {
+    display: block;
+    width: 100%;
+    background-color: #333;
+    transition: all 0.4s ease-in;
+    overflow-y: hidden;
+    top: 50px;
+    left: 0px;
+  }
+
   .profile-wrapper {
     .navbar-menu-toggle {
       display: block;
@@ -882,6 +954,16 @@ body {
     }
   }
 
+  .navbar-header {
+    .navbar-menu-toggle {
+      padding-right: 10px;
+      display: block;
+    }
+  }
+  .navbar-links {
+    display: none;
+  }
+
   .profile-info-wrapper1 {
     display: none;
   }
@@ -893,6 +975,33 @@ body {
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
+}
+
+.navbar-wrapper2 {
+  display: flex;
+  background: #27ab27;
+  justify-content: space-between;
+  .navbar-logo {
+    display: flex;
+    img {
+      width: 40px;
+      height: 40px;
+    }
+    a {
+      font-size: 2em;
+      color: white;
+      text-decoration: none;
+      margin: auto;
+    }
+  }
+  .navbar-links {
+    display: flex;
+    a {
+      text-decoration: none;
+      margin: auto;
+      padding: 10px;
+    }
+  }
 }
 
 .row {
@@ -1288,6 +1397,7 @@ body {
   width: 800px;
   background: red;
   border-radius: 10px;
+  margin: auto;
   hr {
     padding: 0;
     margin: 0;

@@ -27,6 +27,7 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
+      remember_token: false,
       formErrors: {
         email: "",
         password: ""
@@ -71,21 +72,27 @@ class Login extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.setState({ loadingScreen: true });
-    const user = {
-      email: this.state.email,
-      password: this.state.password
-    };
+    if (this.state.email === "" && this.state.password === "") {
+      console.log("Please fill in the form first");
+    } else {
+      this.setState({ loadingScreen: true });
 
-    login(user).then(res => {
-      console.log(res);
-      if (res) {
+      const user = {
+        email: this.state.email,
+        password: btoa(this.state.password),
+        remember_token: this.refs.remember.checked
+      };
+
+      login(user).then(res => {
         console.log(res);
-        localStorage.setItem("usertoken", res.data.token);
+        if (res) {
+          console.log(res);
+          localStorage.setItem("usertoken", res.data.token);
 
-        this.props.history.push(`/profile`);
-      }
-    });
+          this.props.history.push(`/`);
+        }
+      });
+    }
   }
 
   handleLoading = () => {
@@ -120,6 +127,7 @@ class Login extends Component {
                   name="email"
                   noValidate
                   onChange={this.handleChange}
+                  autoFocus
                 />
                 {formErrors.email.length > 0 && (
                   <span className="errorMsg">{formErrors.email}</span>
@@ -139,6 +147,8 @@ class Login extends Component {
               {formErrors.password.length > 0 && (
                 <span className="errorMsg">{formErrors.password}</span>
               )}
+              <input type="checkbox" name="rememberMe" ref="remember" />
+              <label htmlFor="rememberMe">Remember Me</label>
               <div className="createAccount">
                 <button type="submit">Login</button>
               </div>

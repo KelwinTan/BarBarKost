@@ -1,0 +1,56 @@
+.owner-dashboard-wrapper {
+  width: 100%;
+  display: flex;
+}
+
+.owner-side-dashboard {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  width: 20%;
+}
+
+.owner-dashboard-contents {
+  background: white;
+  text-align: center;
+  padding-top: 10px;
+  height: 100px;
+  width: 100%;
+  border: 1px green solid;
+  a {
+    background: none;
+    border: 2px #27ab27 solid;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+    &:hover {
+      background: #27ab27;
+      color: white;
+    }
+  }
+}
+
+.owner-side-dashboard-right {
+  background: #27ab27;
+  height: 100vh;
+  float: right;
+  width: 80%;
+  display: flex;
+  .display-owner-buttons {
+    margin-top: 25px;
+    margin-left: 10px;
+    width: 100%;
+    a {
+      text-decoration: none;
+      color: white;
+      padding: 12px;
+      border: 2px white solid;
+    }
+  }
+}
+
+.owner-dashboard-contents1 {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+}

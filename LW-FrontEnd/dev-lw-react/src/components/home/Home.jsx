@@ -9,6 +9,12 @@ import KostArea from "./KostArea";
 import PropertyCard from "./PropetyCard";
 
 export class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      socketSend: ""
+    };
+  }
   render() {
     return (
       <div>
@@ -16,10 +22,12 @@ export class Home extends Component {
         <SliderContent />
         <KotaBesar />
         <PropertyCard />
+        <PropertyCard />
         <HalamanPilihan />
         <ApartmentArea />
         <KostArea />
         <Footer />
+        <button onClick={this.props.socketSend}>Click Me to Send</button>
       </div>
     );
   }

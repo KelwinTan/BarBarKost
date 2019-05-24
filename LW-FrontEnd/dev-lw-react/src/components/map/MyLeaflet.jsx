@@ -84,7 +84,7 @@ class MyLeaflet extends Component {
         });
         // console.log(this.state.ReverseResult);
       });
-    this.props.updateAddr(this.state.ReverseResult);
+    this.props.updateAddr(this.state.ReverseResult, e.latlng);
     // var jsonString = https://us1.locationiq.com/v1/reverse.php?key=899758dd3d8f41&lat=${e.latlng.lat}&lon=${e.latlng.lng}&format=json
     this.state.popup
       .setLatLng(e.latlng)

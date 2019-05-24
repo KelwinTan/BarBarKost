@@ -51,10 +51,10 @@ export class UserForm extends Component {
       const newUser = {
         name: this.state.firstName + " " + this.state.lastName,
         email: this.state.email,
-        password: this.state.password
+        password: btoa(this.state.password)
       };
       register(newUser).then(res => {
-        this.props.history.push(`/login`);
+        this.props.history.push(`/guest-login`);
       });
       // .then(this.setState({ loadingScreen: false }));
     } else {
@@ -141,6 +141,7 @@ export class UserForm extends Component {
                   name="firstName"
                   noValidate
                   onChange={this.handleChange}
+                  autoFocus
                 />
                 {formErrors.firstName.length > 0 && (
                   <span className="errorMsg">{formErrors.firstName}</span>
@@ -206,7 +207,7 @@ export class UserForm extends Component {
               )}
               <div className="createAccount">
                 <button type="submit">Create Account</button>
-                <Link to="/login">
+                <Link to="/guest-login">
                   <small>Already Have An Account ?</small>
                 </Link>
               </div>

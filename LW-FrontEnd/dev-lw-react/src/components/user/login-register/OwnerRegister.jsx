@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 import illustration_form from "../../../assets/images/kota-besar/Illustration-slide-2.svg";
 import { registerOwner } from "./UserFunctions";
+import LoadingScreen from "../../utilities/LoadingScreen";
 
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -23,10 +24,19 @@ export class OwnerRegister extends Component {
         password: "",
         confirmPass: "",
         handphone: ""
-      }
+      },
+      loadingScreen: false
     };
     this.onSubmit = this.onSubmit.bind(this);
   }
+
+  handleLoading = () => {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    } else {
+      return null;
+    }
+  };
 
   handleChange = e => {
     e.preventDefault();
@@ -50,8 +60,8 @@ export class OwnerRegister extends Component {
         break;
       case "password":
         formErrors.password =
-          value.length < 6 && value.length > 0
-            ? "Minimum 6 Characters Required"
+          value.length < 8 && value.length > 0
+            ? "Minimum 8 Characters Required"
             : "";
         break;
       case "handphone":
@@ -76,19 +86,23 @@ export class OwnerRegister extends Component {
     const user = {
       name: this.state.name,
       email: this.state.email,
-      password: this.state.password,
+      password: btoa(this.state.password),
       phone: this.state.handphone
     };
-
-    registerOwner(user).then(res => {
-      this.props.history.push(`/owner-form`);
-    });
+    if (this.state.confirmPass === "") {
+      console.log("Please complete the form first");
+    } else {
+      registerOwner(user).then(res => {
+        this.props.history.push(`/owner-login`);
+      });
+    }
   }
 
   render() {
     const { formErrors } = this.state;
     return (
       <div className="login-owner">
+        {this.handleLoading()}
         <div className="login-owner-form">
           <Link to="/">&#8592; Back to Home</Link>
           <div className="login-owner-form2">
@@ -105,6 +119,7 @@ export class OwnerRegister extends Component {
                   className={formErrors.name.length > 0 ? "errorBox" : null}
                   name="name"
                   onChange={this.handleChange}
+                  autoFocus
                 />
                 <label htmlFor="name">Full Name</label>
               </div>

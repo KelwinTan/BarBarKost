@@ -9,7 +9,7 @@ class verify_email extends Model
 {
     //
     use Notifiable;
-
+    protected $guarded = [];
     protected $table = 'verify_emails';
 
     protected $fillable = [
@@ -20,4 +20,8 @@ class verify_email extends Model
         'created_at', 'updated_at'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id');
+    }
 }

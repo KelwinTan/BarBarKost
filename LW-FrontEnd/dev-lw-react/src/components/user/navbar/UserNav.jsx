@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import logo from "../../../assets/images/kota-besar/logo_mamikos_white.svg";
 import { Link } from "react-router-dom";
-import { getProfile } from "../login-register/UserFunctions";
+import { getProfile, logoutUser } from "../login-register/UserFunctions";
 
 const Iklan = (
   <div className="profile-iklan">
@@ -20,16 +20,28 @@ const profileOptions = (
   <div className="profile-iklan lose-margin">
     <ul>
       <li>
-        <Link to="cari-kost">Halaman Profile</Link>
+        <Link to="profile">Halaman Profile</Link>
       </li>
       <li>
-        <Link to="cari-apartment">Keluar</Link>
+        <a onClick={logoutUser}>Keluar</a>
       </li>
     </ul>
   </div>
 );
 
 export class UserNav extends Component {
+  iklanFunc = () => {
+    this.state.showIklan === false
+      ? this.setState({ showIklan: true })
+      : this.setState({ showIklan: false });
+  };
+
+  profileFunc = () => {
+    this.state.showProfileFunc === false
+      ? this.setState({ showProfileFunc: true })
+      : this.setState({ showProfileFunc: false });
+  };
+
   constructor(props) {
     super(props);
     this.state = {

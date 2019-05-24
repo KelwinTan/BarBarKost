@@ -8,9 +8,9 @@ use Mail;
 class MailController extends Controller
 {
     //
-    public function send(){
+    public function send(Request $request){
         $data = array('name'=>"Kelwin Tantono");
-   
+
         Mail::send(['text'=>'mail'], $data, function($message) {    
             $message->to('kelwintan7@gmail.com', 'Tutorials Point')->subject
                 ('Laravel Basic Testing Mail');

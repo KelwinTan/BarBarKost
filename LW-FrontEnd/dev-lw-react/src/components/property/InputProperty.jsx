@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "../home/NavBar";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import "./Property.scss";
 import { NavigationBar } from "../home/NavigationBar";
@@ -10,6 +10,9 @@ import "leaflet/dist/leaflet.css";
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import MyLeaflet from "../map/MyLeaflet";
 import axios, { post } from "axios";
+import { getProfile, InsertKost } from "../user/login-register/UserFunctions";
+import { Facilities } from "../facilities/Facilities";
+import LoadingScreen from "../utilities/LoadingScreen";
 
 export class InputProperty extends Component {
   constructor(props) {
@@ -18,24 +21,81 @@ export class InputProperty extends Component {
       lat: 51.505,
       lng: -0.09,
       zoom: 13,
-      address: null,
+      address: "",
       addrReal: "Your Address",
       formStatus: 1,
       image: "",
+      Facility: "",
+      kostType: "Putri",
+      kostArea: "",
+      kostTotal: "",
+      hargaBulan: "",
+      hargaHari: "",
+      hargaMinggu: "",
+      hargaTahun: "",
       formErrors: {
         kostAddr: "",
         kostName: "",
         kostType: "",
-        kostLeft: 1,
-        kostDesc: ""
+        kostLeft: "",
+        kostDesc: "",
+        kostType: "",
+        kostArea: "",
+        kostTotal: "",
+        hargaBulan: "",
+        hargaMinggu: "",
+        hargaTahun: "",
+
+        hargaHari: ""
       },
-      isValid: false
+      loadingScreen: true,
+      isValid: false,
+      userType: 2
     };
+  }
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const newKost = {
+      name: this.state.kostName,
+      description: this.state.kostDesc,
+      prices: this.state.hargaHari,
+      city: this.state.address["display_name"],
+      address: this.state.kostAddr,
+      total_rooms: this.state.kostTotal,
+      room_left: this.state.kostLeft,
+      longitude: this.state.lng,
+      latitude: this.state.lat
+    };
+    InsertKost(newKost);
+  };
+
+  componentDidMount() {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    }
+    getProfile().then(res => {
+      this.setState({ loadingScreen: false });
+      console.log(res);
+      this.setState({
+        name: res.user.name,
+        email: res.user.email,
+        join: res.user.created_at,
+        pictureID: res.user.picture_id,
+        userType: res.user.type
+      });
+    });
   }
 
   onFormImageSubmit = e => {
     e.preventDefault();
     this.fileUpload(this.state.image);
+  };
+
+  authorizeUser = () => {
+    if (this.state.userType !== 2) {
+      return <Redirect to={"/"}> </Redirect>;
+    }
   };
 
   fileUpload = e => {
@@ -64,8 +124,15 @@ export class InputProperty extends Component {
     this.createImage(files[0]);
   };
 
-  handleAddress = update => {
-    this.setState({ address: update });
+  handleAddress = (update, coordinates) => {
+    // console.log(coordinates.lat);
+    this.setState({
+      address: update,
+      lng: coordinates.lng,
+      lat: coordinates.lat
+    });
+    // console.log(this.state.lat);
+    // console.log(this.state.lng);
   };
 
   componentDidUpdate = () => {
@@ -82,10 +149,28 @@ export class InputProperty extends Component {
       this.setState({ formStatus: 1 });
       console.log(this.state.formStatus);
     } else {
-      this.setState({ formStatus: this.state.formStatus + 1, isValid: false });
+      this.setState({
+        formStatus: this.state.formStatus + 1,
+        isValid: false
+      });
       if (this.state.formStatus === 2) this.setState({ isValid: true });
       console.log(this.state.formStatus);
     }
+  };
+
+  handleLoading = () => {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    } else {
+      return null;
+    }
+  };
+
+  handleFacility = facilities => {
+    this.setState({
+      Facility: this.refs.WiFi.checked ? "" : "WiFi"
+    });
+    console.log(this.state.Facility);
   };
 
   handleChange = e => {
@@ -124,6 +209,30 @@ export class InputProperty extends Component {
           this.setState({ isValid: false });
         }
         break;
+      case "kostArea":
+        formErrors.kostArea =
+          value < 100 && value > 0 ? "Minimum 100 metres squared" : "";
+        break;
+      case "kostTotal":
+        formErrors.kostTotal =
+          value < 3 && value > 0 ? "Minimum 3 rooms required" : "";
+        break;
+      case "hargaBulan":
+        formErrors.hargaBulan =
+          value < 100000 && value > 0 ? "Minimum 100 ribu per bulan" : "";
+        break;
+      case "hargaHari":
+        formErrors.hargaHari =
+          value < 10000 && value > 0 ? "Minimum 10 ribu per hari" : "";
+        break;
+      case "hargaMinggu":
+        formErrors.hargaMinggu =
+          value < 20000 && value > 0 ? "Minimum 20 ribu per minggu" : "";
+        break;
+      case "hargaTahun":
+        formErrors.hargaTahun =
+          value < 1000000 && value > 0 ? "Minimum 1 juta per tahun" : "";
+        break;
       default:
         break;
     }
@@ -153,6 +262,7 @@ export class InputProperty extends Component {
     return (
       <React.Fragment>
         <div className="property-wrapper">
+          {this.authorizeUser()}
           <NavigationBar />
           <div className="form-status-wrapper">
             <span
@@ -184,7 +294,11 @@ export class InputProperty extends Component {
               4. Data Pemilik
             </span>
           </div>
-          <div style={{ display: this.state.formStatus === 1 ? "" : "none" }}>
+          <div
+            style={{
+              display: this.state.formStatus === 1 ? "" : "none"
+            }}
+          >
             <div style={{ margin: "0 auto" }}>
               <div className="input-data-lokasi">
                 <div className="input-data-form">
@@ -267,16 +381,42 @@ export class InputProperty extends Component {
                 </h5>
                 <h5>Kost Type</h5>
                 <div className="input-data-dropdown">
-                  <select id="kost-type" name="kost">
-                    <option value="putri">Putri</option>
-                    <option value="putra">Putra</option>
-                    <option value="campur">Campur</option>
+                  <select
+                    id="kost-type"
+                    name="kostType"
+                    onChange={this.handleChange}
+                  >
+                    <option value="Putri">Putri</option>
+                    <option value="Putra">Putra</option>
+                    <option value="Campur">Campur</option>
                   </select>
                 </div>
                 <h5>Luas Kamar</h5>
-                <input type="number" placeholder="Input Luas Kamar" required />
+                <input
+                  type="number"
+                  placeholder="Input Luas Kamar"
+                  required
+                  name="kostArea"
+                  onChange={this.handleChange}
+                  className={formErrors.kostArea.length > 0 ? "errorBox" : null}
+                />
+                {formErrors.kostArea.length > 0 && (
+                  <span className="errorMsg">{formErrors.kostArea}</span>
+                )}
                 <h5>Jumlah Kamar Total</h5>
-                <input type="number" placeholder="Input Total Kamar" required />
+                <input
+                  type="number"
+                  placeholder="Input Total Kamar"
+                  required
+                  name="kostTotal"
+                  onChange={this.handleChange}
+                  className={
+                    formErrors.kostTotal.length > 0 ? "errorBox" : null
+                  }
+                />{" "}
+                {formErrors.kostTotal.length > 0 && (
+                  <span className="errorMsg">{formErrors.kostTotal}</span>
+                )}
                 <h5>Jumlah Kamar Kosong Saat Ini</h5>
                 <input
                   type="number"
@@ -294,22 +434,54 @@ export class InputProperty extends Component {
                   type="number"
                   placeholder="Input Harga Kamar Per Bulan"
                   required
+                  onChange={this.handleChange}
+                  name="hargaBulan"
+                  className={
+                    formErrors.hargaBulan.length > 0 ? "errorBox" : null
+                  }
                 />
+                {formErrors.hargaBulan.length > 0 && (
+                  <span className="errorMsg">{formErrors.hargaBulan}</span>
+                )}
                 <input
                   type="number"
                   placeholder="Input Harga Kamar Per Hari"
                   required
+                  name="hargaHari"
+                  className={
+                    formErrors.hargaHari.length > 0 ? "errorBox" : null
+                  }
+                  onChange={this.handleChange}
                 />
+                {formErrors.hargaHari.length > 0 && (
+                  <span className="errorMsg">{formErrors.hargaHari}</span>
+                )}
                 <input
                   type="number"
                   placeholder="Input Harga Kamar Per Minggu"
                   required
+                  name="hargaMinggu"
+                  className={
+                    formErrors.hargaMinggu.length > 0 ? "errorBox" : null
+                  }
+                  onChange={this.handleChange}
                 />
+                {formErrors.hargaMinggu.length > 0 && (
+                  <span className="errorMsg">{formErrors.hargaMinggu}</span>
+                )}
                 <input
                   type="number"
                   placeholder="Input Harga Kamar Per Tahun"
                   required
+                  name="hargaTahun"
+                  className={
+                    formErrors.hargaTahun.length > 0 ? "errorBox" : null
+                  }
+                  onChange={this.handleChange}
                 />
+                {formErrors.hargaTahun.length > 0 && (
+                  <span className="errorMsg">{formErrors.hargaTahun}</span>
+                )}
                 <h5>Description</h5>
                 <input
                   type="text"
@@ -340,6 +512,7 @@ export class InputProperty extends Component {
                       padding: "10px"
                     }}
                   >
+                    {/* <Facilities handleFac={this.handleFacility} /> */}
                     <input
                       type="checkbox"
                       style={{
@@ -347,6 +520,9 @@ export class InputProperty extends Component {
                         padding: "0",
                         width: "10px"
                       }}
+                      value="WiFi"
+                      ref="WiFi"
+                      onClick={this.handleFacility}
                     />
                     <span>WiFi</span>
                   </div>
@@ -362,6 +538,9 @@ export class InputProperty extends Component {
                         padding: "0",
                         width: "10px"
                       }}
+                      value="Akses kunci 24 jam"
+                      ref="akses24"
+                      onClick={this.handleFacility}
                     />
                     <span>Akses Kunci 24 Jam</span>
                   </div>
@@ -438,7 +617,11 @@ export class InputProperty extends Component {
                 />
                 <h1>Upload Image</h1>
                 <form onSubmit={this.onFormImageSubmit}>
-                  <input type="file" onChange={this.onChangeImage} />
+                  <input
+                    type="file"
+                    onChange={this.onChangeImage}
+                    accept="image/*"
+                  />
                   <button type="submit">Upload Image</button>
                 </form>
               </div>
@@ -458,7 +641,9 @@ export class InputProperty extends Component {
                 <h5>Email</h5>
                 <input type="text" placeholder="Input Email" required />
                 {/* <label>Accept license and agreement</label> */}
-                <button type="submit">Submit Data</button>
+                <button type="submit" onClick={this.handleSubmit}>
+                  Submit Data
+                </button>
               </div>
             </div>
           </div>

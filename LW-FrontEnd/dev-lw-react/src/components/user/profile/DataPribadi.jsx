@@ -1,5 +1,13 @@
 import React, { Component } from "react";
 import { register } from "../../user/login-register/UserFunctions";
+import img from "../../../assets/images/email.png";
+import { Link, Redirect } from "react-router-dom";
+import {
+  getProfile,
+  updateProfile
+} from "../../user/login-register/UserFunctions";
+import LoadingScreen from "../../utilities/LoadingScreen";
+
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 );
@@ -27,27 +35,56 @@ export class DataPribadi extends Component {
       formErrors: {
         Name: "",
         email: "",
-        password: "",
-        confirmPassword: ""
-      }
+        password: ""
+      },
+      loadingScreen: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
+  componentDidMount() {
+    if (localStorage.getItem("usertoken") === null) {
+      console.log("Hello");
+      return <Redirect to={"/"}> </Redirect>;
+    } else {
+      console.log("Hello1");
+      getProfile().then(res => {
+        console.log(res);
+        this.setState({
+          Name: res.user.name,
+          email: res.user.email,
+          join: res.user.created_at,
+          pictureID: res.user.picture_id
+        });
+      });
+    }
+  }
+  handleLoading = () => {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    } else {
+      return null;
+    }
+  };
+
   handleSubmit = e => {
     e.preventDefault();
-    if (formValid(this.state)) {
-      const newUser = {
-        name: this.state.Name,
-        email: this.state.email,
-        password: this.state.password
-      };
-      register(newUser).then(res => {
-        this.props.history.push(`/login`);
-      });
-    } else {
-      console.error("FORM INVALID - DISPLAY ERROR MSG");
-    }
+    this.setState({ loadingScreen: true });
+
+    // if (formValid(this.state)) {
+    const user = {
+      email: this.state.email,
+      updatePassword: this.state.password
+    };
+    updateProfile(user).then(res => {
+      // console.log(res);
+      // return <Redirect to={"/guest-update"}> </Redirect>;
+      this.setState({ loadingScreen: false });
+    });
+    // } else {
+    // console.error("FORM INVALID - DISPLAY ERROR MSG");
+    // }
   };
 
   handleChange = e => {
@@ -74,10 +111,6 @@ export class DataPribadi extends Component {
             ? "Minimum 8 Characters Required"
             : "";
         break;
-      case "confirmPassword":
-        formErrors.confirmPassword =
-          value !== this.state.password ? "Password must match" : "";
-        break;
       default:
         break;
     }
@@ -86,27 +119,12 @@ export class DataPribadi extends Component {
   };
   render() {
     return (
-      //   <div className="data-pribadi-wrapper">
-      //     <div className="data-pribadi-title">
-      //       <h1>Data Pribadi</h1>
-      //     </div>
-      //     <div className="data-pribadi-data">
-      //       <div className="data-pribadi-data-image">
-      //         <img src="" alt="profile picture" />
-      //       </div>
-      //       <div className="data-pribadi-form">
-      //         <form action="">
-      //           <label htmlFor="name">Nama Lengkap</label>
-      //           <input type="text" placeholder="Type in Full Name" />
-      //         </form>
-      //       </div>
-      //     </div>
-      //   </div>
       <div className="wrapper1">
-        <div className="form-wrapper">
+        {this.handleLoading()}
+        <div className="form-wrapper1">
           <h1>Personal Data</h1>
           <div className="data-pribadi-data">
-            <img src="" alt="profile" />
+            <img src={img} alt="profile" />
             <div className="data-pribadi-data-image" />
           </div>
           <form onSubmit={this.handleSubmit} noValidate>
@@ -121,6 +139,7 @@ export class DataPribadi extends Component {
                 name="Name"
                 noValidate
                 onChange={this.handleChange}
+                value={this.state.Name}
               />
               {this.state.formErrors.Name.length > 0 && (
                 <span className="errorMsg">{this.state.formErrors.Name}</span>
@@ -136,7 +155,7 @@ export class DataPribadi extends Component {
                 placeholder=""
                 name="email"
                 noValidate
-                value={this.props.email}
+                value={this.state.email}
                 onChange={this.handleChange}
               />
               {this.state.formErrors.email.length > 0 && (
@@ -160,8 +179,8 @@ export class DataPribadi extends Component {
               <span className="errorMsg">{this.state.formErrors.password}</span>
             )}
             <div className="createAccount">
-              <button type="submit">Simpan</button>
-              <button type="submit">Batal</button>
+              <button type="submit">Update</button>
+              <Link to="/">Go Back</Link>
             </div>
           </form>
         </div>

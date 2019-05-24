@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import searchBtn from "../../assets/images/loupe.png";
 import ModalBox from "../ModalBox";
 import LoadingScreen from "../utilities/LoadingScreen";
+import { getProfile, logoutUser } from "../user/login-register/UserFunctions";
 
 class NavBar extends Component {
   constructor(props) {
@@ -13,13 +14,17 @@ class NavBar extends Component {
       displayIklan: false,
       color: "white",
       displaySearch: false,
-      loadingScreen: false
+      loadingScreen: false,
+      showMenu: false,
+      name: "",
+      displayUserMenu: false
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.showIklan = this.showIklan.bind(this);
     this.hideIklan = this.hideIklan.bind(this);
     this.changeColor = this.changeColor.bind(this);
     this.searchIklan = this.searchIklan.bind(this);
+    this.showUserMenu = this.showUserMenu.bind(this);
   }
 
   changeColor() {
@@ -35,6 +40,20 @@ class NavBar extends Component {
     const navbar = document.querySelector("nav");
     this.setState({ top: navbar.offsetTop, height: navbar.offsetHeight });
     window.addEventListener("scroll", this.handleScroll);
+
+    if (localStorage.getItem("usertoken") !== null) {
+      getProfile().then(res => {
+        console.log(res);
+        localStorage.setItem("usertype", res.user.type);
+        this.setState({
+          name: res.user.name,
+          email: res.user.email,
+          join: res.user.created_at,
+          pictureID: res.user.picture_id,
+          email_verify_at: res.user.email_verified_at
+        });
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -55,6 +74,17 @@ class NavBar extends Component {
     }
   }
 
+  showUserMenu(event) {
+    event.preventDefault();
+    console.log(this.state.displayUserMenu);
+    if (this.state.displayUserMenu === false) {
+      this.setState({ displayUserMenu: true });
+    } else {
+      this.setState({ displayUserMenu: false });
+    }
+    // console.log("")
+  }
+
   searchIklan(event) {
     event.preventDefault();
     console.log(this.state.displaySearch);
@@ -71,6 +101,27 @@ class NavBar extends Component {
     });
   }
 
+  clickHam = () => {
+    this.state.showMenu === false
+      ? this.setState({ showMenu: true })
+      : this.setState({ showMenu: false });
+    console.log(this.state.showMenu);
+  };
+
+  GetUserData = () => {
+    if (localStorage.getItem("usertoken") !== null) {
+      getProfile().then(res => {
+        // console.log(res);
+        this.setState({
+          name: res.user.name,
+          email: res.user.email,
+          join: res.user.created_at,
+          pictureID: res.user.picture_id
+        });
+      });
+    }
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -83,14 +134,33 @@ class NavBar extends Component {
                 <img src={logo} alt="Logo" className="logo-image" />
                 <Link to="/">BarBar Kost</Link>
               </div>
+              <div className="navbar-menu-toggle" onClick={this.clickHam}>
+                <i className="fas fa-bars" aria-hidden="true" />
+              </div>
             </div>
-            <div className="navbar-links">
+            <div
+              className="navbar-links"
+              style={{
+                display: this.state.showMenu === true ? "block" : ""
+              }}
+            >
               <a className="navbar-link-cari" onClick={this.searchIklan}>
                 Cari Iklan
               </a>
 
               <Link to="/promosi-kost">Promosikan Iklan Anda</Link>
-              <a onClick={this.showIklan}>Masuk</a>
+              <a
+                onClick={this.showIklan}
+                style={{ display: this.state.name !== "" ? "none" : "" }}
+              >
+                Masuk
+              </a>
+              <a
+                onClick={this.showUserMenu}
+                style={{ display: this.state.name !== "" ? "" : "none" }}
+              >
+                {this.state.name}
+              </a>
               {this.state.displayIklan === true ? (
                 <div className="masuk-menu">
                   <ul>
@@ -98,7 +168,21 @@ class NavBar extends Component {
                       <Link to="/user-form">Sebagai Pencari </Link>
                     </li>
                     <li>
-                      <Link to="/owner-form"> Sebagai Pemilik </Link>
+                      <Link to="/owner-login"> Sebagai Pemilik </Link>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                ""
+              )}
+              {this.state.displayUserMenu === true ? (
+                <div className="masuk-menu">
+                  <ul>
+                    <li>
+                      <Link to="/profile">Halaman Profil</Link>
+                    </li>
+                    <li>
+                      <a onClick={logoutUser}>Keluar</a>
                     </li>
                   </ul>
                 </div>

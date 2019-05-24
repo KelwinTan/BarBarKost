@@ -14,8 +14,8 @@ class CreateVerifyEmailsTable extends Migration
     public function up()
     {
         Schema::create('verify_emails', function (Blueprint $table) {
-            $table->increments('id');
-            $table->uuid('user_id');
+            $table->uuid('id')->primary();
+            $table->uuid('user_id')->unique();
             $table->string('email')->unique();
             $table->uuid('token');
             $table->timestamps();

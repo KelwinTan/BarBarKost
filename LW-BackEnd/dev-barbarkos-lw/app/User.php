@@ -12,10 +12,12 @@ class User extends Authenticatable implements JWTSubject{
     
     const TYPE_GUEST = 1;
     const TYPE_OWNER = 2;
+    const TYPE_ADMIN = 3;
 
     const STATUS_REGISTERED = 1;
     const STATUS_INACTIVE = 2;
     const STATUS_BANNED = 3;
+
 
     protected $fillable = [
         'id','name', 'email', 'password', 'username', 'picture_id', 'email_verified_at', 'phone', 'phone_verified_at', 'status','type'
@@ -32,6 +34,12 @@ class User extends Authenticatable implements JWTSubject{
     public function getJWTCustomClaims(){
         return [];
     }
+
+    public function verifyUser()
+    {
+        return $this->hasOne('App\verify_email');
+    }
+
     // public static function boot(){
     //     parent::boot();
     //     self::creating(function ($user) {

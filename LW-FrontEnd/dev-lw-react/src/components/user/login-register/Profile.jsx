@@ -1,8 +1,14 @@
 import React, { Component } from "react";
-import { getProfile } from "./UserFunctions";
-import { Link } from "react-router-dom";
+import {
+  getProfile,
+  logoutUser,
+  verifyUser,
+  verifyPhone
+} from "./UserFunctions";
+import { Link, Redirect } from "react-router-dom";
 import logo from "../../../assets/images/kota-besar/logo_mamikos_white.svg";
 import defaultProfile from "../../../assets/images/Profile/user-avatar-main-picture.png";
+import LoadingScreen from "../../utilities/LoadingScreen";
 
 const Iklan = (
   <div className="profile-iklan">
@@ -21,10 +27,10 @@ const profileOptions = (
   <div className="profile-iklan lose-margin">
     <ul>
       <li>
-        <Link to="cari-kost">Halaman Profile</Link>
+        <Link to="profile">Halaman Profile</Link>
       </li>
       <li>
-        <Link to="cari-apartment">Keluar</Link>
+        <a onClick={logoutUser}>Keluar</a>
       </li>
     </ul>
   </div>
@@ -41,7 +47,11 @@ class Profile extends Component {
       showProfileFunc: false,
       showMenu: false,
       verifyEmail: false,
-      verifyPhone: false
+      verifyPhone: false,
+      email_verify_at: null,
+      loadingScreen: false,
+      phone_verify_at: null,
+      phone: ""
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -53,16 +63,31 @@ class Profile extends Component {
     console.log(this.state.showMenu);
   };
 
+  authenticateRedirection = () => {
+    if (localStorage.getItem("usertoken") === null) {
+      return <Redirect to={"/"}> </Redirect>;
+    }
+  };
+
   componentDidMount() {
-    getProfile().then(res => {
-      console.log(res);
-      this.setState({
-        name: res.user.name,
-        email: res.user.email,
-        join: res.user.created_at,
-        pictureID: res.user.picture_id
+    if (localStorage.getItem("usertoken") === null) {
+      console.log("Hello");
+      return <Redirect to={"/"}> </Redirect>;
+    } else {
+      console.log("Hello1");
+      getProfile().then(res => {
+        console.log(res);
+        this.setState({
+          name: res.user.name,
+          email: res.user.email,
+          join: res.user.created_at,
+          pictureID: res.user.picture_id,
+          email_verify_at: res.user.email_verified_at,
+          phone_verify_at: res.user.phone_verified_at,
+          phone: res.user.phone
+        });
       });
-    });
+    }
   }
 
   iklanFunc = () => {
@@ -75,6 +100,36 @@ class Profile extends Component {
     this.state.showProfileFunc === false
       ? this.setState({ showProfileFunc: true })
       : this.setState({ showProfileFunc: false });
+  };
+
+  handleLoading = () => {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    } else {
+      return null;
+    }
+  };
+
+  UserEmailVerify = () => {
+    if (this.state.email_verify_at === null) {
+      const user = {
+        email: this.state.email
+      };
+      verifyUser(user).then(res => {
+        this.setState({ loadingScreen: true });
+      });
+    }
+  };
+
+  UserPhoneVerify = () => {
+    if (this.state.phone_verify_at === null) {
+      const user = {
+        phone: this.state.phone
+      };
+      verifyPhone(user).then(res => {
+        this.setState({ loadingScreen: true });
+      });
+    }
   };
 
   render() {
@@ -140,7 +195,7 @@ class Profile extends Component {
                 <div className="profile-info-edit">
                   <span>{this.state.name}</span>
                   <button>
-                    <Link to="/update-profile">Edit Profile</Link>
+                    <Link to="/guest-update">Edit Profile</Link>
                   </button>
                 </div>
               </div>
@@ -152,10 +207,17 @@ class Profile extends Component {
               <hr />
               <div className="profile-func-btn">
                 <label>Email</label>
-                <button>Verify</button>
+                <button
+                  style={{
+                    display: this.state.email_verify_at !== null ? "none" : ""
+                  }}
+                  onClick={this.UserEmailVerify}
+                >
+                  Verify
+                </button>
               </div>
               <div className="profile-verify-status">
-                {this.state.verifyEmail === true ? (
+                {this.state.email_verify_at !== null ? (
                   <label>Verified</label>
                 ) : (
                   <label>Belum Verified</label>
@@ -163,10 +225,17 @@ class Profile extends Component {
               </div>
               <div className="profile-func-btn">
                 <label>Nomor Handphone</label>
-                <button>Verify</button>
+                <button
+                  onClick={this.UserPhoneVerify}
+                  style={{
+                    display: this.state.phone_verify_at !== null ? "none" : ""
+                  }}
+                >
+                  Verify
+                </button>
               </div>
               <div className="profile-verify-status">
-                {this.state.verifyPhone === true ? (
+                {this.state.phone_verify_at !== null ? (
                   <label>Verified</label>
                 ) : (
                   <label>Belum Verified</label>
@@ -182,34 +251,13 @@ class Profile extends Component {
                 <Link to="booking-kost">Booking</Link>
               </div>
               <div className="profile-functions-link">
-                <Link to="verifikasi-identitas">Verify Identity</Link>
+                <Link to="update-phone">Update Phone Number</Link>
               </div>
               <div className="profile-functions-link">
                 <Link to="verifikasi-akun">Verify Account</Link>
               </div>
             </div>
           </div>
-          {/* <h1>Profile</h1>
-          <table>
-            <tbody>
-              <tr>
-                <td>Name</td>
-                <td>{this.state.name}</td>
-              </tr>
-              <tr>
-                <td>Email</td>
-                <td>{this.state.email}</td>
-              </tr>
-              <tr>
-                <td>Join Since</td>
-                <td>{this.state.join}</td>
-              </tr>
-              <tr>
-                <td>Picture ID</td>
-                <td>{this.state.pictureID}</td>
-              </tr>
-            </tbody>
-          </table> */}
         </div>
       </React.Fragment>
     );
