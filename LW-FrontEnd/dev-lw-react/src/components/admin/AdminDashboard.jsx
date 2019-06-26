@@ -6,6 +6,8 @@ import logo from "../../assets/images/kota-besar/logo_mamikos_white.svg";
 import Notification from "../../assets/images/owner/Notification.png";
 import apt from "../../assets/images/owner/iklan_apt.png";
 import kost from "../../assets/images/owner/iklan_kost.png";
+import { getTotalUsers } from "./AdminFunctions";
+import LoadingScreen from "../utilities/LoadingScreen";
 
 const Iklan = (
   <div className="profile-iklan">
@@ -45,12 +47,15 @@ export class AdminDashboard extends Component {
       showProfileFunc: false,
       showMenu: false,
       verifyEmail: false,
-      verifyPhone: false
+      verifyPhone: false,
+      totalUsers: 0,
+      loadingScreen: false
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   componentDidMount() {
+    this.setState({ loadingScreen: true })
     getProfile().then(res => {
       console.log(res);
       this.setState({
@@ -61,6 +66,12 @@ export class AdminDashboard extends Component {
         type: res.user.type
       });
     });
+    getTotalUsers().then(
+      res => {
+        console.log(res);
+        this.setState({ totalUsers: res, loadingScreen: false });
+      }
+    )
   }
 
   authorizeUser = () => {
@@ -69,11 +80,28 @@ export class AdminDashboard extends Component {
     }
   };
 
+  handleLoading = () => {
+    if (this.state.loadingScreen === true) {
+      return <LoadingScreen />;
+    } else {
+      return null;
+    }
+  };
+
+
+  clickHam = () => {
+    this.state.showMenu === false
+      ? this.setState({ showMenu: true })
+      : this.setState({ showMenu: false });
+    console.log(this.state.showMenu);
+  };
+
   render() {
     return (
       <React.Fragment>
         {this.authorizeUser()}
-        <div className="profile-wrapper">
+        {this.handleLoading()}
+        {/* <div className="profile-wrapper">
           <div className="profile-logo">
             <a href="/">
               <img
@@ -121,7 +149,8 @@ export class AdminDashboard extends Component {
             <span>Halaman Pemilik</span>
           </div>
           <hr />
-        </div>
+        </div> */}
+        <UserNav />
         <div className="owner-dashboard-wrapper">
           <div className="owner-side-dashboard">
             <div className="owner-dashboard-contents">
@@ -145,9 +174,15 @@ export class AdminDashboard extends Component {
             </div>
           </div>
           <div className="owner-side-dashboard-right">
+            <h1>Total Users: {this.state.totalUsers}</h1>
             <div className="display-owner-buttons">
-              <Link to="/admin/manage-guest">Manage Guest</Link>
-              <Link to="/admin/manage-owner">Manage Owner</Link>
+              <Link to="/manage-guest">Manage Guest</Link>
+              <Link to="/manage-owner">Manage Owner</Link>
+              <Link to="/manage-post">Manage Post</Link>
+              <Link to="/manage-facility">Manage Facility</Link>
+              <Link to="/manage-premium">Manage Premium Product</Link>
+              <Link to="/manage-transaction">Manage Transaction</Link>
+              <Link to="/manage-report">Manage Report</Link>
             </div>
           </div>
         </div>

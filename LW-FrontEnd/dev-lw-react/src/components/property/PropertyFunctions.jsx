@@ -20,3 +20,20 @@ export const SearchApart = apart => {
       console.log(err);
     });
 };
+
+export const GetImages = kost_id => {
+  return axios
+    .post(
+      "/api/get-image",
+      {
+        kost_id: kost_id
+      }
+    )
+    .then(res => {
+      //   console.log(res);
+      return res.data;
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}

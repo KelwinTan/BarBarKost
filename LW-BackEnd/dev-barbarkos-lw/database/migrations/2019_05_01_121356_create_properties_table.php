@@ -16,7 +16,6 @@ class CreatePropertiesTable extends Migration
         Schema::create('properties', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('pictures')->nullable();
             $table->string('banner_picture')->nullable();
             $table->string('picture_360')->nullable();
             $table->string('video')->nullable();
@@ -37,6 +36,7 @@ class CreatePropertiesTable extends Migration
             $table->decimal('latitude', 10, 7);
             $table->string('kost_gender')->nullable();
             $table->string('kost_slug');
+            $table->uuid('owner_id');
             $table->softDeletes();
             $table->timestamps();
         });

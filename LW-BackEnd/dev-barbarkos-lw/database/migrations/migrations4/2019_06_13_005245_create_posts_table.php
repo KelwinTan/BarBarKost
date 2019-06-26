@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTestMigrations extends Migration
+class CreatePostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreateTestMigrations extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('Test Migrations', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
-            $table->integer('duration');
-            $table->integer('price');
-            $table->boolean('is_active');
+            $table->string('title');
+            $table->text('content');
+            $table->string('thumbnail_path');
+            $table->string('tags');
+            $table->string('visibility');
+            $table->string('slug');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ class CreateTestMigrations extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('posts');
     }
 }

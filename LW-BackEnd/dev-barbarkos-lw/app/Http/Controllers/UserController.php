@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Webpatser\Uuid\Uuid;
 
@@ -40,8 +41,9 @@ class UserController extends Controller{
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt(base64_decode($validated['password'])),
+            'slug' =>  str_replace(' ', '-', $validated['name']) . '-' . substr(md5(microtime()),rand(0,26),5),
         ]);
-
+//        dd($user);
 //        $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user'), 201);
@@ -60,10 +62,11 @@ class UserController extends Controller{
             'email' => $validated['email'],
             'password' =>  bcrypt(base64_decode($validated['password'])),
             'phone' => $validated['phone'],
+            'slug' =>  str_replace(' ', '-', $validated['name']) . '-' . substr(md5(microtime()),rand(0,26),5),
         ]);
-        
+
         $token = JWTAuth::fromUser($user);
-        
+
         return response()->json(compact('user'), 201);
     }
 
@@ -161,22 +164,61 @@ class UserController extends Controller{
         }
         return response()->json(compact('user'));
     }
-    
+
     public function destroyUser($email){
         $user = User::where('email', $email)->get()->first();
         // $user = User::find($email);
         // dd($user);
         $user->delete();
-        
+
         echo("Delete Success");
     }
 
     public function updateUserPassword(Request $request){
-        $user = User::where('email', $request->json()->get('email'))->get()->first();
-        $user->password = bcrypt($request->json()->get('updatePassword'));
-        // dd($user);
+        $user = User::where('id', $request->id)->get()->first();
+        if ($request->name != null){
+            $user->name = $request->name;
+            $user->slug = str_replace(' ', '-', $request->name . '-' . substr(md5(microtime()),rand(0,26),5));
+        }
+
+        if($request->password != null){
+            $user->password = bcrypt($request->updatePassword);
+        }
+
+        if($request->username != null){
+            $user->username = $request->username;
+        }
+
+        if($request->email != $user->email){
+            $user->email = $request->email;
+            $user->email_verified_at = null;
+        }
+
+        if($request->phone != null){
+            $user->phone = $request->phone;
+            $user->phone_verified_at = null;
+        }
+
+        if($request->hasFile('profile')) {
+            //Get FileName with the extension
+            $fileNameWithExt = $request->file('profile')->getClientOriginalName();
+            //Get just filename
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            //Get Just ext
+            $extension = $request->file('profile')->getClientOriginalExtension();
+            //File Name to store
+            $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+            //Upload Image
+            $profile = $request->file('profile')->storeAs('public/profile', $fileNameToStore);
+            $profilePath = "profile/".$fileNameToStore;
+        }else{
+            $profilePath  = $user->picture_id;
+        }
+        $user->picture_id = $profilePath;
         $user->save();
-        echo("Success");
+
+
+        return response("Update Success");
     }
 
     public function updateUserPhone(Request $request){
@@ -188,7 +230,7 @@ class UserController extends Controller{
     }
 
     public function updateUserProfile(){
-        
+
     }
 
     public function BackHome(){
@@ -198,6 +240,7 @@ class UserController extends Controller{
 
     public function logoutUser(){
         auth()->logout();
+        \Tymon\JWTAuth\Facades\JWTAuth::invalidate(\Tymon\JWTAuth\Facades\JWTAuth::getToken());
         echo('logout success');
     }
 
@@ -220,5 +263,16 @@ class UserController extends Controller{
             return response()->json('You are unauthorized');
         }
     }
-    
+    public function getTotalUsers(){
+        return User::count();
+    }
+
+    public function TestRedis(Request $request){
+        $keyword = $request->keyword;
+        $redis = Redis::connection();
+        return $redis->get($keyword);
+    }
+
+
+
 }

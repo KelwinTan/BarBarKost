@@ -7,6 +7,7 @@ import HalamanPilihan from "./HalamanPilihan";
 import ApartmentArea from "./ApartmentArea";
 import KostArea from "./KostArea";
 import PropertyCard from "./PropetyCard";
+import BreadCrumbs from "../utilities/BreadCrumbs";
 
 export class Home extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export class Home extends Component {
     return (
       <div>
         <NavBar />
+        <BreadCrumbs/>
         <SliderContent />
         <KotaBesar />
         <PropertyCard />

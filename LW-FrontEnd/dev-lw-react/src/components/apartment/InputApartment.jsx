@@ -12,6 +12,7 @@ import axios, { post } from "axios";
 import { getProfile, InsertApart } from "../user/login-register/UserFunctions";
 import { Facilities } from "../facilities/Facilities";
 import LoadingScreen from "../utilities/LoadingScreen";
+import UserNav from "../user/navbar/UserNav";
 
 export class InputApartment extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ export class InputApartment extends Component {
       image: "",
       Facility: "AC",
       apartType: "Studio",
+      email: "",
       apartArea: "",
       apartFloors: "",
       hargaBulan: "",
@@ -33,6 +35,11 @@ export class InputApartment extends Component {
       hargaMinggu: "",
       hargaTahun: "",
       apartCondition: "Good",
+      apartFacilities: "",
+      apartName: "",
+      ownerEmail: "",
+      apartAddr:"",
+      apartDesc: "",
       formErrors: {
         apartAddr: "",
         apartName: "",
@@ -49,27 +56,84 @@ export class InputApartment extends Component {
         apartCondition: ""
       },
       isValid: false,
-      userType: 2
+      userType: 2,
+      ownerName: "",
+      banner: null,
+      video: null,
+      picture360: null,
+      selectedFile: null,
+      ownerId: null
     };
+  }
+
+  fileUploadHandler = (formData) => {
+    // const fd = new FormData();
+    const config = {
+      header: {
+        "content-type": "multipart/form-data"
+      }
+    }
+    if (this.state.selectedFile === null) {
+      return;
+    }
+
+    for (let index = 0; index < this.state.selectedFile.length; index++) {
+      const element = this.state.selectedFile[index];
+      formData.append('image[]', element);
+    }
+    // fd.append('user_id', this.state.userID);
+    // fd.append('type', "Kost");
+    console.log(this.state.selectedFile);
+    // axios.post("api/upload-image", fd, config).then(res => {
+    //   console.log(res);
+    // });
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    const newApart = {
-      name: this.state.apartName,
-      description: this.state.apartDesc,
-      prices: this.state.hargaHari,
-      city: this.state.address["display_name"],
-      address: this.state.apartAddr,
-      unit_type: this.state.apartType,
-      unit_area: this.state.apartArea,
-      unit_condition: this.state.apartCondition,
-      unit_floor: this.state.apartFloors,
-      unit_facilities: this.state.Facility,
-      longitude: this.state.lng,
-      latitude: this.state.lat
-    };
-    InsertApart(newApart);
+    const ApartFormData = new FormData();
+    const config = {
+      header: {
+        "content-type": "multipart/form-data"
+      }
+    }
+    ApartFormData.append('name', this.state.apartName);
+    ApartFormData.append('description', this.state.apartDesc);
+    ApartFormData.append('prices', this.state.hargaHari);
+    ApartFormData.append('city', this.state.apartAddr);
+    ApartFormData.append('address', this.state.address["display_name"]);
+
+    ApartFormData.append('total_rooms', this.state.kostTotal);
+    ApartFormData.append('room_left', this.state.kostLeft);
+    ApartFormData.append('longitude', this.state.lng);
+    ApartFormData.append('latitude', this.state.lat);
+    ApartFormData.append('kost_gender', this.state.kostType);
+    ApartFormData.append('unit_area', this.state.apartArea);
+    ApartFormData.append('unit_facilities', this.state.apartFacilities);
+    ApartFormData.append('unit_floor', this.state.apartFloors);
+    ApartFormData.append('unit_type', this.state.apartType);
+    ApartFormData.append('unit_condition', this.state.apartCondition);
+    
+    ApartFormData.append('owner_id', this.state.ownerId);
+
+    if (this.state.banner !== null) {
+      ApartFormData.append('banner', this.state.banner[0]);
+    }
+    if (this.state.picture360 !== null) {
+      ApartFormData.append('picture360', this.state.picture360[0]);
+    }
+    if (this.state.video !== null) {
+      ApartFormData.append('video', this.state.video[0]);
+    }
+    this.fileUploadHandler(ApartFormData);
+
+    axios.post("api/insert-apartment", ApartFormData, config).then(
+      res => {
+        console.log(res);
+      }
+    ).catch(err => {
+      console.log(err.response);
+    })
   };
 
   componentDidMount() {
@@ -79,12 +143,33 @@ export class InputApartment extends Component {
     getProfile().then(res => {
       console.log(res);
       this.setState({
-        name: res.user.name,
-        email: res.user.email,
+        ownerName: res.user.name,
+        ownerEmail: res.user.email,
+        ownerId: res.user.id,
         join: res.user.created_at,
         pictureID: res.user.picture_id,
         userType: res.user.type
       });
+    });
+  }
+
+  bannerSelectHandler = event => {
+    console.log(event.target.files);
+    this.setState({
+      banner: event.target.files
+    })
+  }
+
+  videoSelectHandler = event => {
+    this.setState({
+      video: event.target.files
+    });
+  }
+
+  picture360Handler = event => {
+    console.log(event.target.files);
+    this.setState({
+      picture360: event.target.files
     });
   }
 
@@ -229,6 +314,13 @@ export class InputApartment extends Component {
     this.setState({ formErrors, [name]: value }, () => console.log(this.state));
   };
 
+  fileSelectedHandler = event => {
+    // console.log(event.target.files[0]);
+    this.setState({
+      selectedFile: event.target.files
+    })
+  }
+
   handlePrevious = () => {
     if (this.state.formStatus > 1) {
       this.setState({ formStatus: this.state.formStatus - 1 });
@@ -244,7 +336,7 @@ export class InputApartment extends Component {
       <React.Fragment>
         <div className="property-wrapper">
           {this.authorizeUser()}
-          <NavigationBar />
+          <UserNav/>
           <div className="form-status-wrapper">
             <span
               className={
@@ -288,7 +380,7 @@ export class InputApartment extends Component {
                 <MyLeaflet updateAddr={this.handleAddress} />
                 <h5>
                   Silakan klik pada peta atau geser pin hingga sesuai lokasi
-                  Apatm
+                  Apart
                 </h5>
               </div>
             </div>
@@ -305,24 +397,24 @@ export class InputApartment extends Component {
                 Binus University
               </div>
             ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  border: "1px solid #ccc",
-                  padding: "12px",
-                  width: "800px",
-                  margin: "0 auto"
-                }}
-              >
-                {this.state.address["display_name"]}
-              </div>
-            )}
+                <div
+                  style={{
+                    textAlign: "center",
+                    border: "1px solid #ccc",
+                    padding: "12px",
+                    width: "800px",
+                    margin: "0 auto"
+                  }}
+                >
+                  {this.state.address["display_name"]}
+                </div>
+              )}
             <div className="input-data-lokasi">
               <div className="input-data-form">
-                <h5>Alamat lengkap Apartment *wajib diisi</h5>
+                <h5>Kota Apartment *wajib diisi</h5>
                 <input
                   type="text"
-                  placeholder="Tulis alamat lengkap Apartment"
+                  placeholder="Tulis kota Apartment"
                   noValidate
                   onChange={this.handleChange}
                   name="apartAddr"
@@ -360,6 +452,7 @@ export class InputApartment extends Component {
                 {formErrors.apartName.length > 0 && (
                   <span className="errorMsg">{formErrors.apartName}</span>
                 )}
+
                 <h5>
                   Saran penulisan nama: apart (spasi) Nama apart (spasi)
                   Kecamatan (spasi) Nama Kota
@@ -416,9 +509,53 @@ export class InputApartment extends Component {
                     <option value="Pristine">Pristine</option>
                   </select>
                 </div>
-                {formErrors.apartLeft.length > 0 && (
-                  <span className="errorMsg">{formErrors.apartLeft}</span>
+                <h5>Unit Facilities</h5>
+                <div className="input-data-dropdown">
+                  <select
+                    id="apart-facility"
+                    name="apartFacilities"
+                    onChange={this.handleChange}
+                  >
+                    <option value="Parking">Parking</option>
+                    <option value="Swimming">Swimming</option>
+                    <option value="Sport">Sport</option>
+                  </select>
+                </div>
+                {formErrors.apartName.length > 0 && (
+                  <span className="errorMsg">{formErrors.apartName}</span>
                 )}
+                <h5>Unit Public Facilities</h5>
+                <input
+                  type="text"
+                  placeholder="Input Public Facilities"
+                  noValidate
+                  onChange={this.handleChange}
+                  name="apartPublicFacilities"
+                  className={
+                    formErrors.apartDesc.length > 0 ? "errorBox" : null
+                  }
+                />
+                {formErrors.apartDesc.length > 0 && (
+                  <span className="errorMsg">{formErrors.apartDesc}</span>
+                )}
+                <h5>Parking Facilities</h5>
+                <input
+                  type="text"
+                  placeholder="Input Public Facilities"
+                  noValidate
+                  onChange={this.handleChange}
+                  name="parkingFacilities"
+                  className={
+                    formErrors.apartDesc.length > 0 ? "errorBox" : null
+                  }
+                />
+                {formErrors.apartDesc.length > 0 && (
+                  <span className="errorMsg">{formErrors.apartDesc}</span>
+                )}
+
+                {/* {formErrors.apartLeft.length > 0 && (
+                  <span className="errorMsg">{formErrors.apartLeft}</span>
+                )} */}
                 <h5>Harga Kamar</h5>
                 <input
                   type="number"
@@ -472,6 +609,34 @@ export class InputApartment extends Component {
                 {formErrors.hargaTahun.length > 0 && (
                   <span className="errorMsg">{formErrors.hargaTahun}</span>
                 )}
+                <h5>Additional Information</h5>
+                <input
+                  type="text"
+                  placeholder="Input Additional Information"
+                  noValidate
+                  onChange={this.handleChange}
+                  name="additionalInformation"
+                  className={
+                    formErrors.apartDesc.length > 0 ? "errorBox" : null
+                  }
+                />
+                {formErrors.apartDesc.length > 0 && (
+                  <span className="errorMsg">{formErrors.apartDesc}</span>
+                )}
+                <h5>Additional Fees</h5>
+                <input
+                  type="text"
+                  placeholder="Input Additional Fees"
+                  noValidate
+                  onChange={this.handleChange}
+                  name="additionalFees"
+                  className={
+                    formErrors.apartDesc.length > 0 ? "errorBox" : null
+                  }
+                />
+                {formErrors.apartDesc.length > 0 && (
+                  <span className="errorMsg">{formErrors.apartDesc}</span>
+                )}
                 <h5>Description</h5>
                 <input
                   type="text"
@@ -486,6 +651,7 @@ export class InputApartment extends Component {
                 {formErrors.apartDesc.length > 0 && (
                   <span className="errorMsg">{formErrors.apartDesc}</span>
                 )}
+
               </div>
             </div>
           </div>
@@ -608,14 +774,34 @@ export class InputApartment extends Component {
                   style={{ height: "200px" }}
                 />
                 <h1>Upload Image</h1>
-                <form onSubmit={this.onFormImageSubmit}>
+                <h2>Upload Kosan Pictures</h2>
+                {/* <form onSubmit={this.onFormImageSubmit}>
                   <input
                     type="file"
                     onChange={this.onChangeImage}
                     accept="image/*"
                   />
                   <button type="submit">Upload Image</button>
-                </form>
+                </form> */}
+                <input type="file" onChange={this.fileSelectedHandler} multiple accept="image/*" />
+                <h2>Upload Banner Picture</h2>
+                <input
+                  type="file"
+                  onChange={this.bannerSelectHandler}
+                  accept="image/*"
+                />
+                <h2>Upload Picture 360</h2>
+                <input
+                  type="file"
+                  onChange={this.picture360Handler}
+                  accept="image/*"
+                />
+                <h2>Upload Video</h2>
+                <input
+                  type="file"
+                  onChange={this.videoSelectHandler}
+                  accept="video/*"
+                />
               </div>
             </div>
           </div>
@@ -629,9 +815,9 @@ export class InputApartment extends Component {
               <div className="input-data-form">
                 <h1>INPUT DATA PEMILIK/PENGELOLA</h1>
                 <h5>Nama *wajib diisi</h5>
-                <input type="text" placeholder="Input Nama" required />
+                <input type="text" placeholder="Input Nama" value={this.state.ownerName} />
                 <h5>Email</h5>
-                <input type="text" placeholder="Input Email" required />
+                <input type="text" placeholder="Input Email" value={this.state.ownerEmail} />
                 {/* <label>Accept license and agreement</label> */}
                 <button type="submit" onClick={this.handleSubmit}>
                   Submit Data

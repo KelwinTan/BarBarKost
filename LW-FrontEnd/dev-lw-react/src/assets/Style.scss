@@ -819,7 +819,39 @@ body {
 
 // Kota Besar
 
+.property-props{
+  flex-direction: row;
+  display: flex; 
+  flex-wrap: wrap;
+  justify-content: center;
+  width: auto !important;
+}
+
 @media (max-width: 992px) {
+  .owner-dashboard-wrapper{
+    flex-direction: column;
+  }
+
+  .responsive-float{
+    float: none !important;
+  }
+  
+
+  .owner-side-dashboard{
+    // display: none !important;
+    background: red;
+    width: 100% !important;
+    height: auto !important;
+    flex-direction: row !important;
+  }
+  
+  .owner-side-dashboard-right{
+    width: 100% !important;
+    .display-owner-buttons{
+      margin-left: 0 !important;
+    }
+  }
+
   .form-wrapper {
     height: 100vh;
     box-shadow: none;
@@ -914,6 +946,20 @@ body {
     width: 50%;
     float: left;
   }
+  .property-card{
+    height: auto !important;
+  }
+
+  .property-responsive {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    a{
+      width:auto !important;
+      margin: auto !important;
+
+    }
+  }
   .navbar-links {
     display: block;
     width: 100%;
@@ -1001,6 +1047,15 @@ body {
       margin: auto;
       padding: 10px;
     }
+  }
+}
+
+.link-styles{
+  color: black;
+  text-decoration: none;
+  border: 3px solid white;
+  &:hover{
+    background: #27ab27;
   }
 }
 
@@ -1288,6 +1343,7 @@ body {
 }
 
 .profile-wrapper {
+  z-index: 2000;
   align-items: center;
   background-color: #27ab27;
   display: flex;
@@ -1601,4 +1657,71 @@ body {
     flex-direction: column;
     align-items: center;
   }
+}
+
+.hilang-padding{
+  padding: 0 !important;
+}
+
+.float-left{
+  float: left;
+}
+
+.data-pribadi-data{
+  text-align: center;
+
+}
+
+// Text editor css
+
+.toolbar{
+  display:flex;
+  flex-direction: column;
+  padding: 1rem;
+  align-items:center;
+}
+
+.center{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.editor{
+ width:70vw;
+ height: 50vh;
+ margin: 2rem;
+ padding: 1rem;
+ font-size: 1.2rem;
+ box-shadow: 0 .1rem .4rem black;
+ border: 1px solid black;
+ overflow-y: auto;
+}
+.tool-items{
+  background-color: rgb(27, 26, 26);
+   padding-top: .6rem;
+   padding-bottom:.6rem;
+  cursor: pointer;
+  color: #ffff;
+}
+.tool-items:hover{
+  box-shadow: none;
+  background-color: #6b5e5e;
+
+}
+
+.admin-link-styles{
+  text-align: center;
+  height: 25px;
+  a{
+    text-decoration: none;
+    border: 5px solid white;
+    &:hover{
+      background: #27ab27;
+    }
+  }
+}
+
+.crud-form{
+  height: auto !important;
 }

@@ -17,7 +17,7 @@ import { OwnerDashboard } from "./components/owner/OwnerDashboard";
 import { GuestUpdateProfile } from "./components/user/profile/GuestUpdateProfile";
 import { UpdatePhone } from "./components/user/profile/UpdatePhone";
 import { VerifyPhone } from "./components/user/profile/VerifyPhone";
-import { sendChat, socket, connect } from "./Api";
+// import { sendChat, socket, connect } from "./Api";
 import { ManageGuest } from "./components/admin/ManageGuest";
 import { KostView } from "./components/kost/KostView";
 import { InputApartment } from "./components/apartment/InputApartment";
@@ -25,25 +25,53 @@ import { AdminDashboard } from "./components/admin/AdminDashboard";
 import AdminLogin from "./components/admin/AdminLogin";
 import { ManageOwner } from "./components/admin/ManageOwner";
 import { SearchProperty } from "./components/property/SearchProperty";
+import ManagePost from "./components/admin/ManagePost";
+import ChatTest from "./components/chat/ChatTest";
+import UploadImage from "./components/UploadImage";
+import DataKost from "./components/owner/DataKost";
+import KostPage from "./components/owner/KostPage";
+import TextEditor from "./components/admin/TextEditor";
+import UpdateKost from "./components/owner/UpdateKost";
+import CreatePost from "./components/admin/CreatePost";
+import PostPage from "./components/admin/PostPage";
+import UpdatePost from "./components/admin/UpdatePost";
+import ManageFacility from "./components/admin/ManageFacility";
+import { getGuestData } from "./components/admin/AdminFunctions";
+import GuestData from "./components/admin/GuestData";
+import DataApart from "./components/owner/DataApart";
+import GuestKostPage from "./components/kost/GuestKostPage";
+import ApartPage from "./components/owner/ApartPage";
+import UpdateFacility from "./components/facilities/UpdateFacility";
+import ManagePremium from "./components/admin/ManagePremium";
+import CreatePremium from "./components/admin/CreatePremium";
+import PremiumPage from "./components/admin/PremiumPage";
+import UpdatePremium from "./components/admin/UpdatePremium";
+import PremiumPromo from "./components/admin/PremiumPromo";
+import { ViewPremium } from "./components/owner/ViewPremium";
+import ManageTransaction from "./components/admin/ManageTransaction";
+import CheckoutPage from "./components/owner/CheckoutPage";
 
 class App extends Component {
-  constructor() {
-    super();
-    connect(
-      "3",
-      msg => {
-        console.log("Jalan weh connectnya");
-      }
-    );
-  }
-  send() {
-    socket.emit("newMessage", "1", "helloooo send jalan nih");
-  }
+  // constructor() {
+  //   super();
+  //   connect(
+  //     "3",
+  //     msg => {
+  //       console.log("Jalan weh connectnya");
+  //     }
+  //   );
+  // }
+  // send() {
+  //   socket.emit("newMessage", "1", "helloooo send jalan nih");
+  // }
 
   render() {
     return (
       <React.Fragment>
-        {/* {
+        {/* <ChatTest /> */}
+        {/* <UploadImage/> */}
+
+        {
           <Route
             render={({ location }) => (
               <Switch location={location}>
@@ -53,6 +81,8 @@ class App extends Component {
                   component={() => <Home socketSend={this.send} />}
                 />
                 <Route exact path="/user-form" component={UserForm} />
+                <Route exact path="/search-property" component={SearchProperty} />
+
                 <Route exact path="/guest-login" component={Login} />
                 <Route exact path="/guest-page" component={Login} />
                 <Route exact path="/promosi-kost" component={PromosiKost} />
@@ -81,21 +111,68 @@ class App extends Component {
                 <Route exact path="/admin" component={AdminDashboard} />
                 <Route
                   exact
-                  path="/admin/manage-guest"
+                  path="/manage-guest"
                   component={ManageGuest}
+                />
+                <Route
+                  exact
+                  path="/user/:id"
+                  component={GuestData}
+                />
+                <Route
+                  exact
+                  path="/manage-post"
+                  component={ManagePost}
+                />
+                <Route
+                  exact
+                  path="/admin-create-post"
+                  component={CreatePost}
                 />
                 <Route exact path="/input-apt" component={InputApartment} />
                 <Route
                   exact
-                  path="/admin/manage-owner"
+                  path="/manage-owner"
                   component={ManageOwner}
                 />
+                <Route
+                  exact
+                  path="/data-kost"
+                  component={DataKost}
+                />
+                <Route
+                  exact
+                  path="/data-apartment"
+                  component={DataApart}
+                />
+                <Route exact path='/facility/update' component={UpdateFacility} />
+                <Route exact path='/manage-facility' component={ManageFacility} />
+
+                <Route exact path='/post/update/:id' component={UpdatePost} />
+                <Route exact path='/post/:id' component={PostPage} />
+                <Route exact path='/view-premium' component={ViewPremium} />
+                <Route exact path='/buy-premium/:id' component={CheckoutPage} />
+
+                <Route exact path='/premium/:id' component={PremiumPage} />
+                <Route exact path='/premium/update/:id' component={UpdatePremium} />
+                <Route exact path='/premium/promo/:id' component={PremiumPromo} />
+
+                <Route exact path='/apart-:handle' component={ApartPage} />
+                <Route exact path='/kost-:handle' component={KostPage} />
+                <Route exact path='/manage-premium' component={ManagePremium} />
+                <Route exact path='/manage-transaction' component={ManageTransaction} />
+
+                <Route exact path='/admin-create-premium' component={CreatePremium} />
+                <Route exact path='/detail/kost-:handle' component={GuestKostPage} />
+                <Route exact path='/update-kost-:handle' component={UpdateKost} />
                 <Route path="" component={ErrorPage} />
               </Switch>
             )}
           />
-        } */}
-        <SearchProperty />
+        }
+        {/* <UploadImage/> */}
+        {/* <TextEditor/> */}
+        {/* <SearchProperty /> */}
         {/* <ManageGuest /> */}
         {/* <KostView /> */}
         {/* <InputApartment /> */}

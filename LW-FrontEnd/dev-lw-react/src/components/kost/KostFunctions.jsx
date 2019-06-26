@@ -1,7 +1,7 @@
 import axios from "axios";
 export const GetKost = () => {
   return axios
-    .get("api/KostData")
+    .get("/api/KostData")
     .then(res => {
       console.log(res);
       return res.data;
@@ -10,3 +10,4 @@ export const GetKost = () => {
       console.log(err);
     });
 };
+

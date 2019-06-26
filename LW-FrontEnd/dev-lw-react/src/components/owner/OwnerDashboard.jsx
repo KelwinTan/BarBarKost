@@ -7,6 +7,8 @@ import "./Owner.scss";
 import Notification from "../../assets/images/owner/Notification.png";
 import apt from "../../assets/images/owner/iklan_apt.png";
 import kost from "../../assets/images/owner/iklan_kost.png";
+import Axios from "axios";
+import Footer from "../home/Footer";
 
 const Iklan = (
   <div className="profile-iklan">
@@ -46,22 +48,44 @@ export class OwnerDashboard extends Component {
       showProfileFunc: false,
       showMenu: false,
       verifyEmail: false,
-      verifyPhone: false
+      verifyPhone: false,
+      ownerId: null,
+      totalKost: "",
+      totalApt: ""
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
-  componentDidMount() {
-    getProfile().then(res => {
+  async componentDidMount() {
+    this.authorizeUser();
+    await getProfile().then(res => {
       console.log(res);
       this.setState({
         name: res.user.name,
         email: res.user.email,
         join: res.user.created_at,
         pictureID: res.user.picture_id,
-        type: res.user.type
+        type: res.user.type,
+        ownerId: res.user.id
       });
     });
+    const fd = new FormData();
+    fd.append('owner_id', this.state.ownerId);
+    Axios.post("/api/ownerTotalKost", fd).then(res => {
+      console.log(res);
+      this.setState({
+        totalKost: res.data
+
+      })
+    });
+    Axios.post("/api/owner-total-apartment", fd).then(res => {
+      console.log(res);
+      this.setState({
+        totalApt: res.data
+      })
+    });
+    
+
   }
 
   authorizeUser = () => {
@@ -70,11 +94,17 @@ export class OwnerDashboard extends Component {
     }
   };
 
+  clickHam = () => {
+    this.state.showMenu === false
+      ? this.setState({ showMenu: true })
+      : this.setState({ showMenu: false });
+    console.log(this.state.showMenu);
+  };
+
   render() {
     return (
       <React.Fragment>
-        {this.authorizeUser()}
-        <div className="profile-wrapper">
+        {/* <div className="profile-wrapper">
           <div className="profile-logo">
             <a href="/">
               <img
@@ -122,7 +152,8 @@ export class OwnerDashboard extends Component {
             <span>Halaman Pemilik</span>
           </div>
           <hr />
-        </div>
+        </div> */}
+        <UserNav />
         <div className="owner-dashboard-wrapper">
           <div className="owner-side-dashboard">
             <div className="owner-dashboard-contents">
@@ -138,20 +169,25 @@ export class OwnerDashboard extends Component {
             </div>
             <div className="owner-dashboard-contents">
               <img src={apt} alt="hello" style={{ height: "40px" }} />
-              <h1>Data Iklan Apartemen</h1>
+              <Link to="/data-apartment">Data Apartemen</Link>
             </div>
             <div className="owner-dashboard-contents">
-              <img src={kost} alt="hello" style={{ height: "40px" }} />
-              <h1>Data Iklan Kost</h1>
+              <img src={kost} alt="hello" style={{ height: "40px", width: "30px" }} />
+              <Link to="/data-kost">Data Kost</Link>
             </div>
           </div>
           <div className="owner-side-dashboard-right">
+            <div>Owner's Total Kost: {this.state.totalKost}</div>
+            <div>Owner's Total Apartment: {this.state.totalApt}</div>
+
             <div className="display-owner-buttons">
               <Link to="/input-kost">Insert Kosan</Link>
               <Link to="/input-apt">Insert Apartment</Link>
+              <Link to="/view-premium">View Premium Products</Link>
             </div>
           </div>
         </div>
+        <Footer/>
       </React.Fragment>
     );
   }

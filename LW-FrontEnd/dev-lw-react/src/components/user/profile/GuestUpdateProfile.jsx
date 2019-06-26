@@ -3,6 +3,7 @@ import { UserNav } from "../navbar/UserNav";
 import { DataPribadi } from "./DataPribadi";
 import { getProfile } from "./../login-register/UserFunctions";
 import { Redirect } from "react-router-dom";
+import BreadCrumbs from "../../utilities/BreadCrumbs";
 
 export class GuestUpdateProfile extends Component {
   constructor(props) {

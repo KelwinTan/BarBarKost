@@ -1,21 +1,22 @@
 import axios from "axios";
+const axiosKelwin = axios.create({ validateStatus: false });
 
 export const register = newUser => {
-  return axios
-    .post("api/register", newUser, {
-      headers: { "Content-Type": "application/json" }
-    })
+  return axiosKelwin.post("/api/register", newUser, {
+    headers: { "Content-Type": "application/json" }
+  })
     .then(res => {
       console.log(res);
     })
     .catch(err => {
       console.log(err);
+      console.log(err.data)
     });
 };
 
 export const login = user => {
-  return axios.post(
-    "api/login",
+  return axiosKelwin.post(
+    "/api/login",
     {
       email: user.email,
       password: user.password,
@@ -28,8 +29,8 @@ export const login = user => {
 };
 
 export const loginOwner = user => {
-  return axios.post(
-    "api/loginOwner",
+  return axiosKelwin.post(
+    "/api/loginOwner",
     {
       phone: user.phone,
       password: user.password,
@@ -43,7 +44,7 @@ export const loginOwner = user => {
 
 export const getProfile = () => {
   return axios
-    .get("api/profile", {
+    .get("/api/profile", {
       headers: { Authorization: `Bearer ${localStorage.getItem("usertoken")}` }
     })
     .then(res => {
@@ -58,10 +59,14 @@ export const getProfile = () => {
 export const updateProfile = user => {
   return axios
     .post(
-      "api/users/update",
+      "/api/users/update",
       {
+        id: user.id,
         email: user.email,
-        updatePassword: user.updatePassword
+        name: user.name,
+        username: user.username,
+        updatePassword: user.updatePassword,
+        profile: user.profile
       },
       {
         headers: { "Content-Type": "application/json" }
@@ -79,7 +84,7 @@ export const updateProfile = user => {
 export const updatePhone = user => {
   return axios
     .post(
-      "api/users/updatePhone",
+      "/api/users/updatePhone",
       {
         email: user.email,
         updatePhone: user.phone
@@ -98,14 +103,14 @@ export const updatePhone = user => {
 };
 
 export const verifyEmail = () => {
-  return axios.get("api/send").catch(err => {
+  return axios.get("/api/send").catch(err => {
     console.log(err);
   });
 };
 
 export const registerOwner = newUser => {
   return axios
-    .post("api/registerOwner", newUser, {
+    .post("/api/registerOwner", newUser, {
       headers: { "Content-Type": "application/json" }
     })
     .then(res => {
@@ -118,7 +123,7 @@ export const registerOwner = newUser => {
 
 export const logoutUser = () => {
   return axios
-    .get(`api/logout/${localStorage.getItem("usertoken")}`)
+    .get(`/api/logout/${localStorage.getItem("usertoken")}`)
     .then(res => {
       console.log(res);
       localStorage.removeItem("usertoken");
@@ -130,7 +135,7 @@ export const logoutUser = () => {
 
 export const updateUser = user => {
   return axios
-    .post("api/users/update", user, {
+    .post("/api/users/update", user, {
       headers: { "Content-Type": "application/json" }
     })
     .then(res => {
@@ -143,7 +148,7 @@ export const updateUser = user => {
 
 export const verifyUser = user => {
   return axios.post(
-    "api/verifyUser",
+    "/api/verifyUser",
     {
       email: user.email
     },
@@ -155,7 +160,7 @@ export const verifyUser = user => {
 
 export const verifyPhone = user => {
   return axios.post(
-    "api/verifyPhone",
+    "/api/verifyPhone",
     {
       phone: user.phone
     },
@@ -167,7 +172,7 @@ export const verifyPhone = user => {
 
 export const verifyPhoneToken = user => {
   return axios.post(
-    "api/verifyPhoneToken",
+    "/api/verifyPhoneToken",
     {
       token: user.token
     },
@@ -179,7 +184,7 @@ export const verifyPhoneToken = user => {
 
 export const InsertKost = kost => {
   return axios.post(
-    "api/insert-kost",
+    "/api/insert-kost",
     {
       name: kost.name,
       description: kost.description,
@@ -189,7 +194,9 @@ export const InsertKost = kost => {
       total_rooms: kost.total_rooms,
       room_left: kost.room_left,
       longitude: kost.longitude,
-      latitude: kost.latitude
+      latitude: kost.latitude,
+      kost_gender: kost.kost_gender,
+      owner_email: kost.owner_email
     },
     {
       headers: { "Content-Type": "application/json" }
@@ -199,7 +206,7 @@ export const InsertKost = kost => {
 
 export const InsertApart = apart => {
   return axios.post(
-    "api/insert-apartment",
+    "/api/insert-apartment",
     {
       name: apart.name,
       description: apart.description,

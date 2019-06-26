@@ -33,7 +33,7 @@ class VerifyPhoneController extends Controller
     public function verifyPhoneToken(Request $request){
         $verifyUser = verify_phone::where('token', $request->json()->get('token'))->first();
 
-        dd($verifyUser);
+//        dd($verifyUser);
         if (isset($verifyUser)){
             $user = User::where('phone', $verifyUser->phone)->get()->first();
             $user->phone_verified_at = $verifyUser->created_at;
@@ -41,7 +41,8 @@ class VerifyPhoneController extends Controller
             echo("Verify Success");
         }
         echo("Verify Already");
-        return redirect('http://localhost:3000/profile');
+//        return redirect('http://localhost:3000/profile');
+        return response()->json('Success');
     }
 
 

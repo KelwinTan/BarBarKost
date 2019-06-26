@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 import illustration_form from "../../../assets/images/kota-besar/Illustration-slide-2.svg";
 import { registerOwner } from "./UserFunctions";
@@ -80,6 +80,12 @@ export class OwnerRegister extends Component {
     this.setState({ formErrors, [name]: value }, () => console.log(this.state));
   };
 
+  authenticateRedirection = () => {
+    if (localStorage.getItem("usertoken") !== null) {
+      return <Redirect to={"/"}> </Redirect>;
+    }
+  };
+
   onSubmit(e) {
     e.preventDefault();
     this.setState({ loadingScreen: true });
@@ -101,91 +107,94 @@ export class OwnerRegister extends Component {
   render() {
     const { formErrors } = this.state;
     return (
-      <div className="login-owner">
-        {this.handleLoading()}
-        <div className="login-owner-form">
-          <Link to="/">&#8592; Back to Home</Link>
-          <div className="login-owner-form2">
-            <h1>Register</h1>
-            <h2>Pemilik Kos</h2>
-            <form className="owner-input-form" onSubmit={this.onSubmit}>
-              <div className="owner-input-form-hp">
-                {formErrors.name.length > 0 && (
-                  <span className="errorMsg">{formErrors.name}</span>
-                )}
-                <input
-                  type="text"
-                  placeholder="Input Name"
-                  className={formErrors.name.length > 0 ? "errorBox" : null}
-                  name="name"
-                  onChange={this.handleChange}
-                  autoFocus
-                />
-                <label htmlFor="name">Full Name</label>
-              </div>
-              <div className="owner-input-form-hp">
-                {formErrors.email.length > 0 && (
-                  <span className="errorMsg">{formErrors.email}</span>
-                )}
-                <input
-                  type="email"
-                  placeholder="Input Email"
-                  name="email"
-                  onChange={this.handleChange}
-                />
-                <label htmlFor="email">Email</label>
-              </div>
-              <div className="owner-input-form-hp">
-                {formErrors.handphone.length > 0 && (
-                  <span className="errorMsg">{formErrors.handphone}</span>
-                )}
-                <input
-                  type="number"
-                  placeholder="08"
-                  name="handphone"
-                  onChange={this.handleChange}
-                />
-                <label htmlFor="handphone">No. Handphone</label>
-              </div>
+      <React.Fragment>
+        {this.authenticateRedirection()}
+        <div className="login-owner">
+          {this.handleLoading()}
+          <div className="login-owner-form">
+            <Link to="/">&#8592; Back to Home</Link>
+            <div className="login-owner-form2">
+              <h1>Register</h1>
+              <h2>Pemilik Kos</h2>
+              <form className="owner-input-form" onSubmit={this.onSubmit}>
+                <div className="owner-input-form-hp">
+                  {formErrors.name.length > 0 && (
+                    <span className="errorMsg">{formErrors.name}</span>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Input Name"
+                    className={formErrors.name.length > 0 ? "errorBox" : null}
+                    name="name"
+                    onChange={this.handleChange}
+                    autoFocus
+                  />
+                  <label htmlFor="name">Full Name</label>
+                </div>
+                <div className="owner-input-form-hp">
+                  {formErrors.email.length > 0 && (
+                    <span className="errorMsg">{formErrors.email}</span>
+                  )}
+                  <input
+                    type="email"
+                    placeholder="Input Email"
+                    name="email"
+                    onChange={this.handleChange}
+                  />
+                  <label htmlFor="email">Email</label>
+                </div>
+                <div className="owner-input-form-hp">
+                  {formErrors.handphone.length > 0 && (
+                    <span className="errorMsg">{formErrors.handphone}</span>
+                  )}
+                  <input
+                    type="number"
+                    placeholder="08"
+                    name="handphone"
+                    onChange={this.handleChange}
+                  />
+                  <label htmlFor="handphone">No. Handphone</label>
+                </div>
 
-              <div className="owner-input-form-hp">
-                {formErrors.password.length > 0 && (
-                  <span className="errorMsg">{formErrors.password}</span>
-                )}
-                <input
-                  type="password"
-                  placeholder="Input Password"
-                  name="password"
-                  onChange={this.handleChange}
-                />
-                <label htmlFor="password">Password</label>
-              </div>
-              <div className="owner-input-form-hp">
-                {formErrors.confirmPass.length > 0 && (
-                  <span className="errorMsg">{formErrors.confirmPass}</span>
-                )}
-                <input
-                  type="password"
-                  placeholder="Repeat Password"
-                  name="confirmPass"
-                  onChange={this.handleChange}
-                />
-                <label htmlFor="confirmPass">Confirm Password</label>
-              </div>
-              <div className="createAccount">
-                <button type="submit" style={{ background: "orangered" }}>
-                  Register
-                </button>
-              </div>
-            </form>
+                <div className="owner-input-form-hp">
+                  {formErrors.password.length > 0 && (
+                    <span className="errorMsg">{formErrors.password}</span>
+                  )}
+                  <input
+                    type="password"
+                    placeholder="Input Password"
+                    name="password"
+                    onChange={this.handleChange}
+                  />
+                  <label htmlFor="password">Password</label>
+                </div>
+                <div className="owner-input-form-hp">
+                  {formErrors.confirmPass.length > 0 && (
+                    <span className="errorMsg">{formErrors.confirmPass}</span>
+                  )}
+                  <input
+                    type="password"
+                    placeholder="Repeat Password"
+                    name="confirmPass"
+                    onChange={this.handleChange}
+                  />
+                  <label htmlFor="confirmPass">Confirm Password</label>
+                </div>
+                <div className="createAccount">
+                  <button type="submit" style={{ background: "orangered" }}>
+                    Register
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div className="login-owner-right">
+            <img src={illustration_form} alt="BarBarKost Form" />
+            <h3>Mau Iklan mu tampil di atas ?</h3>
+            <h3>Jadilah Premium Member BarBar Kost</h3>
           </div>
         </div>
-        <div className="login-owner-right">
-          <img src={illustration_form} alt="BarBarKost Form" />
-          <h3>Mau Iklan mu tampil di atas ?</h3>
-          <h3>Jadilah Premium Member BarBar Kost</h3>
-        </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

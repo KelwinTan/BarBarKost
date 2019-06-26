@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import logo from "../../../assets/images/kota-besar/logo_mamikos_white.svg";
 import { Link } from "react-router-dom";
 import { getProfile, logoutUser } from "../login-register/UserFunctions";
+import BreadCrumbs from "../../utilities/BreadCrumbs";
+import { Redirect, withRouter} from "react-router-dom";
+
 
 const Iklan = (
   <div className="profile-iklan">
@@ -16,11 +19,19 @@ const Iklan = (
   </div>
 );
 
+const LogoutRedirect = () => {
+  logoutUser().then(res => {
+    this.props.history.push(`/`)
+  }
+  );
+  //
+}
+
 const profileOptions = (
   <div className="profile-iklan lose-margin">
     <ul>
       <li>
-        <Link to="profile">Halaman Profile</Link>
+        <Link to="/profile">Halaman Profile</Link>
       </li>
       <li>
         <a onClick={logoutUser}>Keluar</a>
@@ -67,6 +78,13 @@ export class UserNav extends Component {
       });
     });
   }
+
+  clickHam = () => {
+    this.state.showMenu === false
+      ? this.setState({ showMenu: true })
+      : this.setState({ showMenu: false });
+    console.log(this.state.showMenu);
+  };
   render() {
     return (
       <React.Fragment>
@@ -110,7 +128,7 @@ export class UserNav extends Component {
           </div>
         </div>
         <div className="profile-details">
-          <div className="bread-crumbs">
+          {/* <div className="bread-crumbs">
             <Link to="/" className="active">
               Home
             </Link>
@@ -119,7 +137,8 @@ export class UserNav extends Component {
               <i class="fas fa-greater-than" />{" "}
             </span>
             <span>User</span>
-          </div>
+          </div> */}
+          <BreadCrumbs />
           <hr />
         </div>
       </React.Fragment>
@@ -127,4 +146,4 @@ export class UserNav extends Component {
   }
 }
 
-export default UserNav;
+export default withRouter(UserNav);

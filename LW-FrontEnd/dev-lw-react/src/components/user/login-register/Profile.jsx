@@ -9,6 +9,7 @@ import { Link, Redirect } from "react-router-dom";
 import logo from "../../../assets/images/kota-besar/logo_mamikos_white.svg";
 import defaultProfile from "../../../assets/images/Profile/user-avatar-main-picture.png";
 import LoadingScreen from "../../utilities/LoadingScreen";
+import BreadCrumbs from "../../utilities/BreadCrumbs";
 
 const Iklan = (
   <div className="profile-iklan">
@@ -51,7 +52,9 @@ class Profile extends Component {
       email_verify_at: null,
       loadingScreen: false,
       phone_verify_at: null,
-      phone: ""
+      phone: "",
+      type: "1",
+      pictureID: null,
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -84,7 +87,8 @@ class Profile extends Component {
           pictureID: res.user.picture_id,
           email_verify_at: res.user.email_verified_at,
           phone_verify_at: res.user.phone_verified_at,
-          phone: res.user.phone
+          phone: res.user.phone,
+          type: res.user.type
         });
       });
     }
@@ -175,7 +179,7 @@ class Profile extends Component {
           </div>
         </div>
         <div className="profile-details">
-          <div className="bread-crumbs">
+          {/* <div className="bread-crumbs">
             <Link to="/" className="active">
               Home
             </Link>
@@ -184,13 +188,14 @@ class Profile extends Component {
               <i class="fas fa-greater-than" />{" "}
             </span>
             <span>User</span>
-          </div>
+          </div> */}
+          <BreadCrumbs/>
           <hr />
           <div className="profile-wrap-all">
             <div className="profile-details-information-wrapper">
               <div className="profile-info-wrapper">
                 <div className="profile-info-img">
-                  <img src={defaultProfile} alt="" />
+                <img src={`http://localhost:8000/storage/${this.state.pictureID}`} alt="Profile Picture" />
                 </div>
                 <div className="profile-info-edit">
                   <span>{this.state.name}</span>
@@ -253,8 +258,11 @@ class Profile extends Component {
               <div className="profile-functions-link">
                 <Link to="update-phone">Update Phone Number</Link>
               </div>
-              <div className="profile-functions-link">
-                <Link to="verifikasi-akun">Verify Account</Link>
+              <div className="profile-functions-link" style={{display: this.state.type === 2 ? "": "none"}}>
+                <Link to="/owner-dashboard">Owner Dashboard</Link>
+              </div>
+              <div className="profile-functions-link" style={{display: this.state.type === 3 ? "": "none"}}>
+                <Link to="/admin">Admin Dashboard</Link>
               </div>
             </div>
           </div>

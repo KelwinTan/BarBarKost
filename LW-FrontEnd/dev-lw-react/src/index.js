@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
-
+import "./assets/style/css/font-awesome.min.css";
 ReactDOM.render(
   <BrowserRouter>
     <App />

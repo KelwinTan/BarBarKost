@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePremiumsTable extends Migration
+class CreateFacilitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreatePremiumsTable extends Migration
      */
     public function up()
     {
-        Schema::create('premiums', function (Blueprint $table) {
+        Schema::create('facilities', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->integer('duration');
-            $table->integer('price');
-            $table->boolean('is_active');
+            $table->string('icon');
+            $table->string('group');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreatePremiumsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('premiums');
+        Schema::dropIfExists('facilities');
     }
 }

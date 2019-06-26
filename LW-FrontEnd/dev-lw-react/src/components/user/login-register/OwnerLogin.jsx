@@ -44,7 +44,7 @@ class OwnerLogin extends Component {
         localStorage.setItem("usertoken", res.data.token);
         this.props.history.push(`/owner-dashboard`);
       }
-    });
+    }).catch(err => console.log(err));
   }
 
   authenticateRedirection = () => {

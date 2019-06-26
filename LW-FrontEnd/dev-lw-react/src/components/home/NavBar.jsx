@@ -144,9 +144,9 @@ class NavBar extends Component {
                 display: this.state.showMenu === true ? "block" : ""
               }}
             >
-              <a className="navbar-link-cari" onClick={this.searchIklan}>
+              <Link className="navbar-link-cari" to="/search-property">
                 Cari Iklan
-              </a>
+              </Link>
 
               <Link to="/promosi-kost">Promosikan Iklan Anda</Link>
               <a
@@ -206,7 +206,7 @@ class NavBar extends Component {
             <div className="search-kost-btn" onClick={this.searchIklan}>
               <img src={searchBtn} alt="Search" style={{ height: "28px" }} />
               <div className="search-kost-label1">
-                <label>Cari nama tempat atau alamat</label>
+                <Link to="/search-property">Cari nama tempat atau alamat</Link>
               </div>
             </div>
           </div>

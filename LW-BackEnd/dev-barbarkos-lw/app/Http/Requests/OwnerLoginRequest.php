@@ -26,7 +26,7 @@ class OwnerLoginRequest extends FormRequest
         return [
             //
             'phone' => 'required',
-            'password' => 'required',
+            'password' => 'required|min:8',
         ];
     }
 }

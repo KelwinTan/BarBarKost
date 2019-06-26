@@ -49,18 +49,14 @@ class ModalBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayModal: true
+      isDisplay: false
     };
   }
 
   displayFunc = () => {
-    console.log(this.state.displayModal);
-    var displayModal = this.state.displayModal;
-    if (displayModal === true) {
-      this.setState({ displayModal: false });
-    } else {
-      this.setState({ displayModal: true });
-    }
+    // console.log(this.state.displayModal);
+    var displayModal = this.props.displayModal;
+
   };
 
   render = () => {
@@ -68,9 +64,7 @@ class ModalBox extends Component {
 
     return (
       <BgModal>
-        {/* <Paragraph>Get started with styled-components 💅</Paragraph> */}
-
-        {this.state.displayModal === true ? (
+        {/* {this.state.displayModal === true ? (
           <ModalContent>
             <Close onClick={this.displayFunc}>+</Close>
             <img src={logo} style={{ height: "200px" }} alt="logo" />
@@ -78,7 +72,12 @@ class ModalBox extends Component {
           </ModalContent>
         ) : (
           ""
-        )}
+        )} */}
+        <ModalContent>
+            <Close onClick={this.displayFunc}>+</Close>
+            <img src={logo} style={{ height: "200px" }} alt="logo" />
+            <Content>{this.props.message}</Content>
+          </ModalContent>
       </BgModal>
     );
   };

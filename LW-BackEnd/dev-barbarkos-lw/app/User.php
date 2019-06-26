@@ -19,8 +19,11 @@ class User extends Authenticatable implements JWTSubject{
     const STATUS_BANNED = 3;
 
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $fillable = [
-        'id','name', 'email', 'password', 'username', 'picture_id', 'email_verified_at', 'phone', 'phone_verified_at', 'status','type'
+        'id','name', 'email', 'password', 'username', 'picture_id', 'email_verified_at', 'phone', 'phone_verified_at', 'status','type', 'slug'
     ];
 
     protected $hidden = [
@@ -46,4 +49,9 @@ class User extends Authenticatable implements JWTSubject{
     //         $user->id = (string) Uuid::generate(4);
     //     });
     // }
+
+    public function pictures(){
+        return $this->hasMany(ImageFiles::class, 'id', 'user_id');
+    }
+
 }

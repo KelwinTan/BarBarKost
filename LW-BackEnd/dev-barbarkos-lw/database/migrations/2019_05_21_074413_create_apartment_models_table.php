@@ -16,7 +16,6 @@ class CreateApartmentModelsTable extends Migration
         Schema::create('apartment_models', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('pictures')->nullable();
             $table->string('banner_picture')->nullable();
             $table->string('picture_360')->nullable();
             $table->string('video')->nullable();
@@ -33,6 +32,8 @@ class CreateApartmentModelsTable extends Migration
             $table->string('prices');
             $table->string('city');
             $table->string('address');
+            $table->string('slug');
+            $table->string('owner_id');
             $table->decimal('longitude', 10, 7);
             $table->decimal('latitude', 10, 7);
             $table->softDeletes();

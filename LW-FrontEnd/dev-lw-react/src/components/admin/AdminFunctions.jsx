@@ -3,7 +3,7 @@ import axios from "axios";
 export const getGuestData = admin => {
   return axios
     .post(
-      "api/GetGuest",
+      "/api/GetGuest",
       {
         email: admin.email
       },
@@ -22,7 +22,7 @@ export const getGuestData = admin => {
 
 export const login = user => {
   return axios.post(
-    "api/login",
+    "/api/login",
     {
       email: user.email,
       password: user.password,
@@ -32,4 +32,18 @@ export const login = user => {
       headers: { "Content-Type": "application/json" }
     }
   );
+};
+
+export const getTotalUsers = () => {
+  return axios
+    .get("/api/total-users", {
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => {
+      console.log(res);
+      return res.data;
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };

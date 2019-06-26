@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePropertyPicturesTable extends Migration
+class AddImages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreatePropertyPicturesTable extends Migration
      */
     public function up()
     {
-        Schema::create('property_pictures', function (Blueprint $table) {
-            $table->increments('property_id');
-            $table->string('picture_id');
-            $table->boolean('is_banner');
+        Schema::create('Image-Posts', function (Blueprint $table){
+            $table->uuid('id')->primary();
+            $table->uuid('imageable_id');
+            $table->string('imageable_type');
+            $table->string('filename');
             $table->timestamps();
         });
     }
@@ -28,6 +29,8 @@ class CreatePropertyPicturesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('property_pictures');
+        Schema::table('Image-Posts', function ($table){
+            $table->dropColumn('image_id');
+        });
     }
 }

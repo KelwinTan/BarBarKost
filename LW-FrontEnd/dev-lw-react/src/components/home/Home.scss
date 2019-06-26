@@ -100,7 +100,11 @@
         margin: auto 0;
         padding-left: 10px;
         font-weight: 600;
-        color: #888;
+        a{
+          text-decoration: none;
+          color: #888;
+
+        }
       }
     }
   }
@@ -198,10 +202,8 @@
 .property-card {
   width: 1000px;
   margin: auto;
-  height: 400px;
   display: flex;
   a {
-    width: 33.3%;
     padding: 10px;
   }
 }

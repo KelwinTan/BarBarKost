@@ -13,6 +13,9 @@ import axios, { post } from "axios";
 import { getProfile, InsertKost } from "../user/login-register/UserFunctions";
 import { Facilities } from "../facilities/Facilities";
 import LoadingScreen from "../utilities/LoadingScreen";
+import UploadImage from "../UploadImage";
+import Footer from "../home/Footer";
+import UserNav from "../user/navbar/UserNav";
 
 export class InputProperty extends Component {
   constructor(props) {
@@ -25,6 +28,7 @@ export class InputProperty extends Component {
       addrReal: "Your Address",
       formStatus: 1,
       image: "",
+      banner: null,
       Facility: "",
       kostType: "Putri",
       kostArea: "",
@@ -33,13 +37,15 @@ export class InputProperty extends Component {
       hargaHari: "",
       hargaMinggu: "",
       hargaTahun: "",
+      ownerName: "",
+      picture360: null,
+      ownerEmail: "",
       formErrors: {
         kostAddr: "",
         kostName: "",
         kostType: "",
         kostLeft: "",
         kostDesc: "",
-        kostType: "",
         kostArea: "",
         kostTotal: "",
         hargaBulan: "",
@@ -50,39 +56,90 @@ export class InputProperty extends Component {
       },
       loadingScreen: true,
       isValid: false,
-      userType: 2
+      userType: 2,
+      userID: "",
+      selectedFile: null,
+      video: null,
     };
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    const newKost = {
-      name: this.state.kostName,
-      description: this.state.kostDesc,
-      prices: this.state.hargaHari,
-      city: this.state.address["display_name"],
-      address: this.state.kostAddr,
-      total_rooms: this.state.kostTotal,
-      room_left: this.state.kostLeft,
-      longitude: this.state.lng,
-      latitude: this.state.lat
-    };
-    InsertKost(newKost);
+    // const newKost = {
+    //   name: this.state.kostName,
+    //   description: this.state.kostDesc,
+    //   prices: this.state.hargaHari,
+    //   city: this.state.address["display_name"],
+    //   address: this.state.kostAddr,
+    //   total_rooms: this.state.kostTotal,
+    //   room_left: this.state.kostLeft,
+    //   longitude: this.state.lng,
+    //   latitude: this.state.lat,
+    //   kost_gender: this.state.kostType,
+    //   owner_email: this.state.ownerEmail
+    // };
+    const KostFormData = new FormData();
+    const config = {
+      header: {
+        "content-type": "multipart/form-data"
+      }
+    }
+
+    KostFormData.append('name', this.state.kostName);
+    KostFormData.append('description', this.state.kostDesc);
+    KostFormData.append('prices', this.state.hargaHari);
+    KostFormData.append('city', this.state.address["display_name"]);
+    KostFormData.append('address', this.state.kostAddr);
+    KostFormData.append('total_rooms', this.state.kostTotal);
+    KostFormData.append('room_left', this.state.kostLeft);
+    KostFormData.append('longitude', this.state.lng);
+    KostFormData.append('latitude', this.state.lat);
+    KostFormData.append('kost_gender', this.state.kostType);
+    KostFormData.append('owner_id', this.state.userID);
+    if (this.state.banner !== null) {
+      KostFormData.append('banner', this.state.banner[0]);
+    }
+    if (this.state.picture360 !== null) {
+      KostFormData.append('picture360', this.state.picture360[0]);
+    }
+
+    if (this.state.video !== null) {
+      KostFormData.append('video', this.state.video[0]);
+    }
+
+    this.fileUploadHandler(KostFormData);
+
+    axios.post("/api/insert-kost", KostFormData, config).then(
+      res => {
+        console.log(res);
+      }
+    )
+
+    // InsertKost(newKost;
+    // this.fileUploadHandler();
   };
 
+  fileSelectedHandler = event => {
+    // console.log(event.target.files[0]);
+    this.setState({
+      selectedFile: event.target.files
+    })
+  }
+
   componentDidMount() {
-    if (this.state.loadingScreen === true) {
-      return <LoadingScreen />;
-    }
+    // if (this.state.loadingScreen === true) {
+    //   return <LoadingScreen />;
+    // }
     getProfile().then(res => {
       this.setState({ loadingScreen: false });
       console.log(res);
       this.setState({
-        name: res.user.name,
-        email: res.user.email,
+        ownerName: res.user.name,
+        ownerEmail: res.user.email,
         join: res.user.created_at,
         pictureID: res.user.picture_id,
-        userType: res.user.type
+        userType: res.user.type,
+        userID: res.user.id
       });
     });
   }
@@ -93,7 +150,7 @@ export class InputProperty extends Component {
   };
 
   authorizeUser = () => {
-    if (this.state.userType !== 2) {
+    if (this.state.userType !== 2 || localStorage.getItem('usertoken') === null) {
       return <Redirect to={"/"}> </Redirect>;
     }
   };
@@ -236,15 +293,6 @@ export class InputProperty extends Component {
       default:
         break;
     }
-    // if (
-    //   formErrors.kostName.length < 8 &&
-    //   formErrors.kostDesc.length < 8 &&
-    //   formErrors.kostLeft <= 0
-    // ) {
-    //   this.setState({ isValid: false });
-    // } else {
-    //   this.setState({ isValid: true });
-    // }
     this.setState({ formErrors, [name]: value }, () => console.log(this.state));
   };
 
@@ -256,6 +304,50 @@ export class InputProperty extends Component {
       this.setState({ formStatus: 1 });
     }
   };
+
+  bannerSelectHandler = event => {
+    console.log(event.target.files);
+    this.setState({
+      banner: event.target.files
+    })
+  }
+
+  videoSelectHandler = event => {
+    this.setState({
+      video: event.target.files
+    });
+  }
+
+  picture360Handler = event => {
+    console.log(event.target.files);
+    this.setState({
+      picture360: event.target.files
+    });
+  }
+
+  fileUploadHandler = (formData) => {
+    // const fd = new FormData();
+    const config = {
+      header: {
+        "content-type": "multipart/form-data"
+      }
+    }
+    if (this.state.selectedFile === null) {
+      return;
+    }
+
+    for (let index = 0; index < this.state.selectedFile.length; index++) {
+      const element = this.state.selectedFile[index];
+      formData.append('image[]', element);
+    }
+    // fd.append('user_id', this.state.userID);
+    // fd.append('type', "Kost");
+    console.log(this.state.selectedFile);
+    // axios.post("api/upload-image", fd, config).then(res => {
+    //   console.log(res);
+    // });
+  }
+
   render() {
     const { formErrors } = this.state;
 
@@ -263,7 +355,8 @@ export class InputProperty extends Component {
       <React.Fragment>
         <div className="property-wrapper">
           {this.authorizeUser()}
-          <NavigationBar />
+          {/* <NavigationBar /> */}
+          <UserNav />
           <div className="form-status-wrapper">
             <span
               className={
@@ -324,18 +417,18 @@ export class InputProperty extends Component {
                 Binus University
               </div>
             ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  border: "1px solid #ccc",
-                  padding: "12px",
-                  width: "800px",
-                  margin: "0 auto"
-                }}
-              >
-                {this.state.address["display_name"]}
-              </div>
-            )}
+                <div
+                  style={{
+                    textAlign: "center",
+                    border: "1px solid #ccc",
+                    padding: "12px",
+                    width: "800px",
+                    margin: "0 auto"
+                  }}
+                >
+                  {this.state.address["display_name"]}
+                </div>
+              )}
             <div className="input-data-lokasi">
               <div className="input-data-form">
                 <h5>Alamat lengkap kost *wajib diisi</h5>
@@ -616,14 +709,36 @@ export class InputProperty extends Component {
                   style={{ height: "200px" }}
                 />
                 <h1>Upload Image</h1>
-                <form onSubmit={this.onFormImageSubmit}>
+                {/* <form onSubmit={this.onFormImageSubmit}>
                   <input
                     type="file"
                     onChange={this.onChangeImage}
                     accept="image/*"
                   />
                   <button type="submit">Upload Image</button>
-                </form>
+                </form> */}
+                <h2>Upload Kosan Pictures</h2>
+                {/* <UploadImage user={this.state.userID} type={"Kost"} /> */}
+                <input type="file" onChange={this.fileSelectedHandler} multiple accept="image/*" />
+
+                <h2>Upload Banner Picture</h2>
+                <input
+                  type="file"
+                  onChange={this.bannerSelectHandler}
+                  accept="image/*"
+                />
+                <h2>Upload Picture 360</h2>
+                <input
+                  type="file"
+                  onChange={this.picture360Handler}
+                  accept="image/*"
+                />
+                <h2>Upload Video</h2>
+                <input
+                  type="file"
+                  onChange={this.videoSelectHandler}
+                  accept="video/*"
+                />
               </div>
             </div>
           </div>
@@ -636,10 +751,10 @@ export class InputProperty extends Component {
             <div className="input-data-lokasi">
               <div className="input-data-form">
                 <h1>INPUT DATA PEMILIK/PENGELOLA</h1>
-                <h5>Nama *wajib diisi</h5>
-                <input type="text" placeholder="Input Nama" required />
-                <h5>Email</h5>
-                <input type="text" placeholder="Input Email" required />
+                <h5>Nama Pemilik</h5>
+                <input type="text" value={this.state.ownerName} readOnly />
+                <h5>Email Pemilik</h5>
+                <input type="text" value={this.state.ownerEmail} readOnly />
                 {/* <label>Accept license and agreement</label> */}
                 <button type="submit" onClick={this.handleSubmit}>
                   Submit Data
@@ -672,6 +787,7 @@ export class InputProperty extends Component {
             </div>
           </div>
         </div>
+        <Footer />
       </React.Fragment>
     );
   }
