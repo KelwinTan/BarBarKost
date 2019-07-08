@@ -32,7 +32,7 @@
             margin-left: 15px;
         }
         .information {
-            background-color: #60A7A6;
+            background-color: #27ab27;
             color: #FFF;
         }
         .information .logo {
@@ -50,31 +50,26 @@
     <table width="100%">
         <tr>
             <td align="left" style="width: 40%;">
-                <h3>John Doe</h3>
+                <h3>Premium Product Invoice</h3>
                 <pre>
-Street 15
-123456 City
-United Kingdom
+Owner Name: {{$user['name']}}
+
 <br /><br />
-Date: 2018-01-01
-Identifier: #uniquehash
+Date: {{$premium['created_at']}}
 Status: Paid
 </pre>
 
 
             </td>
-            <td align="center">
-                <img src="/path/to/logo.png" alt="Logo" width="64" class="logo"/>
-            </td>
+
             <td align="right" style="width: 40%;">
 
-{{--                <h3>{{$judul}}</h3>--}}
                 <pre>
-                    https://company.com
+                    https://barbarkost.com
 
-                    Street 26
-                    123456 City
-                    United Kingdom
+                    Wisma Atrium, BCA
+                    Jakarta Barat
+                    Indonesia
                 </pre>
             </td>
         </tr>
@@ -86,55 +81,41 @@ Status: Paid
 <br/>
 
 <div class="invoice">
-    <h3>Invoice specification #123</h3>
+    <h3>{{$premium['premium_name']}}</h3>
     <table width="100%">
         <thead>
         <tr>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Total</th>
+            <th>Duration</th>
+            <th>Price</th>
+            <th>Promo</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>Item 1</td>
-            <td>1</td>
-            <td align="left">€15,-</td>
+            <td>{{$premium['duration']}} days</td>
+            <td>Rp. {{$premium['premium_price']}}</td>
+            <td align="left">{{$promo * 100}}%</td>
         </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
+
 
         <tfoot>
         <tr>
             <td colspan="1"></td>
             <td align="left">Total</td>
-            <td align="left" class="gray">€15,-</td>
+            <td align="left" class="gray">Rp. {{$premium['premium_price'] * (1-$promo)}}</td>
         </tr>
         </tfoot>
     </table>
 </div>
 
-<div class="information" style="position: absolute; bottom: 0;">
+<div class="information" style="position: absolute; bottom: 0; width: 100%">
     <table width="100%">
         <tr>
             <td align="left" style="width: 50%;">
                 &copy; {{ date('Y') }} {{ config('app.url') }} - All rights reserved.
             </td>
             <td align="right" style="width: 50%;">
-                Company Slogan
+                BarBar Kost
             </td>
         </tr>
 

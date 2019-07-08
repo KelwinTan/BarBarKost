@@ -49,4 +49,12 @@ class ApartmentModel extends Model
     public function photos(){
         return $this->morphMany('App\ImageFiles', 'imageable');
     }
+
+    public function Transaction(){
+        return $this->belongsTo(Transaction::class, 'owner_id', 'owner_id');
+    }
+
+    public function User(){
+        return $this->belongsTo(User::class, 'owner_id', 'id');
+    }
 }

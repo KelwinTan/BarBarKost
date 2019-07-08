@@ -5,6 +5,7 @@ import MyLeaflet from '../map/MyLeaflet';
 import Footer from '../home/Footer';
 import { getProfile, InsertKost } from "../user/login-register/UserFunctions";
 import axios, { post } from "axios";
+import Axios from 'axios';
 
 export class UpdateKost extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ export class UpdateKost extends Component {
             lng: -0.09,
             banner: "",
             picture360: "",
-            video: "",
+            video: null,
             formStatus: 1,
             kostName: "",
             kostAddr: "",
@@ -49,6 +50,7 @@ export class UpdateKost extends Component {
 
                 hargaHari: ""
             },
+            kostCity: "",
         }
     }
 
@@ -57,6 +59,7 @@ export class UpdateKost extends Component {
         this.setState({
             banner: event.target.files
         })
+        console.log(this.state.banner);
     }
 
     videoSelectHandler = event => {
@@ -87,17 +90,18 @@ export class UpdateKost extends Component {
         //   kost_gender: this.state.kostType,
         //   owner_email: this.state.ownerEmail
         // };
+        this.setState({ kostCity: this.state.address["display_name"] })
         const KostFormData = new FormData();
         const config = {
             header: {
                 "content-type": "multipart/form-data"
             }
         }
-        KostFormData.append('id', this.state.currKost[0]['id']);
+        KostFormData.append('id', this.state.currKost['id']);
         KostFormData.append('name', this.state.kostName);
         KostFormData.append('description', this.state.kostDesc);
         KostFormData.append('prices', this.state.hargaHari);
-        KostFormData.append('city', this.state.address["display_name"]);
+        KostFormData.append('city', this.state.kostCity);
         KostFormData.append('address', this.state.kostAddr);
         KostFormData.append('total_rooms', this.state.kostTotal);
         KostFormData.append('room_left', this.state.kostLeft);
@@ -105,9 +109,11 @@ export class UpdateKost extends Component {
         KostFormData.append('latitude', this.state.lat);
         KostFormData.append('kost_gender', this.state.kostType);
         KostFormData.append('owner_email', this.state.ownerEmail);
+        // if (this.state.banner !== null) {
         if (this.state.banner !== null) {
             KostFormData.append('banner', this.state.banner[0]);
         }
+        // }
         if (this.state.picture360 !== null) {
             KostFormData.append('picture360', this.state.picture360[0]);
         }
@@ -152,7 +158,7 @@ export class UpdateKost extends Component {
     }
 
     fileSelectedHandler = event => {
-        // console.log(event.target.files[0]);
+        // console.log(event.target.files);
         this.setState({
             selectedFile: event.target.files
         })
@@ -250,21 +256,24 @@ export class UpdateKost extends Component {
         const { kost_slug } = this.props.location.state
         this.setState({ slug: kost_slug });
         console.log(kost_slug);
-        await GetSpecificKost(kost_slug).then(
+        const fd = new FormData();
+        fd.append("kost_slug", kost_slug);
+        await Axios.post("/api/owner-specific-kost", fd).then(
             res => {
+                console.log(res);
                 this.setState({
-                    currKost: res,
-                    loadingScreen: false,
+                    currKost: res.data,
                 })
             }
-        );
-        this.setState({
-            kostName: this.state.currKost[0]['name'],
-            kostAddr: this.state.currKost[0]['address'],
-            kostDesc: this.state.currKost[0]['description'],
-            kostLeft: this.state.currKost[0]['room_left'],
-            kostTotal: this.state.currKost[0]['total_rooms'],
-            kostType: this.state.currKost[0]['kost_gender']
+        )
+        await this.setState({
+            kostName: this.state.currKost['name'],
+            kostAddr: this.state.currKost['address'],
+            kostDesc: this.state.currKost['description'],
+            kostLeft: this.state.currKost['room_left'],
+            kostTotal: this.state.currKost['total_rooms'],
+            kostType: this.state.currKost['kost_gender'],
+            kostCity: this.state.currKost['city']
         })
 
         await getProfile().then(res => {
@@ -276,7 +285,8 @@ export class UpdateKost extends Component {
                 join: res.user.created_at,
                 pictureID: res.user.picture_id,
                 userType: res.user.type,
-                userID: res.user.id
+                userID: res.user.id,
+                loadingScreen: false,
             });
         });
         console.log(this.state.currKost);
@@ -337,328 +347,326 @@ export class UpdateKost extends Component {
                                     4. Data Pemilik
             </span>
                             </div>
-                            {this.state.currKost.map(item =>
-                                item["id"] !== null ? (
-                                    <div className="kost-data-layout">
+                            <div className="kost-data-layout">
+                                <div
+                                    style={{
+                                        display: this.state.formStatus === 1 ? "" : "none"
+                                    }}
+                                >
+                                    <div style={{ margin: "0 auto" }}>
+                                        <div className="input-data-lokasi">
+                                            <div className="input-data-form">
+                                                <h1>Input Data Lokasi</h1>
+                                            </div>
+                                            <MyLeaflet updateAddr={this.handleAddress} />
+                                            <h5>
+                                                Silakan klik pada peta atau geser pin hingga sesuai lokasi
+                                                kost
+                </h5>
+                                        </div>
+                                    </div>
+                                    {this.state.address === null ? (
                                         <div
                                             style={{
-                                                display: this.state.formStatus === 1 ? "" : "none"
+                                                textAlign: "center",
+                                                border: "1px solid #ccc",
+                                                padding: "12px",
+                                                width: "800px",
+                                                margin: "0 auto"
                                             }}
                                         >
-                                            <div style={{ margin: "0 auto" }}>
-                                                <div className="input-data-lokasi">
-                                                    <div className="input-data-form">
-                                                        <h1>Input Data Lokasi</h1>
-                                                    </div>
-                                                    <MyLeaflet updateAddr={this.handleAddress} />
-                                                    <h5>
-                                                        Silakan klik pada peta atau geser pin hingga sesuai lokasi
-                                                        kost
-                </h5>
-                                                </div>
+                                            Binus University
+              </div>
+                                    ) : (
+                                            <div
+                                                style={{
+                                                    textAlign: "center",
+                                                    border: "1px solid #ccc",
+                                                    padding: "12px",
+                                                    width: "800px",
+                                                    margin: "0 auto"
+                                                }}
+                                            >
+                                                {this.state.address["display_name"]}
                                             </div>
-                                            {this.state.address === null ? (
+                                        )}
+                                    <div className="input-data-lokasi">
+                                        <div className="input-data-form">
+                                            <h5>Alamat lengkap kost *wajib diisi</h5>
+                                            <input
+                                                type="text"
+                                                placeholder="Tulis alamat lengkap kost"
+                                                noValidate
+                                                onChange={this.handleChange}
+                                                name="kostAddr"
+                                                className={formErrors.kostAddr.length > 0 ? "errorBox" : null}
+                                                autoFocus
+                                                defaultValue={this.state.kostAddr}
+                                            />
+                                            {formErrors.kostAddr.length > 0 && (
+                                                <span className="errorMsg">{formErrors.kostAddr}</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        display: this.state.formStatus === 2 ? "" : "none",
+                                        margin: "0 auto"
+                                    }}
+                                >
+                                    <div className="input-data-lokasi">
+                                        <div className="input-data-form">
+                                            <h5>Nama Kost</h5>
+                                            <input
+                                                type="text"
+                                                placeholder="Tulis Nama Kost"
+                                                noValidate
+                                                onChange={this.handleChange}
+                                                name="kostName"
+                                                className={formErrors.kostName.length > 0 ? "errorBox" : null}
+                                                autoFocus
+                                                defaultValue={this.state.kostName}
+                                            />
+                                            {formErrors.kostName.length > 0 && (
+                                                <span className="errorMsg">{formErrors.kostName}</span>
+                                            )}
+                                            <h5>
+                                                Saran penulisan nama: Kost (spasi) Nama Kost (spasi) Kecamatan
+                                                (spasi) Nama Kota
+                </h5>
+                                            <h5>Kost Type</h5>
+                                            <div className="input-data-dropdown">
+                                                <select
+                                                    id="kost-type"
+                                                    name="kostType"
+                                                    onChange={this.handleChange}
+                                                >
+                                                    <option value="Putri">Putri</option>
+                                                    <option value="Putra">Putra</option>
+                                                    <option value="Campur">Campur</option>
+                                                </select>
+                                            </div>
+                                            {formErrors.kostArea.length > 0 && (
+                                                <span className="errorMsg">{formErrors.kostArea}</span>
+                                            )}
+                                            <h5>Jumlah Kamar Total</h5>
+                                            <input
+                                                type="number"
+                                                placeholder="Input Total Kamar"
+                                                required
+                                                name="kostTotal"
+                                                onChange={this.handleChange}
+                                                className={
+                                                    formErrors.kostTotal.length > 0 ? "errorBox" : null
+                                                }
+                                                defaultValue={this.state.kostTotal}
+                                            />{" "}
+                                            {formErrors.kostTotal.length > 0 && (
+                                                <span className="errorMsg">{formErrors.kostTotal}</span>
+                                            )}
+                                            <h5>Jumlah Kamar Kosong Saat Ini</h5>
+                                            <input
+                                                type="number"
+                                                placeholder="Input Kost Left"
+                                                noValidate
+                                                onChange={this.handleChange}
+                                                name="kostLeft"
+                                                className={formErrors.kostLeft.length > 0 ? "errorBox" : null}
+                                                defaultValue={this.state.kostLeft}
+                                            />
+                                            {formErrors.kostLeft.length > 0 && (
+                                                <span className="errorMsg">{formErrors.kostLeft}</span>
+                                            )}
+                                            <h5>Harga Kamar</h5>
+                                            <input
+                                                type="number"
+                                                placeholder="Input Harga Kamar Per Bulan"
+                                                required
+                                                onChange={this.handleChange}
+                                                name="hargaBulan"
+                                                className={
+                                                    formErrors.hargaBulan.length > 0 ? "errorBox" : null
+                                                }
+                                            />
+                                            {formErrors.hargaBulan.length > 0 && (
+                                                <span className="errorMsg">{formErrors.hargaBulan}</span>
+                                            )}
+                                            <input
+                                                type="number"
+                                                placeholder="Input Harga Kamar Per Hari"
+                                                required
+                                                name="hargaHari"
+                                                className={
+                                                    formErrors.hargaHari.length > 0 ? "errorBox" : null
+                                                }
+                                                onChange={this.handleChange}
+                                            />
+                                            {formErrors.hargaHari.length > 0 && (
+                                                <span className="errorMsg">{formErrors.hargaHari}</span>
+                                            )}
+                                            <input
+                                                type="number"
+                                                placeholder="Input Harga Kamar Per Minggu"
+                                                required
+                                                name="hargaMinggu"
+                                                className={
+                                                    formErrors.hargaMinggu.length > 0 ? "errorBox" : null
+                                                }
+                                                onChange={this.handleChange}
+                                            />
+                                            {formErrors.hargaMinggu.length > 0 && (
+                                                <span className="errorMsg">{formErrors.hargaMinggu}</span>
+                                            )}
+                                            <input
+                                                type="number"
+                                                placeholder="Input Harga Kamar Per Tahun"
+                                                required
+                                                name="hargaTahun"
+                                                className={
+                                                    formErrors.hargaTahun.length > 0 ? "errorBox" : null
+                                                }
+                                                onChange={this.handleChange}
+                                            />
+                                            {formErrors.hargaTahun.length > 0 && (
+                                                <span className="errorMsg">{formErrors.hargaTahun}</span>
+                                            )}
+                                            <h5>Description</h5>
+                                            <input
+                                                type="text"
+                                                placeholder="Kost Description"
+                                                noValidate
+                                                onChange={this.handleChange}
+                                                name="kostDesc"
+                                                className={formErrors.kostDesc.length > 0 ? "errorBox" : null}
+                                                defaultValue={this.state.kostDesc}
+                                            />
+                                            {formErrors.kostDesc.length > 0 && (
+                                                <span className="errorMsg">{formErrors.kostDesc}</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        display: this.state.formStatus === 3 ? "" : "none",
+                                        margin: "0 auto"
+                                    }}
+                                >
+                                    <div className="input-data-lokasi">
+                                        <div className="input-data-form">
+                                            <h1>INPUT FASILITAS KOST</h1>
+                                            <div style={{ display: "flex" }}>
                                                 <div
                                                     style={{
-                                                        textAlign: "center",
-                                                        border: "1px solid #ccc",
-                                                        padding: "12px",
-                                                        width: "800px",
-                                                        margin: "0 auto"
+                                                        padding: "10px"
                                                     }}
                                                 >
-                                                    Binus University
-              </div>
-                                            ) : (
-                                                    <div
+                                                    {/* <Facilities handleFac={this.handleFacility} /> */}
+                                                    <input
+                                                        type="checkbox"
                                                         style={{
-                                                            textAlign: "center",
-                                                            border: "1px solid #ccc",
-                                                            padding: "12px",
-                                                            width: "800px",
-                                                            margin: "0 auto"
+                                                            margin: "0",
+                                                            padding: "0",
+                                                            width: "10px"
                                                         }}
-                                                    >
-                                                        {this.state.address["display_name"]}
-                                                    </div>
-                                                )}
-                                            <div className="input-data-lokasi">
-                                                <div className="input-data-form">
-                                                    <h5>Alamat lengkap kost *wajib diisi</h5>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Tulis alamat lengkap kost"
-                                                        noValidate
-                                                        onChange={this.handleChange}
-                                                        name="kostAddr"
-                                                        className={formErrors.kostAddr.length > 0 ? "errorBox" : null}
-                                                        autoFocus
-                                                        defaultValue={this.state.kostAddr}
+                                                        value="WiFi"
+                                                        ref="WiFi"
+                                                        onClick={this.handleFacility}
                                                     />
-                                                    {formErrors.kostAddr.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.kostAddr}</span>
-                                                    )}
+                                                    <span>WiFi</span>
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        padding: "10px"
+                                                    }}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        style={{
+                                                            margin: "0",
+                                                            padding: "0",
+                                                            width: "10px"
+                                                        }}
+                                                        value="Akses kunci 24 jam"
+                                                        ref="akses24"
+                                                        onClick={this.handleFacility}
+                                                    />
+                                                    <span>Akses Kunci 24 Jam</span>
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        padding: "10px"
+                                                    }}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        style={{
+                                                            margin: "0",
+                                                            padding: "0",
+                                                            width: "10px"
+                                                        }}
+                                                    />
+                                                    <span>Bisa Pasutri</span>
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        padding: "10px"
+                                                    }}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        style={{
+                                                            margin: "0",
+                                                            padding: "0",
+                                                            width: "10px"
+                                                        }}
+                                                    />
+                                                    <span>Parkir Mobil</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: this.state.formStatus === 2 ? "" : "none",
-                                                margin: "0 auto"
-                                            }}
-                                        >
-                                            <div className="input-data-lokasi">
-                                                <div className="input-data-form">
-                                                    <h5>Nama Kost</h5>
+                                            <h5>Kamar Mandi</h5>
+                                            <div style={{ display: "flex" }}>
+                                                <div
+                                                    style={{
+                                                        padding: "10px"
+                                                    }}
+                                                >
                                                     <input
-                                                        type="text"
-                                                        placeholder="Tulis Nama Kost"
-                                                        noValidate
-                                                        onChange={this.handleChange}
-                                                        name="kostName"
-                                                        className={formErrors.kostName.length > 0 ? "errorBox" : null}
-                                                        autoFocus
-                                                        defaultValue={this.state.kostName}
+                                                        type="checkbox"
+                                                        style={{
+                                                            margin: "0",
+                                                            padding: "0",
+                                                            width: "10px"
+                                                        }}
                                                     />
-                                                    {formErrors.kostName.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.kostName}</span>
-                                                    )}
-                                                    <h5>
-                                                        Saran penulisan nama: Kost (spasi) Nama Kost (spasi) Kecamatan
-                                                        (spasi) Nama Kota
-                </h5>
-                                                    <h5>Kost Type</h5>
-                                                    <div className="input-data-dropdown">
-                                                        <select
-                                                            id="kost-type"
-                                                            name="kostType"
-                                                            onChange={this.handleChange}
-                                                        >
-                                                            <option value="Putri">Putri</option>
-                                                            <option value="Putra">Putra</option>
-                                                            <option value="Campur">Campur</option>
-                                                        </select>
-                                                    </div>
-                                                    {formErrors.kostArea.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.kostArea}</span>
-                                                    )}
-                                                    <h5>Jumlah Kamar Total</h5>
+                                                    <span>Dalam</span>
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        padding: "10px"
+                                                    }}
+                                                >
                                                     <input
-                                                        type="number"
-                                                        placeholder="Input Total Kamar"
-                                                        required
-                                                        name="kostTotal"
-                                                        onChange={this.handleChange}
-                                                        className={
-                                                            formErrors.kostTotal.length > 0 ? "errorBox" : null
-                                                        }
-                                                        defaultValue={this.state.kostTotal}
-                                                    />{" "}
-                                                    {formErrors.kostTotal.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.kostTotal}</span>
-                                                    )}
-                                                    <h5>Jumlah Kamar Kosong Saat Ini</h5>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Input Kost Left"
-                                                        noValidate
-                                                        onChange={this.handleChange}
-                                                        name="kostLeft"
-                                                        className={formErrors.kostLeft.length > 0 ? "errorBox" : null}
-                                                        defaultValue={this.state.kostLeft}
+                                                        type="checkbox"
+                                                        style={{
+                                                            margin: "0",
+                                                            padding: "0",
+                                                            width: "10px"
+                                                        }}
                                                     />
-                                                    {formErrors.kostLeft.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.kostLeft}</span>
-                                                    )}
-                                                    <h5>Harga Kamar</h5>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Input Harga Kamar Per Bulan"
-                                                        required
-                                                        onChange={this.handleChange}
-                                                        name="hargaBulan"
-                                                        className={
-                                                            formErrors.hargaBulan.length > 0 ? "errorBox" : null
-                                                        }
-                                                    />
-                                                    {formErrors.hargaBulan.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.hargaBulan}</span>
-                                                    )}
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Input Harga Kamar Per Hari"
-                                                        required
-                                                        name="hargaHari"
-                                                        className={
-                                                            formErrors.hargaHari.length > 0 ? "errorBox" : null
-                                                        }
-                                                        onChange={this.handleChange}
-                                                    />
-                                                    {formErrors.hargaHari.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.hargaHari}</span>
-                                                    )}
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Input Harga Kamar Per Minggu"
-                                                        required
-                                                        name="hargaMinggu"
-                                                        className={
-                                                            formErrors.hargaMinggu.length > 0 ? "errorBox" : null
-                                                        }
-                                                        onChange={this.handleChange}
-                                                    />
-                                                    {formErrors.hargaMinggu.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.hargaMinggu}</span>
-                                                    )}
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Input Harga Kamar Per Tahun"
-                                                        required
-                                                        name="hargaTahun"
-                                                        className={
-                                                            formErrors.hargaTahun.length > 0 ? "errorBox" : null
-                                                        }
-                                                        onChange={this.handleChange}
-                                                    />
-                                                    {formErrors.hargaTahun.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.hargaTahun}</span>
-                                                    )}
-                                                    <h5>Description</h5>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Kost Description"
-                                                        noValidate
-                                                        onChange={this.handleChange}
-                                                        name="kostDesc"
-                                                        className={formErrors.kostDesc.length > 0 ? "errorBox" : null}
-                                                        defaultValue={this.state.kostDesc}
-                                                    />
-                                                    {formErrors.kostDesc.length > 0 && (
-                                                        <span className="errorMsg">{formErrors.kostDesc}</span>
-                                                    )}
+                                                    <span>Luar</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: this.state.formStatus === 3 ? "" : "none",
-                                                margin: "0 auto"
-                                            }}
-                                        >
-                                            <div className="input-data-lokasi">
-                                                <div className="input-data-form">
-                                                    <h1>INPUT FASILITAS KOST</h1>
-                                                    <div style={{ display: "flex" }}>
-                                                        <div
-                                                            style={{
-                                                                padding: "10px"
-                                                            }}
-                                                        >
-                                                            {/* <Facilities handleFac={this.handleFacility} /> */}
-                                                            <input
-                                                                type="checkbox"
-                                                                style={{
-                                                                    margin: "0",
-                                                                    padding: "0",
-                                                                    width: "10px"
-                                                                }}
-                                                                value="WiFi"
-                                                                ref="WiFi"
-                                                                onClick={this.handleFacility}
-                                                            />
-                                                            <span>WiFi</span>
-                                                        </div>
-                                                        <div
-                                                            style={{
-                                                                padding: "10px"
-                                                            }}
-                                                        >
-                                                            <input
-                                                                type="checkbox"
-                                                                style={{
-                                                                    margin: "0",
-                                                                    padding: "0",
-                                                                    width: "10px"
-                                                                }}
-                                                                value="Akses kunci 24 jam"
-                                                                ref="akses24"
-                                                                onClick={this.handleFacility}
-                                                            />
-                                                            <span>Akses Kunci 24 Jam</span>
-                                                        </div>
-                                                        <div
-                                                            style={{
-                                                                padding: "10px"
-                                                            }}
-                                                        >
-                                                            <input
-                                                                type="checkbox"
-                                                                style={{
-                                                                    margin: "0",
-                                                                    padding: "0",
-                                                                    width: "10px"
-                                                                }}
-                                                            />
-                                                            <span>Bisa Pasutri</span>
-                                                        </div>
-                                                        <div
-                                                            style={{
-                                                                padding: "10px"
-                                                            }}
-                                                        >
-                                                            <input
-                                                                type="checkbox"
-                                                                style={{
-                                                                    margin: "0",
-                                                                    padding: "0",
-                                                                    width: "10px"
-                                                                }}
-                                                            />
-                                                            <span>Parkir Mobil</span>
-                                                        </div>
-                                                    </div>
-                                                    <h5>Kamar Mandi</h5>
-                                                    <div style={{ display: "flex" }}>
-                                                        <div
-                                                            style={{
-                                                                padding: "10px"
-                                                            }}
-                                                        >
-                                                            <input
-                                                                type="checkbox"
-                                                                style={{
-                                                                    margin: "0",
-                                                                    padding: "0",
-                                                                    width: "10px"
-                                                                }}
-                                                            />
-                                                            <span>Dalam</span>
-                                                        </div>
-                                                        <div
-                                                            style={{
-                                                                padding: "10px"
-                                                            }}
-                                                        >
-                                                            <input
-                                                                type="checkbox"
-                                                                style={{
-                                                                    margin: "0",
-                                                                    padding: "0",
-                                                                    width: "10px"
-                                                                }}
-                                                            />
-                                                            <span>Luar</span>
-                                                        </div>
-                                                    </div>
-                                                    <h5>Foto-foto Kost</h5>
-                                                    <h5 style={{ color: "red" }}>Contoh foto landscape</h5>
-                                                    <img
-                                                        src="https://ihatetomatoes.net/demos/_rw/01-real-estate/tn_property04.jpg"
-                                                        alt="contoh-landscape"
-                                                        style={{ height: "200px" }}
-                                                    />
-                                                    <h1>Upload Image</h1>
-                                                    {/* <form onSubmit={this.onFormImageSubmit}>
+                                            <h5>Foto-foto Kost</h5>
+                                            <h5 style={{ color: "red" }}>Contoh foto landscape</h5>
+                                            <img
+                                                src="https://ihatetomatoes.net/demos/_rw/01-real-estate/tn_property04.jpg"
+                                                alt="contoh-landscape"
+                                                style={{ height: "200px" }}
+                                            />
+                                            <h1>Upload Image</h1>
+                                            {/* <form onSubmit={this.onFormImageSubmit}>
                   <input
                     type="file"
                     onChange={this.onChangeImage}
@@ -666,37 +674,34 @@ export class UpdateKost extends Component {
                   />
                   <button type="submit">Upload Image</button>
                 </form> */}
-                                                    <h2>Upload Kosan Pictures</h2>
-                                                    {/* <UploadImage user={this.state.userID} type={"Kost"} /> */}
-                                                    <input type="file" onChange={this.fileSelectedHandler} multiple accept="image/*" />
+                                            <h2>Upload Kosan Pictures</h2>
+                                            {/* <UploadImage user={this.state.userID} type={"Kost"} /> */}
+                                            <input type="file" onChange={this.fileSelectedHandler} multiple accept="image/*" />
 
-                                                    <h2>Upload Banner Picture</h2>
-                                                    <input
-                                                        type="file"
-                                                        onChange={this.bannerSelectHandler}
-                                                        accept="image/*"
-                                                    />
-                                                    <h2>Upload Picture 360</h2>
-                                                    <input
-                                                        type="file"
-                                                        onChange={this.picture360Handler}
-                                                        accept="image/*"
-                                                    />
-                                                    <h2>Upload Video</h2>
-                                                    <input
-                                                        type="file"
-                                                        onChange={this.videoSelectHandler}
-                                                        accept="video/*"
-                                                    />
-                                                </div>
-                                            </div>
+                                            <h2>Upload Banner Picture</h2>
+                                            <input
+                                                type="file"
+                                                onChange={this.bannerSelectHandler}
+                                                accept="image/*"
+                                            />
+                                            <h2>Upload Picture 360</h2>
+                                            <input
+                                                type="file"
+                                                onChange={this.picture360Handler}
+                                                accept="image/*"
+                                            />
+                                            <h2>Upload Video</h2>
+                                            <input
+                                                type="file"
+                                                onChange={this.videoSelectHandler}
+                                                accept="video/*"
+                                            />
                                         </div>
-
                                     </div>
-                                ) : (
-                                        ""
-                                    )
-                            )}
+                                </div>
+
+                            </div>
+
                         </div>
                         : null}
                     <div

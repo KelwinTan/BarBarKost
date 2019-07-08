@@ -153,13 +153,15 @@ export class ManagePost extends Component {
                 {this.authorizeUser()}
                 {this.handleLoading()}
                 <UserNav />
+                <h1 style={{ textAlign: "center", fontSize: "50px" }}>Manage Post</h1>
+
                 <div className="admin-link-styles">
                     <Link to="/admin-create-post">Create Post</Link>
 
                 </div>
                 <GetPost />
                 {/* <Pagination pages={}/> */}
-                {/* <Footer /> */}
+                <Footer />
             </React.Fragment>
         )
     }

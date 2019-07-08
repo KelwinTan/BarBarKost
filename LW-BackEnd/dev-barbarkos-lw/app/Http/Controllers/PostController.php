@@ -101,5 +101,22 @@ class PostController extends Controller
         return response(compact('postUpdated'));
     }
 
+    public function GetRecommend(){
+        return Post::inRandomOrder()->take(4)->get();
+    }
+
+    public function PostFilter(Request $request){
+        if (!$request->type && !$request->date){
+            $posts = Post::where('title', 'like', '%'.$request->title.'%')->paginate(8);
+        }
+        else if(!$request->date){
+            $posts = Post::where('title', 'like', '%'.$request->title.'%')->where('visibility', $request->type)->paginate(8);
+        }else{
+            $posts = Post::where('title', 'like', '%'.$request->title.'%')->where('visibility', $request->type)->where('created_at', '>=', $request->date)->paginate(8);
+        }
+
+        return $posts;
+    }
+
 
 }

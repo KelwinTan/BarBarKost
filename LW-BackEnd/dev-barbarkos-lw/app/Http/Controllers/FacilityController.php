@@ -6,6 +6,7 @@ use App\Facility;
 use App\Http\Requests\FacilityRequest;
 use App\Http\Requests\FacilityRequest1;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Webpatser\Uuid\Uuid;
 
 class FacilityController extends Controller
@@ -18,6 +19,8 @@ class FacilityController extends Controller
             'icon' => $request->icon,
             'group' => $request->group
         ]);
+        $redis = Redis::connection();
+        $redis->del('facilities');
         return response(compact('newFacility'));
     }
 
@@ -26,8 +29,17 @@ class FacilityController extends Controller
         return response('Facility has been deleted');
     }
 
-    public function  GetFacility(){
+    public function GetFacility(){
         return Facility::paginate(10);
+    }
+
+    public function GetFacilityRedis(){
+        $redis = Redis::connection();
+        if($redis->get('facilities') == null){
+            $redis->set('facilities', Facility::all());
+        }
+        $redisRes = json_decode($redis->get('facilities'));
+        return $redisRes    ;
     }
 
     public function UpdateFacility(FacilityRequest1 $request){
@@ -38,5 +50,11 @@ class FacilityController extends Controller
         return $facility;
     }
 
+
+    public function MultipleQuery(Request $request){
+        $facilities =Facility::where('name', $request->filterName)->orWhere('name', 'like', '%'.$request->filterName.'%')->where('group', $request->group)->paginate(10);
+//        dd($facilities);
+        return $facilities;
+    }
 
 }

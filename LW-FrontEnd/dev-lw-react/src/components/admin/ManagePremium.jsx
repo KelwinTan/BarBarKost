@@ -3,6 +3,7 @@ import { UserNav } from '../user/navbar/UserNav';
 import { Link, Redirect } from "react-router-dom";
 import { getProfile } from "../user/login-register/UserFunctions";
 import GetPremium from './GetPremium';
+import Footer from '../home/Footer';
 
 export class ManagePremium extends Component {
     constructor(props) {
@@ -63,10 +64,14 @@ export class ManagePremium extends Component {
                 {this.authorizeUser()}
 
                 <UserNav />
+                <h1 style={{ textAlign: "center", fontSize: "50px" }}>Manage Premium Product</h1>
+
+                <hr />
                 <div className="admin-link-styles">
                     <Link to="/admin-create-premium">Create Premium Product</Link>
                 </div>
                 <GetPremium />
+                <Footer />
             </React.Fragment>
         )
     }

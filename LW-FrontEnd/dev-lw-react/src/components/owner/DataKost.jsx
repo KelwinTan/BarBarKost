@@ -17,8 +17,11 @@ export class DataKost extends Component {
             ownerID: "",
             loadingScreen: true,
             paginateData: null,
-            getLink: "/api/owner-kost"
-
+            getLink: "/api/owner-kost",
+            kostNameFilter: "",
+            kostPriceFilter: "",
+            kostLeftFilter: "",
+            kostDateFilter: "",
         }
 
     }
@@ -102,6 +105,30 @@ export class DataKost extends Component {
     }
 
 
+    handleKostName = (event) => {
+        const { name, value } = event.target;
+        this.setState({ kostNameFilter: value });
+        console.log(this.state);
+    }
+
+    handleKostPrice = (event) => {
+        const { name, value } = event.target;
+        this.setState({ kostPriceFilter: value });
+        console.log(this.state);
+    }
+
+    handleKostLeft = (event) => {
+        const { name, value } = event.target;
+        this.setState({ kostLeftFilter: value });
+        console.log(this.state);
+    }
+
+    handleKostDate = (event) => {
+        const { name, value } = event.target;
+        this.setState({ kostDateFilter: value });
+        console.log(this.state);
+    }
+
     handleLoading = () => {
         if (this.state.loadingScreen === true) {
             return <LoadingScreen />;
@@ -110,12 +137,43 @@ export class DataKost extends Component {
         }
     };
 
+    filterKosts = () => {
+        const fd = new FormData();
+        fd.append('name', this.state.kostNameFilter);
+        fd.append('room_left', this.state.kostLeftFilter);
+        fd.append('date', this.state.kostDateFilter);
+        fd.append('prices', this.state.kostPriceFilter);
+
+        fd.append('owner_id', this.state.ownerID);
+
+        this.setState({
+            loadingScreen: true
+        })
+
+        axios.post("/api/owner-filter-kost",fd).then(res => {
+                console.log(res);
+                this.setState({
+                    kostList: res.data.data,
+                    loadingScreen: false,
+                    paginateData: res.data
+                });
+                console.log(this.state.paginateData);
+            }
+            );
+    }
+
     render() {
         return (
             <React.Fragment>
                 <UserNav />
-                <div className="owner-data-kost">
+                <div className="owner-data-kost" style={{ textAlign: "center" }}>
                     <h1>Manage Rent House</h1>
+                    <input type="text" onChange={this.handleKostName} placeholder="Input Kost Name" />
+                    <input type="number" onChange={this.handleKostPrice} placeholder="Input Kost Price" />
+                    <input type="number" placeholder="Input Room Left" onChange={this.handleKostLeft} />
+
+                    <input type="date" onChange={this.handleKostDate} />
+                    <button onClick={this.filterKosts} className="filter-button">Search Kost</button>
                     <hr />
                 </div>
                 {/* <div>
@@ -124,38 +182,42 @@ export class DataKost extends Component {
                 {this.handleLoading}
                 {!this.state.loadingScreen
                     ?
-                    <div className="property-card property-responsive property-props">
-                        {this.state.kostList.map(item =>
-                            item["id"] !== null ? (
-                                <Link to={{
-                                    pathname: `/kost-${item['kost_slug']}`,
-                                    state: {
-                                        kost_slug: item['kost_slug']
-                                    }
-                                }} key={item}>
-                                    <div className="card-kost">
-                                        <div className="card-kost-container">
-                                            <img src={`http://localhost:8000/storage/${item["banner_picture"]}`} alt="Banner" />
-                                            <h4>Kost Name: {item["name"]}</h4>
-                                            <div className="card-kost-images">
-                                                <p>Kost Address: {item["address"]}</p>
-                                                <p>Kost City: {item["city"]}</p>
-                                                <p>Kost Prices: {item["prices"]}</p>
-                                                <p>Kost Slug: {item["kost_slug"]}</p>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
 
+                        <div className="post-cards">
+                            {this.state.kostList.map(item =>
+                                item["id"] !== null ? (
+                                    <Link to={{
+                                        pathname: `/kost-${item['kost_slug']}`,
+                                        state: {
+                                            kost_slug: item['kost_slug']
+                                        }
+                                    }} key={item}>
+                                        <div className="card-kost post-resp" style={{ height: "450px", width: "300px" }}>
+                                            <div className="card-kost-container">
+                                                <img src={`http://localhost:8000/storage/${item["banner_picture"]}`} alt="Banner" />
+                                                <h4>Kost Name: {item["name"]}</h4>
+                                                <div className="card-kost-images">
+                                                    <p>Kost Address: {item["address"]}</p>
+                                                    <p>Kost City: {item["city"]}</p>
+                                                    <p>Kost Prices: {item["prices"]}</p>
+                                                    <p>Kost Slug: {item["kost_slug"]}</p>
+                                                    <p>Room Left: {item["room_left"]}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            ) : (
-                                    ""
-                                )
-                        )}
+                                    </Link>
+                                ) : (
+                                        ""
+                                    )
+                            )}
+                        </div>
                         <div style={{ position: "fixed", bottom: "10%", left: "50%", background: "white", border: "30px solid white" }}>
                             <Pagination pages={this.state.paginateData} />
                         </div>
                     </div>
                     : null}
+                <Footer />
             </React.Fragment>
         )
     }

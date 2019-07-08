@@ -53,6 +53,7 @@ class UserController extends Controller{
         $validated = $request->validated();
 //        dd($validated);
         // print_r(Uuid::generate()->string);
+//        dd($request);
 
         $user = User::create([
             'id' => Uuid::generate()->string,
@@ -273,6 +274,20 @@ class UserController extends Controller{
         return $redis->get($keyword);
     }
 
+
+    public function GuestQueries(Request $request){
+
+        $guests = User::where('email', 'like', '%@'.$request->emailDomain.'%')->where('name', 'like', '%'.$request->name.'%')->where('type', 1)->paginate(10);
+
+        return $guests;
+    }
+
+    public function OwnerQueries(Request $request){
+
+        $owners = User::where('email', 'like', '%@'.$request->emailDomain.'%')->where('name', 'like', '%'.$request->name.'%')->where('type', 2)->paginate(10);
+
+        return $owners;
+    }
 
 
 }

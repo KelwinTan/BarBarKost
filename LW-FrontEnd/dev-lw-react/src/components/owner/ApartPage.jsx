@@ -11,6 +11,7 @@ import PropertySlider from '../property/PropertySlider';
 import { GetImages } from '../property/PropertyFunctions';
 import Axios from 'axios';
 import LoadingScreen from '../utilities/LoadingScreen';
+import Footer from '../home/Footer';
 
 
 const BgModal = styled.div`
@@ -83,24 +84,24 @@ export class ApartPage extends Component {
     console.log(this.props.location.state);
     const fd = new FormData();
     fd.append('slug', apart_slug);
-    await Axios.post("/api/owner-get-specific-apartment", fd).then(res => {
+    await Axios.post("/api/owner-get-apartment", fd).then(res => {
       console.log(res);
       this.setState({
         currApart: res.data,
         loadingScreen: false
       });
-      console.log(this.state.currApart[0]['name'])
+      console.log(this.state.currApart['name'])
     });
     // this.setState({ slug: apart_slug });
-    // await GetSpecificKost(kost_slug).then(
+    // await GetSpecificKost(slug).then(
     //     res => {
     //         this.setState({
-    //             currKost: res,
+    //             currApart: res,
     //             loadingScreen: false,
     //         })
     //     }
     // );
-    // await GetImages(this.state.currKost[0]['id']).then(res => {
+    // await GetImages(this.state.currApart['id']).then(res => {
     //     console.log(res);
     //     this.setState({
     //         kost_images: res
@@ -108,7 +109,7 @@ export class ApartPage extends Component {
     // }
     // )  
 
-    // console.log(this.state.currKost[0]['id']);
+    // console.log(this.state.currApart[0]['id']);
     // console.log(this.state.kost_images.length);
   }
 
@@ -122,7 +123,7 @@ export class ApartPage extends Component {
 
   deleteBeneran = () => {
     const fd = new FormData();
-    fd.append('slug', this.state.currApart[0]['slug']);
+    fd.append('slug', this.state.currApart['slug']);
     Axios.post("/api/delete-apartment", fd).then(res => {
       this.props.history.push(`/data-apartment`);
     })
@@ -132,26 +133,31 @@ export class ApartPage extends Component {
     return (
       <React.Fragment>
         <UserNav />
-        {this.handleLoading}
-        {/* {this.state.currApart.data[0]['id']} */}
+        {this.handleLoading()}
+        {/* {this.state.currApart.data['id']} */}
         {!this.state.loadingScreen
           ?
-          // <p>Apartment Name: {this.state.currApart.data[0]['name']}</p>
+          // <p>Apartment Name: {this.state.currApart.data['name']}</p>
           <div className="property-card property-responsive property-props">
             <div className="card-kost">
               <div className="card-kost-container">
-                <img src={`http://localhost:8000/storage/${this.state.currApart[0]['banner_picture']}`} alt="Banner" />
-                <h4>Apart Name: {this.state.currApart[0]['name']}</h4>
+                <img src={`http://localhost:8000/storage/${this.state.currApart['banner_picture']}`} alt="Banner" />
+                <h4>Apart Name: {this.state.currApart['name']}</h4>
                 <div className="card-kost-images">
-                  <p>Apart Address: {this.state.currApart[0]['address']}</p>
-                  <p>Apart City: {this.state.currApart[0]['city']}</p>
-                  <p>Apart Prices: {this.state.currApart[0]['prices']}</p>
-                  <p>Apart Description: {this.state.currApart[0]['description']}</p>
-                  <p>Apart Unit Type: {this.state.currApart[0]['unit_type']}</p>
-                  <p>Apart Unit Condition: {this.state.currApart[0]['unit_condition']}</p>
+                  <p>Apart Address: {this.state.currApart['address']}</p>
+                  <p>Apart City: {this.state.currApart['city']}</p>
+                  <p>Apart Prices: {this.state.currApart['prices']}</p>
+                  <p>Apart Description: {this.state.currApart['description']}</p>
+                  <p>Apart Unit Type: {this.state.currApart['unit_type']}</p>
+                  <p>Apart Unit Condition: {this.state.currApart['unit_condition']}</p>
 
-                  {/* <p>Apart Slug: {item["kost_slug"]}</p> */}
-
+                  {/* <p>Apart Slug: {item["slug"]}</p> */}
+                  <Link to={{
+                    pathname: `/update-apart/${this.state.currApart['slug']}`,
+                    state: {
+                      apart_slug: this.state.currApart['slug']
+                    }
+                  }} key={this.state.currApart} className="link-styles" style={{ border: "2px solid black" }}>Update Apartment</Link>
                   <button onClick={this.deleteKosan}>Delete Apartment</button>
                 </div>
               </div>
@@ -166,12 +172,13 @@ export class ApartPage extends Component {
             <BgModal>
               <ModalContent>
                 <Close onClick={this.closeModal}>+</Close>
-                <img src={`http://localhost:8000/storage/${this.state.currApart[0]['banner_picture']}`} style={{ height: "200px" }} alt="logo" />
+                <img src={`http://localhost:8000/storage/${this.state.currApart['banner_picture']}`} style={{ height: "200px" }} alt="logo" />
                 <Content>Are you sure you are going to delete the Apartment?</Content>
                 <button onClick={this.deleteBeneran}>Yes</button>
               </ModalContent>
             </BgModal> : ""}
         </div>
+        <Footer />
       </React.Fragment>
     )
   }

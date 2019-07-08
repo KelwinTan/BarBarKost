@@ -8,6 +8,7 @@ import apt from "../../assets/images/owner/iklan_apt.png";
 import kost from "../../assets/images/owner/iklan_kost.png";
 import { getTotalUsers } from "./AdminFunctions";
 import LoadingScreen from "../utilities/LoadingScreen";
+import Footer from "../home/Footer";
 
 const Iklan = (
   <div className="profile-iklan">
@@ -186,6 +187,7 @@ export class AdminDashboard extends Component {
             </div>
           </div>
         </div>
+        <Footer />
       </React.Fragment>
     );
   }

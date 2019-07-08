@@ -14,7 +14,9 @@ export class GetPremium extends Component {
             premiumList: null,
             loadingScreen: true,
             paginateData: null,
-            getLink: "/api/show-premium"
+            getLink: "/api/show-premium",
+            premiumPriceFilter: 0,
+            premiumNameFilter: "",
         }
     }
 
@@ -54,23 +56,58 @@ export class GetPremium extends Component {
         }
     };
 
+    filterPremium = () => {
+        const fd = new FormData();
+        fd.append('premium_name', this.state.premiumNameFilter);
+        fd.append('price', this.state.premiumPriceFilter);
+        this.setState({
+            loadingScreen: true
+        })
+        axios.post("/api/filter-premium", fd).then(res => {
+            console.log(res);
+            this.setState({
+                premiumList: res.data.data,
+                loadingScreen: false,
+                paginateData: res.data,
+            });
+        }
+        );
+    }
+
+    handlePremiumName = (event) => {
+        const { name, value } = event.target;
+        this.setState({ premiumNameFilter: value });
+        console.log(this.state);
+    }
+
+    handlePremiumPrice = (event) => {
+        const { name, value } = event.target;
+        this.setState({ premiumPriceFilter: value });
+        console.log(this.state);
+    }
 
     render() {
         return (
             <React.Fragment>
                 {this.handleLoading()}
+                <div style={{ textAlign: "center" }}>
+                    <input type="text" onChange={this.handlePremiumName} placeholder="Input Premium Name" />
+                    <input type="number" onChange={this.handlePremiumPrice} placeholder="Input Premium Price" />
+
+                    <button onClick={this.filterPremium} className="filter-button">Filter Premium</button>
+                </div>
                 {!this.state.loadingScreen
                     ?
                     <div style={{ display: "flex", justifyContent: "center" }}>
 
-                        <div className="property-card property-responsive property-props">
+                        <div className="post-cards">
                             {this.state.premiumList.map(item =>
                                 item["id"] !== null ? (
                                     <div>
-                                        <Link to={{
+                                        <Link style={{ padding: "unset" }} to={{
                                             pathname: `/premium/${item['slug']}`
-                                        }} key={item}>
-                                            <div className="card-kost">
+                                        }} key={item["id"]}>
+                                            <div className="card-kost post-resp" style={{ height: "auto", width: "300px" }}>
                                                 <div className="card-kost-container">
                                                     <h4>Premium Name: {item["premium_name"]}</h4>
                                                     <div className="card-kost-images">

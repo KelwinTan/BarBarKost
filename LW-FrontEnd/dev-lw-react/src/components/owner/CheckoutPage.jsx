@@ -4,6 +4,7 @@ import Footer from '../home/Footer';
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import { getProfile } from "../user/login-register/UserFunctions";
+import LoadingScreen from '../utilities/LoadingScreen';
 
 export class CheckoutPage extends Component {
     constructor(props) {
@@ -18,6 +19,8 @@ export class CheckoutPage extends Component {
             email: "",
             join: "",
             type: 2,
+            id: "",
+            errors: []
         }
     }
 
@@ -31,6 +34,7 @@ export class CheckoutPage extends Component {
                 join: res.user.created_at,
                 pictureID: res.user.picture_id,
                 type: res.user.type,
+                id: res.user.id
             });
         });
         console.log(this.props);
@@ -53,6 +57,7 @@ export class CheckoutPage extends Component {
                 loadingScreen: false,
 
             });
+            console.log(this.state.currPremium[0]['id']);
         }
         );
 
@@ -64,10 +69,37 @@ export class CheckoutPage extends Component {
         }
     };
 
+    handleLoading = () => {
+        if (this.state.loadingScreen === true) {
+            return <LoadingScreen />;
+        } else {
+            return null;
+        }
+    };
+
+    handleTransaction = () => {
+
+        const fd = new FormData();
+        fd.append('premium_id', this.state.currPremium[0]['id']);
+        fd.append('owner_id', this.state.id);
+
+        axios.post("/api/create-transaction", fd).then(
+            res => {
+                console.log(res);
+            }
+        ).catch(err => {
+            console.log(err.response);
+            this.setState({
+                errors: err.response.data
+            });
+        })
+    }
+
     render() {
         return (
             <React.Fragment>
                 {this.authorizeUser()}
+                {this.handleLoading()}
 
                 <UserNav />
                 <div>
@@ -87,7 +119,11 @@ export class CheckoutPage extends Component {
                                                 <h5>Premium Duration: {item["duration"]} days</h5>
                                                 <h5>Premium Promo: {item["promo"]}</h5>
                                                 <hr />
-                                                <button>Buy Premium Product</button>
+                                                <p style={{ color: "red" }}>
+                                                    {this.state.errors}
+
+                                                </p>
+                                                <button onClick={this.handleTransaction}>Buy Premium Product</button>
                                                 <Link to="/view-premium" key={item} className="link-styles">Go Back</Link>
                                             </div>
                                         </div>

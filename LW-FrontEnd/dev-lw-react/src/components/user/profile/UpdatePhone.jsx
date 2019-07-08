@@ -8,6 +8,7 @@ import {
   updateProfile,
   updatePhone
 } from "../../user/login-register/UserFunctions";
+import Footer from "../../home/Footer";
 
 const formValid = ({ formErrors, ...rest }) => {
   let valid = true;
@@ -173,6 +174,7 @@ export class UpdatePhone extends Component {
             </div>
           </div>
         </div>
+        <Footer />
       </React.Fragment>
     );
   }

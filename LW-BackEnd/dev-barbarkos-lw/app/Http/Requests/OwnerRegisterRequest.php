@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class OwnerRegisterRequest extends FormRequest
 {
@@ -30,5 +32,11 @@ class OwnerRegisterRequest extends FormRequest
             'password' => 'required|string|min:8',
             'phone' => 'required|string|unique:users',
         ];
+    }
+
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }

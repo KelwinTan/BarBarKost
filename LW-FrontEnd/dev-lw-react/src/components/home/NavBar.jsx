@@ -6,6 +6,7 @@ import searchBtn from "../../assets/images/loupe.png";
 import ModalBox from "../ModalBox";
 import LoadingScreen from "../utilities/LoadingScreen";
 import { getProfile, logoutUser } from "../user/login-register/UserFunctions";
+import Axios from "axios";
 
 class NavBar extends Component {
   constructor(props) {
@@ -17,7 +18,8 @@ class NavBar extends Component {
       loadingScreen: false,
       showMenu: false,
       name: "",
-      displayUserMenu: false
+      displayUserMenu: false,
+      searchRes: null,
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.showIklan = this.showIklan.bind(this);
@@ -59,9 +61,9 @@ class NavBar extends Component {
   componentDidUpdate() {
     this.state.scroll > this.state.top
       ? (document.querySelector("nav").style =
-          "background-color:#17981a; transition: 0.5s ease-in; z-index:10;")
+        "background-color:#17981a; transition: 0.5s ease-in; z-index:10;")
       : (document.querySelector("nav").style.backgroundColor =
-          "rgba(0.1,0.1,0.1, 0.05)");
+        "rgba(0.1,0.1,0.1, 0.05)");
   }
 
   showIklan(event) {
@@ -122,6 +124,20 @@ class NavBar extends Component {
     }
   };
 
+  searchProperty = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    const fd = new FormData();
+    fd.append('keyword', value);
+    Axios.post('/api/search-property', fd).then(res => {
+      console.log(res);
+      this.setState({
+        searchRes: res.data.data
+      })
+    })
+    console.log(value);
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -134,6 +150,8 @@ class NavBar extends Component {
                 <img src={logo} alt="Logo" className="logo-image" />
                 <Link to="/">BarBar Kost</Link>
               </div>
+              <input type="text" placeholder="Cari Property" onChange={this.searchProperty} style={{ border: "none", background: "inherit", borderBottom: "2px solid white", color: "white" }} />
+
               <div className="navbar-menu-toggle" onClick={this.clickHam}>
                 <i className="fas fa-bars" aria-hidden="true" />
               </div>
@@ -173,8 +191,8 @@ class NavBar extends Component {
                   </ul>
                 </div>
               ) : (
-                ""
-              )}
+                  ""
+                )}
               {this.state.displayUserMenu === true ? (
                 <div className="masuk-menu">
                   <ul>
@@ -187,8 +205,37 @@ class NavBar extends Component {
                   </ul>
                 </div>
               ) : (
-                ""
-              )}
+                  ""
+                )}
+            </div>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {
+                this.state.searchRes === null ? "" :
+                  this.state.searchRes.map(item =>
+                    item["id"] !== null ? (
+                      <div>
+                        <Link to={{
+                          pathname: `/kost/detail-${item['kost_slug']}`,
+                          state: {
+                            apart_slug: item['kost_slug']
+                          }
+                        }} key={item}>
+                          <div className="card-kost">
+                            <div className="card-kost-container">
+                              <h4>Property Name: {item["name"]}</h4>
+                              <div className="card-kost-images">
+                                <p>Kost City: {item["city"]}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+
+                      </div>
+                    ) : (
+                        ""
+                      )
+                  )
+              }
             </div>
           </nav>
 

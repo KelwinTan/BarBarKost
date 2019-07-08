@@ -29,7 +29,15 @@ class KostModel extends Model
     }
 
     public function getReview(){
-        $this->morphMany('App\Review', 'reviewable');
+        return $this->morphMany('App\Review', 'reviewable');
+    }
+
+    public function Transaction(){
+        return $this->belongsTo(Transaction::class, 'owner_id', 'owner_id');
+    }
+
+    public function User(){
+        return $this->belongsTo(User::class, 'owner_id', 'id');
     }
 
 }

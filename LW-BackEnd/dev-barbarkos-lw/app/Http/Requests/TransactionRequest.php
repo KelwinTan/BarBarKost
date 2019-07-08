@@ -26,7 +26,7 @@ class TransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'owner_id' => 'required|string',
+            'owner_id' => 'required|string|unique:transactions',
             'premium_id' => 'required|string'
 
         ];

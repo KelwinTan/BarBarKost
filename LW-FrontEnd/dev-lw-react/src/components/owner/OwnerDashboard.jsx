@@ -184,6 +184,8 @@ export class OwnerDashboard extends Component {
               <Link to="/input-kost">Insert Kosan</Link>
               <Link to="/input-apt">Insert Apartment</Link>
               <Link to="/view-premium">View Premium Products</Link>
+              <Link to="/view-history-premium">View Premium History</Link>
+
             </div>
           </div>
         </div>

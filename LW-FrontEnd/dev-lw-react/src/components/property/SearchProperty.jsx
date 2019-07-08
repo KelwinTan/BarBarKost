@@ -5,6 +5,7 @@ import LoadingScreen from "../utilities/LoadingScreen";
 import BreadCrumbs from "../utilities/BreadCrumbs";
 import UserNav from "../user/navbar/UserNav";
 import { Link, Redirect } from "react-router-dom";
+import Footer from "../home/Footer";
 
 
 export class SearchProperty extends Component {
@@ -33,11 +34,11 @@ export class SearchProperty extends Component {
       lat: this.state.lat,
       lng: this.state.lng
     };
-    // SearchApart(apart).then(res => {
-    //   // console.log(res);
-    //   this.setState({ propertyList: res, loadingScreen: false });
-    // });
-    // console.log(this.state.propertyList);
+    SearchApart(apart).then(res => {
+      // console.log(res);
+      this.setState({ propertyList: res, loadingScreen: false });
+    });
+    console.log(this.state.propertyList);
   };
 
   componentDidUpdate() { }
@@ -117,7 +118,9 @@ export class SearchProperty extends Component {
 
               </div>
             </div>
-
+            <div className="owner-dashboard-contents hilang-padding">
+              <button>Set Filter</button>
+            </div>
           </div>
           <div className="owner-side-dashboard-right">
 
@@ -133,7 +136,7 @@ export class SearchProperty extends Component {
         </div>
         <div style={{ margin: "0 auto" }}>
 
-          {this.handleLoading}
+          {this.handleLoading()}
           {!this.state.loadingScreen
             ? console.log(this.state.propertyList)
             : null}
@@ -151,7 +154,6 @@ export class SearchProperty extends Component {
                       <img src={`http://localhost:8000/storage/${item["banner_picture"]}`} alt="Banner" />
                       <h4>Kost Name: {item["name"]}</h4>
                       <div className="card-kost-images">
-                        <p>Kost Address: {item["address"]}</p>
                         <p>Kost City: {item["city"]}</p>
                         <p>Kost Prices: {item["prices"]}</p>
                         <p>Kost Slug: {item["kost_slug"]}</p>
@@ -165,6 +167,7 @@ export class SearchProperty extends Component {
             )}
           </div>
         </div>
+        <Footer />
       </React.Fragment>
     );
   }

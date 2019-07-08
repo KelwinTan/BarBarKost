@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\ResetPassword;
 use App\Mail\verifyEmail;
+use App\Premium;
+use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -51,5 +53,17 @@ class AdminController extends Controller
         $user->save();
         return response('User has been banned');
     }
+
+    public function GetUser(Request $request){
+        return User::where('id', $request->id)->first();
+    }
+
+    public function GetTransaction(Request $request){
+        $data['transactions'] = Transaction::where('id', $request->id)->first();
+        $data['user'] = User::where('id', $data['transactions']['owner_id'])->first();
+        $data['premium'] = Premium::where('id', $data['transactions']['premium_id'])->first();
+        return $data;
+    }
+
 
 }

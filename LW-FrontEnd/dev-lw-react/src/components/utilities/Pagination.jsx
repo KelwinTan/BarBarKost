@@ -5,20 +5,20 @@ import { withRouter, Link } from "react-router-dom"
 
 const NEIGHBOUR = 2
 
-const pageUrl = (BASE_URL,params,index) => {
-    const isThereIsPage = getObjectFromQueryParams(params,['page']) !== null
-    if(!isThereIsPage)
-        return `${BASE_URL}${params}${ params === '' ? '?' : '&'}page=${index}`
+const pageUrl = (BASE_URL, params, index) => {
+    const isThereIsPage = getObjectFromQueryParams(params, ['page']) !== null
+    if (!isThereIsPage)
+        return `${BASE_URL}${params}${params === '' ? '?' : '&'}page=${index}`
     else {
         let query = getObjectFromQueryParamsExcept(params, ['page'])
-        if(query === null)
-            return `${BASE_URL}?${objectToQueryParams({page:index})}`
+        if (query === null)
+            return `${BASE_URL}?${objectToQueryParams({ page: index })}`
         else {
             query.page = index
             query = objectToQueryParams(query)
             return `${BASE_URL}?${query}`
         }
-        
+
     }
 }
 
@@ -56,7 +56,7 @@ export const objectToQueryParams = obj => {
 const pagination = ({ pages, ...props }) => {
     const BASE_URL = props.match.url
     const QUERY_PARAMS = props.location.search
-    
+
     const numbers = []
 
     if (pages.last_page <= 5) {
@@ -64,8 +64,8 @@ const pagination = ({ pages, ...props }) => {
             numbers.push(
                 <Link
                     key={index}
-                    to={pageUrl(BASE_URL,QUERY_PARAMS, index)}
-                    className={['pagination-numbers', index === pages.current_page ? ' active' : ''].join('')}>{index}</Link>
+                    to={pageUrl(BASE_URL, QUERY_PARAMS, index)}
+                    style={{ margin: "5px" }}>{index}</Link>
             )
         }
     } else {
@@ -74,15 +74,15 @@ const pagination = ({ pages, ...props }) => {
             numbers.push(
                 <Link
                     key={index}
-                    to={pageUrl(BASE_URL,QUERY_PARAMS, index)}
-                    className={['pagination-numbers', index === pages.current_page ? ' active' : ''].join('')}>{index}</Link>
+                    to={pageUrl(BASE_URL, QUERY_PARAMS, index)}
+                    style={{ margin: "5px" }}>{index}</Link>
             )
         for (let index = pages.current_page + 1; index <= pages.current_page + NEIGHBOUR && index <= pages.last_page; index++)
             numbers.push(
                 <Link
                     key={index}
-                    to={pageUrl(BASE_URL,QUERY_PARAMS, index)}
-                    className="pagination-numbers">{index}</Link>
+                    to={pageUrl(BASE_URL, QUERY_PARAMS, index)}
+                    style={{ margin: "5px" }}>{index}</Link>
             )
     }
 

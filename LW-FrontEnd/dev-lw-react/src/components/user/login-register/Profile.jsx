@@ -10,6 +10,7 @@ import logo from "../../../assets/images/kota-besar/logo_mamikos_white.svg";
 import defaultProfile from "../../../assets/images/Profile/user-avatar-main-picture.png";
 import LoadingScreen from "../../utilities/LoadingScreen";
 import BreadCrumbs from "../../utilities/BreadCrumbs";
+import Footer from "../../home/Footer";
 
 const Iklan = (
   <div className="profile-iklan">
@@ -189,13 +190,13 @@ class Profile extends Component {
             </span>
             <span>User</span>
           </div> */}
-          <BreadCrumbs/>
+          <BreadCrumbs />
           <hr />
           <div className="profile-wrap-all">
             <div className="profile-details-information-wrapper">
               <div className="profile-info-wrapper">
                 <div className="profile-info-img">
-                <img src={`http://localhost:8000/storage/${this.state.pictureID}`} alt="Profile Picture" />
+                  <img src={`http://localhost:8000/storage/${this.state.pictureID}`} alt="Profile Picture" />
                 </div>
                 <div className="profile-info-edit">
                   <span>{this.state.name}</span>
@@ -225,8 +226,8 @@ class Profile extends Component {
                 {this.state.email_verify_at !== null ? (
                   <label>Verified</label>
                 ) : (
-                  <label>Belum Verified</label>
-                )}
+                    <label>Belum Verified</label>
+                  )}
               </div>
               <div className="profile-func-btn">
                 <label>Nomor Handphone</label>
@@ -243,31 +244,51 @@ class Profile extends Component {
                 {this.state.phone_verify_at !== null ? (
                   <label>Verified</label>
                 ) : (
-                  <label>Belum Verified</label>
-                )}
+                    <label>Belum Verified</label>
+                  )}
               </div>
             </div>
 
             <div className="profile-info-functions">
-              <div className="profile-functions-link">
+              {/* <div className="profile-functions-link">
                 <Link to="kost-saya">Kost Saya</Link>
-              </div>
-              <div className="profile-functions-link">
+              </div> */}
+              {/* <div className="profile-functions-link">
                 <Link to="booking-kost">Booking</Link>
-              </div>
+              </div> */}
               <div className="profile-functions-link">
                 <Link to="update-phone">Update Phone Number</Link>
               </div>
-              <div className="profile-functions-link" style={{display: this.state.type === 2 ? "": "none"}}>
+
+              <div style={{ display: this.state.type !== 1 ? "none" : "" }}>
+                <div className="profile-functions-link">
+                  <Link to="/owner-page">View Owners</Link>
+                </div>
+                <div className="profile-functions-link">
+                  <Link to="/guest-profile-page">Profile Page</Link>
+                </div>
+                <div className="profile-functions-link">
+                  <Link to="/view-history">View History</Link>
+                </div>
+              </div>
+              <div className="profile-functions-link">
+                <Link to="/posts-page">View Posts</Link>
+              </div>
+              <div className="profile-functions-link">
+                <Link to="/chat">Chats</Link>
+              </div>
+              <div className="profile-functions-link" style={{ display: this.state.type === 2 ? "" : "none" }}>
                 <Link to="/owner-dashboard">Owner Dashboard</Link>
               </div>
-              <div className="profile-functions-link" style={{display: this.state.type === 3 ? "": "none"}}>
+              <div className="profile-functions-link" style={{ display: this.state.type === 3 ? "" : "none" }}>
                 <Link to="/admin">Admin Dashboard</Link>
               </div>
             </div>
+
           </div>
         </div>
-      </React.Fragment>
+        <Footer />
+      </React.Fragment >
     );
   }
 }

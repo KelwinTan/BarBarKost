@@ -79,7 +79,7 @@ export class DataApart extends Component {
                     <h1>Manage Apartments</h1>
                     <hr />
                 </div>
-                {this.handleLoading}
+                {this.handleLoading()}
                 {!this.state.loadingScreen
                     ?
                     <div className="property-card property-responsive property-props">
@@ -91,7 +91,7 @@ export class DataApart extends Component {
                                         apart_slug: item['slug']
                                     }
                                 }} key={item}>
-                                    <div className="card-kost">
+                                    <div className="card-kost" style={{ width: "400px" }}>
                                         <div className="card-kost-container">
                                             <img src={`http://localhost:8000/storage/${item["banner_picture"]}`} alt="Banner" />
                                             <h4>Apartment Name: {item["name"]}</h4>
@@ -114,6 +114,7 @@ export class DataApart extends Component {
                         </div>
                     </div>
                     : null}
+                <Footer />
             </React.Fragment>
         )
     }

@@ -4,6 +4,7 @@ import { DataPribadi } from "./DataPribadi";
 import { getProfile } from "./../login-register/UserFunctions";
 import { Redirect } from "react-router-dom";
 import BreadCrumbs from "../../utilities/BreadCrumbs";
+import Footer from "../../home/Footer";
 
 export class GuestUpdateProfile extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ export class GuestUpdateProfile extends Component {
         <div>
           <UserNav />
           <DataPribadi />
+          <Footer />
         </div>
       </React.Fragment>
     );

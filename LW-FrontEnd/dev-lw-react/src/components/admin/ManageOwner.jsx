@@ -5,6 +5,7 @@ import { getProfile } from "../user/login-register/UserFunctions";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Pagination from "../utilities/Pagination";
+import Footer from "../home/Footer";
 
 export class ManageOwner extends Component {
   constructor(props) {
@@ -23,7 +24,9 @@ export class ManageOwner extends Component {
       loadingScreen: true,
       userList: "",
       paginateData: null,
-      getLink: "/api/get-10-owners"
+      getLink: "/api/get-10-owners",
+      guestName: "",
+      emailDomain: "",
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -73,41 +76,84 @@ export class ManageOwner extends Component {
     );
   }
 
+  handleEmailDomain = (event) => {
+    const { name, value } = event.target;
+    this.setState({ emailDomain: value });
+    console.log(this.state);
+
+  }
+
+  handleGuestName = (event) => {
+    const { name, value } = event.target;
+    this.setState({ guestName: value });
+    console.log(this.state);
+  }
+
+  filterOwners = () => {
+    const fd = new FormData();
+    fd.append('name', this.state.guestName);
+    fd.append('emailDomain', this.state.emailDomain);
+    this.setState({
+      loadingScreen: true
+    })
+    axios.post("/api/filter-owners", fd).then(res => {
+      console.log(res);
+      this.setState({
+        userList: res.data.data,
+        loadingScreen: false,
+        paginateData: res.data
+
+      });
+    }
+    );
+  }
+
+
   render() {
     return (
       <React.Fragment>
         {this.authorizeUser()}
         <UserNav />
+        <h1 style={{ textAlign: "center", fontSize: "50px" }}>Manage Guest</h1>
+        <div style={{ textAlign: "center" }}>
+          <input type="text" onChange={this.handleEmailDomain} placeholder="Input Email Domain" />
+          <input type="text" onChange={this.handleGuestName} placeholder="Input Owner Name" />
+
+          <button onClick={this.filterOwners} className="filter-button">Filter Owners</button>
+        </div>
+        <hr />
         {!this.state.loadingScreen
           ?
-          <div className="property-card property-responsive property-props">
-            {this.state.userList.map(item =>
-              item["id"] !== null ? (
-                <Link to={{
-                  pathname: `/user/${item['slug']}`
-                }} key={item}>
-                  <div className="card-kost">
-                    <div className="card-kost-container">
-                      <img src={`http://localhost:8000/storage/${item["picture_id"]}`} alt="Profile Picture" />
-                      <h4>Name: {item["name"]}</h4>
-                      <div className="card-kost-images">
-                        <p>E-mail: {item["email"]}</p>
-                        <p>User Joined At: {item["created_at"]}</p>
-                        <p>User's Status: {item["status"]}</p>
-                        <p>User Type: {item["type"]}</p>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div className="post-cards">
+              {this.state.userList.map(item =>
+                item["id"] !== null ? (
+                  <Link to={{
+                    pathname: `/user/${item['slug']}`
+                  }} key={item["id"]}>
+                    <div className="card-kost post-resp" style={{ height: "auto", width: "300px" }}>
+                      <div className="card-kost-container">
+                        <img src={`http://localhost:8000/storage/${item["picture_id"]}`} alt="Profile Picture" />
+                        <h4>Name: {item["name"]}</h4>
+                        <div className="card-kost-images">
+                          <p>E-mail: {item["email"]}</p>
+                          <p>User Joined At: {item["created_at"]}</p>
+                          <p>User's Status: {item["status"]}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ) : (
-                  ""
-                )
-            )}
+                  </Link>
+                ) : (
+                    ""
+                  )
+              )}
+            </div>
             <div style={{ position: "fixed", bottom: "10%", left: "50%", background: "white", border: "30px solid white" }}>
               <Pagination pages={this.state.paginateData} />
             </div>
           </div>
           : null}
+        <Footer />
       </React.Fragment>
     );
   }

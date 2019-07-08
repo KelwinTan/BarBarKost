@@ -50,6 +50,31 @@ import PremiumPromo from "./components/admin/PremiumPromo";
 import { ViewPremium } from "./components/owner/ViewPremium";
 import ManageTransaction from "./components/admin/ManageTransaction";
 import CheckoutPage from "./components/owner/CheckoutPage";
+import CompleteTransactions from "./components/admin/CompleteTransactions";
+import IncompleteTransactions from "./components/admin/IncompleteTransactions";
+import IncompleteData from "./components/admin/IncompleteData";
+import ManageReport from "./components/admin/ManageReport";
+import ReportPage from "./components/admin/ReportPage";
+import AllPosts from "./components/home/AllPosts";
+import PostDetail from "./components/home/PostDetail";
+import PostDetails from "./components/home/PostDetails";
+import OwnerPage from "./components/home/OwnerPage";
+import OwnerDetail from "./components/home/OwnerDetail";
+import ApartDetail from "./components/home/ApartDetail";
+import KostDetail from "./components/home/KostDetail";
+import HistoryPremium from "./components/owner/HistoryPremium";
+import TransactionData from "./components/owner/TransactionData";
+import GuestProfilePage from "./components/user/profile/GuestProfilePage";
+import HistoryPage from "./components/user/profile/HistoryPage";
+import LatestViews from "./components/user/profile/LatestViews";
+import KostLatestViews from "./components/user/profile/KostLatestViews";
+import FavouritePage from "./components/user/profile/FavouritePage";
+import FavouriteKost from "./components/user/profile/FavouriteKost";
+import FavouriteApart from "./components/user/profile/FavouriteApart";
+import FollowingPage from "./components/user/profile/FollowingPage";
+import UpdateApart from "./components/owner/UpdateApart";
+import ChatRedis from "./components/chat/ChatRedis";
+import ChatPage from "./components/user/ChatPage";
 
 class App extends Component {
   // constructor() {
@@ -70,7 +95,7 @@ class App extends Component {
       <React.Fragment>
         {/* <ChatTest /> */}
         {/* <UploadImage/> */}
-
+        {/* <ChatRedis /> */}
         {
           <Route
             render={({ location }) => (
@@ -85,6 +110,9 @@ class App extends Component {
 
                 <Route exact path="/guest-login" component={Login} />
                 <Route exact path="/guest-page" component={Login} />
+                <Route exact path="/guest-profile-page" component={GuestProfilePage} />
+                <Route exact path="/guest-following-page" component={FollowingPage} />
+
                 <Route exact path="/promosi-kost" component={PromosiKost} />
                 <Route exact path="/profile" component={Profile} />
                 <Route exact path="/owner-login" component={OwnerLogin} />
@@ -116,8 +144,23 @@ class App extends Component {
                 />
                 <Route
                   exact
+                  path="/manage-report"
+                  component={ManageReport}
+                />
+                <Route
+                  exact
+                  path="/report/:id"
+                  component={ReportPage}
+                />
+                <Route
+                  exact
                   path="/user/:id"
                   component={GuestData}
+                />
+                <Route
+                  exact
+                  path="/owner-page"
+                  component={OwnerPage}
                 />
                 <Route
                   exact
@@ -142,29 +185,70 @@ class App extends Component {
                 />
                 <Route
                   exact
+                  path="/posts-page"
+                  component={AllPosts}
+                />
+                <Route
+                  exact
                   path="/data-apartment"
                   component={DataApart}
                 />
                 <Route exact path='/facility/update' component={UpdateFacility} />
                 <Route exact path='/manage-facility' component={ManageFacility} />
-
+                <Route
+                  exact
+                  path="/post-details/:id"
+                  component={PostDetails}
+                />
+                <Route
+                  exact
+                  path="/post-detail/:id"
+                  component={PostDetail}
+                />
+                <Route
+                  exact
+                  path="/chat"
+                  component={ChatPage}
+                />
+                <Route
+                  exact
+                  path="/owner-detail/:id"
+                  component={OwnerDetail}
+                />
                 <Route exact path='/post/update/:id' component={UpdatePost} />
                 <Route exact path='/post/:id' component={PostPage} />
                 <Route exact path='/view-premium' component={ViewPremium} />
+                <Route exact path='/view-history-premium' component={HistoryPremium} />
+                <Route exact path='/view-history' component={HistoryPage} />
+                <Route exact path='/view-history/latest-views' component={LatestViews} />
+                <Route exact path='/view-history/favourite' component={FavouritePage} />
+                <Route exact path='/view-history/favourite/kost' component={FavouriteKost} />
+                <Route exact path='/view-history/favourite/apartment' component={FavouriteApart} />
+
                 <Route exact path='/buy-premium/:id' component={CheckoutPage} />
+                <Route exact path='/detail-transaction/:id' component={TransactionData} />
 
                 <Route exact path='/premium/:id' component={PremiumPage} />
                 <Route exact path='/premium/update/:id' component={UpdatePremium} />
                 <Route exact path='/premium/promo/:id' component={PremiumPromo} />
 
                 <Route exact path='/apart-:handle' component={ApartPage} />
+                <Route exact path='/apart/detail-:handle' component={ApartDetail} />
+                <Route exact path='/kost/detail-:handle' component={KostDetail} />
+
                 <Route exact path='/kost-:handle' component={KostPage} />
                 <Route exact path='/manage-premium' component={ManagePremium} />
                 <Route exact path='/manage-transaction' component={ManageTransaction} />
+                <Route exact path='/incomplete-transactions' component={IncompleteTransactions} />
+                <Route exact path='/transactions/incomplete/:id' component={IncompleteData} />
+
+                <Route exact path='/complete-transactions' component={CompleteTransactions} />
 
                 <Route exact path='/admin-create-premium' component={CreatePremium} />
                 <Route exact path='/detail/kost-:handle' component={GuestKostPage} />
                 <Route exact path='/update-kost-:handle' component={UpdateKost} />
+                <Route exact path='/update-apart/:handle' component={UpdateApart} />
+
                 <Route path="" component={ErrorPage} />
               </Switch>
             )}

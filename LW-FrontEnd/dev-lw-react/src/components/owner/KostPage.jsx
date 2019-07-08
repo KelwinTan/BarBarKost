@@ -9,6 +9,9 @@ import logo from "../../assets/images/logo.png";
 import { Link } from "react-router-dom";
 import PropertySlider from '../property/PropertySlider';
 import { GetImages } from '../property/PropertyFunctions';
+import { getProfile } from "../user/login-register/UserFunctions";
+import Axios from 'axios';
+import Footer from '../home/Footer';
 
 
 const BgModal = styled.div`
@@ -66,33 +69,52 @@ export class KostPage extends Component {
       displayModal: false,
       slug: "",
       isUpdate: false,
-      kost_images: null
+      kost_images: null,
+      userId: ""
     }
   }
 
   async componentDidMount() {
-    const { handle } = this.props.match.params
-    const { kost_slug } = this.props.location.state
+    const { handle } = this.props.match.params;
+    const { kost_slug } = this.props.location.state;
+    await getProfile().then(res => {
+      this.setState({
+        userId: res.user.id,
+      });
+
+    });
     this.setState({ slug: kost_slug });
     console.log(kost_slug);
-    await GetSpecificKost(kost_slug).then(
+    // await GetSpecificKost(kost_slug, this.state.userId).then(
+    //   res => {
+    //     console.log(res);
+    //     this.setState({
+    //       currKost: res,
+    //     })
+    //   }
+    // );
+    const fd = new FormData();
+    fd.append("kost_slug", this.state.slug);
+    await Axios.post("/api/owner-specific-kost", fd).then(
       res => {
+        console.log(res);
         this.setState({
-          currKost: res,
-          loadingScreen: false,
+          currKost: res.data,
         })
       }
-    );
-    await GetImages(this.state.currKost[0]['id']).then(res => {
+    )
+
+    await GetImages(this.state.currKost['id']).then(res => {
       console.log(res);
       this.setState({
-        kost_images: res
+        kost_images: res,
+        loadingScreen: false,
       })
     }
     )
 
-    console.log(this.state.currKost[0]['id']);
-    console.log(this.state.kost_images.length);
+    // console.log(this.state.currKost['id']);
+    // console.log(this.state.kost_images.length);
   }
 
   handleAddress = (update, coordinates) => {
@@ -152,40 +174,46 @@ export class KostPage extends Component {
           {!this.state.loadingScreen
             ?
             <div>
-              {this.state.currKost.map(item =>
-                item["id"] !== null ? (
-                  <div className="kost-data-layout">
-                    <div className="input-data-lokasi">
-                      <div className="input-data-form">
-                        {this.state.kost_images === null ? <div>Hello</div> : <PropertySlider count={this.state.kost_images.length} property={this.state.kost_images} />}
-                        {item["picture_360"] !== null ? <img src={`http://localhost:8000/storage/${item["picture_360"]}`} alt="Picture 360" /> : ""}
-                        <div>
-                          <video ref="vidRef" src={`http://localhost:8000/storage/${item["video"]}`} alt="Video" type="video/mp4"></video>
-                          <br />
-                          <button onClick={this.playVideo.bind(this)}>Play Video</button>
-                        </div>
-                        <h5>Kost Name: {item["name"]}</h5>
-                        <h5>Description: {item["description"]}</h5>
-                        <h5>Price: {item["prices"]}</h5>
-                        <h5>City: {item["city"]}</h5>
-                        <h5>Address: {item["address"]}</h5>
-                        <h5>Total Rooms: {item["total_rooms"]}</h5>
-                        <h5>Room(s) Left: {item["room_left"]}</h5>
-                        <h5>Owner Email: {item["owner_email"]}</h5>
-                        <hr />
 
-                        <Link to={{
-                          pathname: `/update-kost-${item['kost_slug']}`,
-                          state: {
-                            kost_slug: item['kost_slug']
-                          }
-                        }} key={item} className="link-styles">Update Kost</Link>
-                      </div>
+              <div className="kost-data-layout">
+                <div className="input-data-lokasi">
+                  <div className="input-data-form">
+                    {/* {this.state.kost_images === null ? <div>Hello</div> : <PropertySlider count={this.state.kost_images.length} property={this.state.kost_images} />} */}
+                    <div style={{ border: "3px solid black", padding: "20px" }}>
+                      {this.state.kost_images.map(item =>
+                        item["id"] !== null ? (<img
+                          src={`http://localhost:8000/storage/images/${item['filename']}`}
+                          alt="Promo Slides"
+                          style={{ height: "250px", zIndex: "-1" }}
+                        />) : (""))}
+
                     </div>
+                    {this.state.currKost["picture_360"] !== null ? <img src={`http://localhost:8000/storage/${this.state.currKost["picture_360"]}`} alt="Picture 360" /> : ""}
+                    <div>
+                      <video ref="vidRef" src={`http://localhost:8000/storage/${this.state.currKost["video"]}`} alt="Video" type="video/mp4"></video>
+                      <br />
+                      <button onClick={this.playVideo.bind(this)}>Play Video</button>
+                    </div>
+                    <h5>Kost Name: {this.state.currKost["name"]}</h5>
+                    <h5>Description: {this.state.currKost["description"]}</h5>
+                    <h5>Price: {this.state.currKost["prices"]}</h5>
+                    <h5>City: {this.state.currKost["city"]}</h5>
+                    <h5>Address: {this.state.currKost["address"]}</h5>
+                    <h5>Total Rooms: {this.state.currKost["total_rooms"]}</h5>
+                    <h5>Room(s) Left: {this.state.currKost["room_left"]}</h5>
+                    <h5>Owner Email: {this.state.currKost["owner_email"]}</h5>
+                    <hr />
+
+                    <Link to={{
+                      pathname: `/update-kost-${this.state.currKost['kost_slug']}`,
+                      state: {
+                        kost_slug: this.state.currKost['kost_slug']
+                      }
+                    }} key={this.state.currKost} className="link-styles">Update Kost</Link>
                   </div>
-                ) : (
-                    ""
-                  )
+                </div>
+              </div>
+
               )}
             </div>
             : null}
@@ -202,6 +230,7 @@ export class KostPage extends Component {
               </ModalContent>
             </BgModal> : ""}
         </div>
+        <Footer />
       </React.Fragment>
     )
   }

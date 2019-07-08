@@ -39,7 +39,7 @@ export class DataPribadi extends Component {
       phone: null,
       formErrors: {
         Name: "",
-        phone:"",
+        phone: "",
         email: "",
         password: "",
         username: ""
@@ -156,7 +156,7 @@ export class DataPribadi extends Component {
             ? "Minimum 8 Characters Required"
             : "";
         break;
-        case "phone":
+      case "phone":
         formErrors.phone =
           value.length < 8 && value.length > 0
             ? "Minimum 8 Characters Required"
@@ -175,7 +175,7 @@ export class DataPribadi extends Component {
         <div className="form-wrapper1">
           <h1>Personal Data</h1>
           <div className="data-pribadi-data">
-            <img src={`http://localhost:8000/storage/${this.state.pictureID}`} alt="Picture 360" />
+            <img src={`http://localhost:8000/storage/${this.state.pictureID}`} alt="Picture 360" style={{ width: "500px", height: "500px" }} />
             <div className="data-pribadi-data-image" />
           </div>
           <form onSubmit={this.handleSubmit} noValidate>
@@ -275,7 +275,7 @@ export class DataPribadi extends Component {
             </div>
             <div className="createAccount">
               <button type="submit">Update</button>
-              <Link to="/">Go Back</Link>
+              <Link to="/profile">Go Back</Link>
             </div>
           </form>
         </div>

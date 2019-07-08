@@ -37,9 +37,12 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         $newReview = new Review();
+        if($request->has('parent_id')){
+            $newReview->parent_id = $request->parent_id;
+        }
         $newReview->content = $request->review_content;
         $newReview->user_id = $request->user_id;
-        $newReview->review_type = Review::class;
+        $newReview->reviewable_type = Review::class;
         $newReview->save();
 
         return response("Review Created Succesfully!");
@@ -48,7 +51,7 @@ class ReviewController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Review  $review
+     * @param  \App\Review  $reviewko
      * @return \Illuminate\Http\Response
      */
     public function show(Review $review)

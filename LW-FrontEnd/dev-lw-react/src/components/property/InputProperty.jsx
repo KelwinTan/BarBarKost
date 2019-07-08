@@ -60,6 +60,7 @@ export class InputProperty extends Component {
       userID: "",
       selectedFile: null,
       video: null,
+      facilityRedis: null,
     };
   }
 
@@ -142,6 +143,14 @@ export class InputProperty extends Component {
         userID: res.user.id
       });
     });
+    axios.post("/api/get-facility-redis").then(
+      res => {
+        console.log(res.data);
+        this.setState({
+          facilityRedis: res.data
+        })
+      }
+    )
   }
 
   onFormImageSubmit = e => {
@@ -599,6 +608,15 @@ export class InputProperty extends Component {
             <div className="input-data-lokasi">
               <div className="input-data-form">
                 <h1>INPUT FASILITAS KOST</h1>
+                {
+                  this.state.facilityRedis === null ? <div>Hello</div> : this.state.facilityRedis.map(item =>
+                    item["id"] !== null ? (
+                      <div>
+                        <label key={item} className={`fa ${item["icon"]}`} name={item}></label>
+
+                      </div>
+                    ) : "")
+                }
                 <div style={{ display: "flex" }}>
                   <div
                     style={{

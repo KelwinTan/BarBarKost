@@ -118,4 +118,15 @@ class PremiumController extends Controller
         return response('Premium Promo Added');
     }
 
+    public function PremiumFilter(Request $request){
+        if ($request->premium_name && !$request->price){
+            $premium = Premium::where('premium_name', 'like', '%'.$request->premium_name.'%')->paginate(10);
+        }else if(!$request->premium_name && $request->price) {
+            $premium = Premium::where('premium_price', '>=', $request->price)->paginate(10);
+        }else{
+            $premium = Premium::where('premium_name', 'like', '%'.$request->premium_name.'%')->where('premium_price', '>=', $request->price)->paginate(10);
+        }
+        return $premium;
+    }
+
 }

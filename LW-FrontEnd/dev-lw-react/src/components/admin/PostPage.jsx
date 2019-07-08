@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import Axios from 'axios';
 import UserNav from '../user/navbar/UserNav';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/images/logo.png";
+import { getProfile } from "../user/login-register/UserFunctions";
+import LoadingScreen from '../utilities/LoadingScreen';
+import Footer from '../home/Footer';
+
 
 const BgModal = styled.div`
   width: 100%;
@@ -58,15 +62,29 @@ export class PostPage extends Component {
             currPost: null,
             loadingScreen: true,
             currSlug: "",
+            name: "",
+            email: "",
+            join: "",
+            type: 3,
         }
     }
 
     async componentDidMount() {
         console.log(this.props);
-        
+        getProfile().then(res => {
+            console.log(res);
+            this.setState({
+                name: res.user.name,
+                email: res.user.email,
+                join: res.user.created_at,
+                pictureID: res.user.picture_id,
+                type: res.user.type
+            });
+        });
+
         // const { handle } = this.props.match.params.id;
         const slug = this.props.match.params.id;
-        this.setState({currSlug: slug});
+        this.setState({ currSlug: slug });
         // console.log(this.props.match.params.id);
         const PostData = new FormData();
         PostData.append('slug', slug);
@@ -90,7 +108,7 @@ export class PostPage extends Component {
     deleteKosan = () => {
         this.setState({ displayModal: true });
     }
-    
+
     closeModal = () => {
         this.setState({ displayModal: false });
     }
@@ -104,16 +122,31 @@ export class PostPage extends Component {
         const PostData = new FormData();
         PostData.append('slug', this.state.currSlug);
         Axios.post("/api/delete-post", PostData, config).then(
-            res =>{
+            res => {
                 this.props.history.push(`/manage-post`);
             }
         )
     }
-    
+    handleLoading = () => {
+        if (this.state.loadingScreen === true) {
+            return <LoadingScreen />;
+        } else {
+            return null;
+        }
+    };
+
+    authorizeUser = () => {
+        if (this.state.type !== 3) {
+            return <Redirect to={"/"}> </Redirect>;
+        }
+    };
+
 
     render() {
         return (
             <React.Fragment>
+                {this.authorizeUser()}
+                {this.handleLoading()}
                 <UserNav />
                 <div>
                     {!this.state.loadingScreen
@@ -124,7 +157,7 @@ export class PostPage extends Component {
                                     <div className="kost-data-layout">
                                         <div className="input-data-lokasi">
                                             <div className="input-data-form">
-                                            <img src={`http://localhost:8000/storage/${item["thumbnail_path"]}`} alt="Banner" />
+                                                <img src={`http://localhost:8000/storage/${item["thumbnail_path"]}`} alt="Banner" />
                                                 <h5>Post Title: {item["title"]}</h5>
                                                 {/* <h5>Kost Name: {item["name"]}</h5>
                                                 <h5>Description: {item["description"]}</h5>
@@ -166,7 +199,7 @@ export class PostPage extends Component {
                         </BgModal> : ""}
                 </div>
 
-
+                <Footer />
             </React.Fragment>
         )
     }

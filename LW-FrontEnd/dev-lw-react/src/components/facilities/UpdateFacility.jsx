@@ -90,7 +90,8 @@ export class UpdateFacility extends Component {
             iconList: [],
             displayModal: false,
             paginateData: null,
-            getLink: "/api/get-facility"
+            getLink: "/api/get-facility",
+            filterName: "",
 
         };
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -157,6 +158,14 @@ export class UpdateFacility extends Component {
         console.log(this.state);
     }
 
+    handleFilter = (event) => {
+        const { name, value } = event.target;
+
+        this.setState({ filterName: value });
+
+        console.log(this.state);
+    }
+
     handleGroup = (event) => {
         const { name, value } = event.target;
         this.setState({ iconGroup: value });
@@ -217,6 +226,23 @@ export class UpdateFacility extends Component {
         );
     }
 
+    filterFacilities = () => {
+        this.setState({
+            loadingScreen: true
+        })
+        const fd = new FormData();
+        fd.append("filterName", this.state.filterName);
+        fd.append("group", this.state.iconGroup);
+        axios.post("/api/filter-facility", fd).then(
+            res => {
+                console.log(res);
+                this.setState({ iconList: res.data.data, loadingScreen: false, paginateData: res.data });
+                console.log(this.state.iconList);
+                console.log(this.state.paginateData);
+            }
+        )
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -243,6 +269,21 @@ export class UpdateFacility extends Component {
                         {this.state.formErrors["name"] ? <div style={{ color: "red" }}>{this.state.formErrors["name"]}</div> : ""}
                         {this.state.formErrors["group"] ? <div style={{ color: "red" }}>{this.state.formErrors["group"]}</div> : ""}
                         <button onClick={this.updateFacility}>Update Facility</button>
+
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                        <input type="text" onChange={this.handleFilter} />
+                        <select
+                            id="facility-group"
+                            name={`group-${this.state.selectedIcon}`}
+                            onChange={this.handleGroup}
+                        >
+                            <option value="Public">Public</option>
+                            <option value="Parking">Parking</option>
+                            <option value="Sports">Sports</option>
+
+                        </select>
+                        <button onClick={this.filterFacilities}>Filter Facilities</button>
                     </div>
                     <div style={{ textAlign: "center" }}>
                         <button onClick={this.deleteKosan}>Delete Facility</button>

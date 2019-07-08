@@ -21,12 +21,13 @@ export const GetOwnerKosts = Owner => {
       });
   };
 
-  export const GetSpecificKost = kost_slug => {
+  export const GetSpecificKost =  (kost_slug, user_id) => {
     return axios
       .post(
         "/api/specific-kost",
         {
           kost_slug: kost_slug,
+          user_id: user_id
         },
         {
           headers: { "Content-Type": "application/json" }

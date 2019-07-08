@@ -10,7 +10,7 @@
 
 body {
   margin: 0px;
-  height: 100vh;
+  // height: 100vh;
   padding: 0px;
   overflow-x: hidden;
 }
@@ -826,16 +826,36 @@ body {
   justify-content: center;
   width: auto !important;
 }
+.kost-details-column{
+  flex-direction: row !important;
+}
 
 @media (max-width: 992px) {
   .owner-dashboard-wrapper{
     flex-direction: column;
   }
 
+  .kost-detail-responsive{
+    display: none !important;
+  }
+  .kost-details-column{
+    flex-direction: column !important;
+  }
+  
   .responsive-float{
     float: none !important;
   }
   
+  .post-resp{
+    width: 100% !important;
+    height: auto !important;
+  }
+
+
+  .post-cards{
+    grid-row-gap:20px !important;
+    grid-template-columns: auto !important;
+  }
 
   .owner-side-dashboard{
     // display: none !important;
@@ -938,6 +958,45 @@ body {
     input {
       width: 100% !important;
     }
+  }
+
+  .chat-responsive{
+    visibility: hidden;
+  }
+  .chat-responsive-burger{
+    visibility: visible !important;
+  }
+}
+
+.post-cards{
+  display: grid;
+  grid-column-gap: 50px;
+  grid-row-gap: 50px;
+  grid-template-columns: auto auto;
+}
+
+.chat-responsive-burger{
+  visibility: hidden;
+  color: #fff;
+  font-size: 30px;
+  margin: 5px;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.filter-button{
+  border: none;
+  background: none;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition-duration: 0.5s;
+  color: black;
+  border: 3px solid #27ab27;
+  margin: 10px;
+  &:hover{
+    background: #27ab27;
+    color: white;
   }
 }
 
@@ -1307,6 +1366,11 @@ body {
   padding-bottom: 20px;
 }
 
+.card-kost-container{
+  display: flex;
+  flex-direction: column;
+}
+
 .card-kost {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
   transition: 0.4s;
@@ -1314,6 +1378,7 @@ body {
   font-size: 16px;
   font-family: sans-serif;
   float: left;
+  padding: inherit;
   h4,
   p {
     padding-left: 15px;
@@ -1451,7 +1516,7 @@ body {
 
 .profile-info-wrapper1 {
   width: 800px;
-  background: red;
+  background: white;
   border-radius: 10px;
   margin: auto;
   hr {
@@ -1725,3 +1790,4 @@ body {
 .crud-form{
   height: auto !important;
 }
+

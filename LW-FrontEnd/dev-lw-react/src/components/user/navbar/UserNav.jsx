@@ -3,7 +3,8 @@ import logo from "../../../assets/images/kota-besar/logo_mamikos_white.svg";
 import { Link } from "react-router-dom";
 import { getProfile, logoutUser } from "../login-register/UserFunctions";
 import BreadCrumbs from "../../utilities/BreadCrumbs";
-import { Redirect, withRouter} from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
+import Axios from "axios";
 
 
 const Iklan = (
@@ -63,7 +64,8 @@ export class UserNav extends Component {
       showProfileFunc: false,
       showMenu: false,
       verifyEmail: false,
-      verifyPhone: false
+      verifyPhone: false,
+      searchRes: null
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -77,6 +79,20 @@ export class UserNav extends Component {
         pictureID: res.user.picture_id
       });
     });
+  }
+
+  searchProperty = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    const fd = new FormData();
+    fd.append('keyword', value);
+    Axios.post('/api/search-property', fd).then(res => {
+      console.log(res);
+      this.setState({
+        searchRes: res.data.data
+      })
+    })
+    console.log(value);
   }
 
   clickHam = () => {
@@ -98,6 +114,8 @@ export class UserNav extends Component {
               />
             </a>
           </div>
+          <input type="text" placeholder="Cari Property" onChange={this.searchProperty} style={{ border: "none", background: "inherit", borderBottom: "2px solid white", color: "white" }} />
+
           <div
             className={
               this.state.showMenu === true
@@ -127,6 +145,7 @@ export class UserNav extends Component {
             <i className="fas fa-bars" aria-hidden="true" />
           </div>
         </div>
+
         <div className="profile-details">
           {/* <div className="bread-crumbs">
             <Link to="/" className="active">
@@ -140,6 +159,35 @@ export class UserNav extends Component {
           </div> */}
           <BreadCrumbs />
           <hr />
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            {
+              this.state.searchRes === null ? "" :
+                this.state.searchRes.map(item =>
+                  item["id"] !== null ? (
+                    <div>
+                      <Link to={{
+                        pathname: `/kost/detail-${item['kost_slug']}`,
+                        state: {
+                          apart_slug: item['kost_slug']
+                        }
+                      }} key={item}>
+                        <div className="card-kost">
+                          <div className="card-kost-container">
+                            <h4>Property Name: {item["name"]}</h4>
+                            <div className="card-kost-images">
+                              <p>Kost City: {item["city"]}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+
+                    </div>
+                  ) : (
+                      ""
+                    )
+                )
+            }
+          </div>
         </div>
       </React.Fragment>
     );

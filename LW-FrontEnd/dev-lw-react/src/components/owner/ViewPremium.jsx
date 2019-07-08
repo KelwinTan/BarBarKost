@@ -70,8 +70,8 @@ export class ViewPremium extends Component {
                                     <div>
                                         <Link to={{
                                             pathname: `/buy-premium/${item['slug']}`
-                                        }} key={item}>
-                                            <div className="card-kost">
+                                        }} key={item} style={{ padding: "unset" }}>
+                                            <div className="card-kost" style={{ width: "200px" }}>
                                                 <div className="card-kost-container">
                                                     <h4>Premium Name: {item["premium_name"]}</h4>
                                                     <div className="card-kost-images">
