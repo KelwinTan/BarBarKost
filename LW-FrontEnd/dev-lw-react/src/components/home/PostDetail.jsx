@@ -102,6 +102,10 @@ export class PostDetail extends Component {
         })
     }
 
+    filterPostTag = () => {
+        console.log("Hello");
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -127,7 +131,7 @@ export class PostDetail extends Component {
                                                 <h5>Owner Email: {item["owner_email"]}</h5> */}
                                             <div id="post-content">
                                             </div>
-                                            <h5>Post Tag: {item["tags"]}</h5>
+                                            <h5 onClick={this.filterPostTag}>Post Tag: {item["tags"]}</h5>
                                             <h5>Post Created At: {item["created_at"]}</h5>
                                             <hr />
                                         </div>

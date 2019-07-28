@@ -280,4 +280,34 @@ class ApartmentController extends Controller
         return $updateApart;
     }
 
+    public function ApartFilter(Request $request){
+        if(is_null($request->name)){
+            $name = "";
+        }else{
+            $name = $request->name;
+        }
+
+        if(is_null($request->prices)){
+            $price = 0;
+        }else{
+            $price = $request->prices;
+        }
+
+        if (is_null($request->unit_area)){
+            $unitArea = 0;
+        }else{
+            $unitArea = $request->unit_area;
+        }
+
+        if(is_null($request->unit_floor)){
+            $unitFloor = 0;
+        }else{
+            $unitFloor = $request->unit_floor;
+        }
+
+        $apart = ApartmentModel::where('owner_id', $request->owner_id)->where('name', 'like', '%'.$name.'%')->where('prices', '>=', $price)->where('unit_area', '>=', $unitArea)->where('unit_floor', '>=', $unitFloor)->paginate(10);
+
+        return $apart;
+    }
+
 }

@@ -12,6 +12,7 @@ use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
+use Psy\Util\Str;
 use Webpatser\Uuid\Uuid;
 
 class KostController extends Controller
@@ -90,7 +91,7 @@ class KostController extends Controller
             'picture_360' => $path_360,
             'video' => $video_path
         ]);
-
+        \Illuminate\Support\Str::slug('kelwin dsasiudas');
 
         if($request->hasFile('image')) {
 

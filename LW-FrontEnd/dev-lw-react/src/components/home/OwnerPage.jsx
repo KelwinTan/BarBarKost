@@ -25,7 +25,8 @@ export class OwnerPage extends Component {
             loadingScreen: true,
             userList: "",
             paginateData: null,
-            getLink: "/api/get-10-owners"
+            getLink: "/api/get-10-owners",
+            ownerName: "",
         };
         this.componentDidMount = this.componentDidMount.bind(this);
     }
@@ -82,6 +83,26 @@ export class OwnerPage extends Component {
         }
     };
 
+    handleOwnerName = (event) => {
+        const { name, value } = event.target;
+        this.setState({ ownerName: value });
+        console.log(this.state);
+    }
+
+    searchOwner = () => {
+        this.setState({ loadingScreen: true });
+        const fd = new FormData();
+        fd.append("name", this.state.ownerName);
+        axios.post("/api/search-owners", fd).then(res => {
+            console.log(res);
+            this.setState({
+                userList: res.data.data,
+                loadingScreen: false,
+                paginateData: res.data
+            });
+        });
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -89,6 +110,14 @@ export class OwnerPage extends Component {
                 {this.handleLoading()}
 
                 <UserNav />
+                <h1 style={{ textAlign: "center", fontSize: "50px" }}>List of Owners</h1>
+
+                <div style={{ textAlign: "center" }}>
+                    <input type="text" onChange={this.handleOwnerName} placeholder="Input Owner Name" />
+
+                    <button onClick={this.searchOwner} className="filter-button">Search Owner</button>
+                </div>
+                <hr />
                 {!this.state.loadingScreen
                     ?
                     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -98,17 +127,14 @@ export class OwnerPage extends Component {
                                 item["id"] !== null ? (
                                     <Link to={{
                                         pathname: `/owner-detail/${item['slug']}`
-                                    }} key={item}>
+                                    }} key={item["id"]}>
                                         <div className="card-kost post-resp" style={{ height: "350px", width: "300px" }}>
                                             <div className="card-kost-container">
-                                                <img st
-                                                yle={{ height: "160px" }} src={`http://localhost:8000/storage/${item["picture_id"]}`} alt="Profile Picture" />
+                                                <img style={{ height: "150px", width: "150px", margin: "0 auto" }} src={`http://localhost:8000/storage/${item["picture_id"]}`} alt="Profile Picture" />
                                                 <h4>Name: {item["name"]}</h4>
                                                 <div className="card-kost-images">
                                                     <p>E-mail: {item["email"]}</p>
-                                                    <p>User Joined At: {item["created_at"]}</p>
-                                                    <p>User's Status: {item["status"]}</p>
-                                                    <p>User Type: {item["type"]}</p>
+                                                    <p>Owner Phone Number: {item["phone"]}</p>
                                                 </div>
                                             </div>
                                         </div>

@@ -7,7 +7,7 @@ import Axios from 'axios';
 import ChatRedis from '../chat/ChatRedis';
 import { Link, Redirect, Switch, Route, withRouter, BrowserRouter as Router } from "react-router-dom";
 
-export class ChatPage extends Component {
+export class GuestChatPage extends Component {
 
     constructor(props) {
         super(props);
@@ -24,7 +24,7 @@ export class ChatPage extends Component {
             loadingScreen: true,
             phone_verify_at: null,
             phone: "",
-            type: 2,
+            type: 1,
             pictureID: null,
             msg: "",
             id: "",
@@ -84,7 +84,7 @@ export class ChatPage extends Component {
     }
 
     authorizeUser = () => {
-        if (this.state.type !== 2) {
+        if (this.state.type !== 1) {
             return <Redirect to={"/"}> </Redirect>;
         }
     };
@@ -97,13 +97,13 @@ export class ChatPage extends Component {
                 <Router>
 
                     <UserNav />
-                    <h1 style={{ textAlign: "center", fontSize: "50px" }}>Your Chats with Guests</h1>
+                    <h1 style={{ textAlign: "center", fontSize: "50px" }}>Your Chats with Owners</h1>
                     <hr />
                     {!this.state.loadingScreen
                         ?
                         <div style={{ background: "#23272a", display: "flex" }} >
-                            <i className="fa fa-bars chat-responsive-burger" onClick={this.handleResponsive} ></i>
-                            <div style={{ width: "20%", height: "500px", background: "#2c2f33", color: "white", margin: "10px", visibility: this.state.displayMenu ? "visible" : "", transition: ".5s ease-in-out" }} className="chat-responsive">
+                            <i className="fa fa-bars chat-responsive-burger"  onClick={this.handleResponsive} ></i>
+                            <div style={{ width: "20%", height: "500px", background: "#2c2f33", color: "white", margin: "10px", visibility: this.state.displayMenu ? "visible": "", transition:".5s ease-in-out" }} className="chat-responsive">
                                 {this.state.chatLists.map(item =>
                                     item["id"] !== null ? (
                                         <Link to={{
@@ -126,7 +126,7 @@ export class ChatPage extends Component {
                             <ChatRedis />
 
                         </div> */}
-                            <div style={{ width: "75%" }}>
+                            <div style={{ width: "75%", position: "absolute", bottom: "0", right: "0" }}>
                                 <Switch>
                                     <Route exact path="/chat/:id" component={ChatRedis} />
                                 </Switch>
@@ -142,4 +142,4 @@ export class ChatPage extends Component {
     }
 }
 
-export default ChatPage
+export default GuestChatPage

@@ -68,7 +68,7 @@ class FollowController extends Controller
      */
     public function show(Request $request)
     {
-        return Follow::with('user')->with('followers')->where('user_id', $request->user_id)->orderBy('created_at', 'DESC')->paginate(10);
+        return Follow::with('user')->with('followers')->where('user_id', $request->user_id)->orderBy('created_at', 'DESC')->paginate(1);
     }
 
     /**
@@ -116,4 +116,15 @@ class FollowController extends Controller
     public function TotalFollowing(Request $request){
         return count(Follow::where('user_id', $request->user_id)->get());
     }
+
+    public function SearchFollowedOwners(Request $request)
+    {
+        $following = Follow::with('user')->with('followers')->where('user_id', $request->user_id)->orderBy('created_at', 'DESC')->paginate(10);
+//        dd($following);
+        $filterFollowing = $following->where('user{"name"]', 'LIKE', '%'.$request->name.'%');
+        dd($following->where('user{"name"]', 'LIKE', '%'.$request->name.'%'));
+
+        return Follow::with('SearchOwner', $request->name)->with('followers')->where('user_id', $request->user_id)->orderBy('created_at', 'DESC')->paginate(10);
+    }
+
 }

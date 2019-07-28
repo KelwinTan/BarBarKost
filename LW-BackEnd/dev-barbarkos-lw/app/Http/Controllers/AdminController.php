@@ -20,6 +20,10 @@ class AdminController extends Controller
         return User::where('type', 2)->paginate(10);
     }
 
+    public function SearchOwner(Request $request){
+        return User::where('type', 2)->where('name', 'LIKE', '%'.$request->name.'%')->paginate(10);
+    }
+
     public function ResetPassword(Request $request){
 //        $characters = 'QWERTYUIOPASDFGHJKLZXCVBNMabcdefghijklmnopqrstuvwxyz0123456789';
 //        $string = '';

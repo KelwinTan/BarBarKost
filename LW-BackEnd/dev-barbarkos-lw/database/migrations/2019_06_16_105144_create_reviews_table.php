@@ -16,6 +16,7 @@ class CreateReviewsTable extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
+            $table->uuid('property_id');
             $table->text('content');
             $table->uuid('parent_id')->nullable();
             $table->uuid('reviewable_id')->nullable();

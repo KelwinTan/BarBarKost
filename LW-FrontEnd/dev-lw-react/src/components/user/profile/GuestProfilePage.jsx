@@ -120,7 +120,7 @@ export class GuestProfilePage extends Component {
 
 
                     <Link className="link-styles" style={{ border: "3px solid green" }} to="/guest-update">Update Profile</Link>
-                    <Link className="link-styles" style={{ border: "3px solid green" }} to="/guest-following-page">Following Page</Link>
+                    
                 </div>
                 {!this.state.loadingScreen
                     ?

@@ -164,12 +164,7 @@ class PropertyCard extends Component {
             <div className="property-card property-responsive property-props" >
               {this.state.kostList.map(item =>
                 item["id"] !== null ? (
-                  <Link to={{
-                    pathname: `/kost/detail-${item["properties"]['kost_slug']}`,
-                    state: {
-                      apart_slug: item["properties"]['kost_slug']
-                    }
-                  }} key={item["id"]}>
+                  <Link to="/search-property" key={item["id"]}>
                     <div className="card-kost" style={{ width: "300px", height: "500px" }}>
                       <div className="card-kost-container">
                         <img src={`http://localhost:8000/storage/${item["properties"]["banner_picture"]}`} alt="Banner" />
@@ -193,12 +188,7 @@ class PropertyCard extends Component {
             <div className="property-card property-responsive property-props">
               {this.state.apartList.map(item =>
                 item["id"] !== null ? (
-                  <Link to={{
-                    pathname: `/apart/detail-${item["apartments"]['slug']}`,
-                    state: {
-                      apart_slug: item["apartments"]['slug']
-                    }
-                  }} key={item}>
+                  <Link to="/search-property" key={item["id"]}>
                     <div className="card-kost" style={{ width: "300px", height: "500px" }}>
                       <div className="card-kost-container">
                         <img src={`http://localhost:8000/storage/${item["apartments"]["banner_picture"]}`} alt="Banner" />

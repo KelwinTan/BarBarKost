@@ -252,12 +252,12 @@ export class UpdateKost extends Component {
     };
 
     async componentDidMount() {
-        const { handle } = this.props.match.params
-        const { kost_slug } = this.props.location.state
-        this.setState({ slug: kost_slug });
-        console.log(kost_slug);
+        const { handle } = this.props.match.params.handle;
+        // const { kost_slug } = this.props.location.state;
+        this.setState({ slug: handle });
+        // console.log(kost_slug);
         const fd = new FormData();
-        fd.append("kost_slug", kost_slug);
+        fd.append("kost_slug", handle);
         await Axios.post("/api/owner-specific-kost", fd).then(
             res => {
                 console.log(res);

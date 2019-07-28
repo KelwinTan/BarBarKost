@@ -61,6 +61,7 @@ export class FollowingPage extends Component {
             paginateData: null,
             getLink: "/api/show-following",
             infinite: false,
+            ownerName: "",
         };
         this.componentDidMount = this.componentDidMount.bind(this);
     }
@@ -140,7 +141,7 @@ export class FollowingPage extends Component {
         );
     }
 
-    handleInfinite = () =>{
+    handleInfinite = () => {
         if (this.state.infinite === true) {
             return <LoadingInfinite />;
         } else {
@@ -148,13 +149,36 @@ export class FollowingPage extends Component {
         }
     }
 
+
+    handleOwnerName = (event) => {
+        const { name, value } = event.target;
+        this.setState({ ownerName: value });
+        console.log(this.state);
+    }
+
+    searchOwner = () => {
+        const fd = new FormData();
+        fd.append("name", this.state.ownerName);
+        fd.append('user_id', this.state.id);
+        this.setState({ loadingScreen: true });
+
+        axios.post("/api/search-following-owner", fd).then(res => {
+            console.log(res);
+            this.setState({
+                userList: res.data.data,
+                loadingScreen: false,
+                paginateData: res.data
+            });
+        });
+    }
+
     componentWillMount = () => {
         window.onscroll = () => {
 
-            if (window.scrollY+window.innerHeight >= document.body.offsetHeight-100) {
+            if (window.scrollY + window.innerHeight >= document.body.offsetHeight - 100) {
                 if (!this.state.infinite) {
-                    
-                    this.setState({ infinite: true },()=>{
+
+                    this.setState({ infinite: true }, () => {
                         console.log("Hello0");
                         let query = getObjectFromQueryParamsExcept(this.props.location.search, [
                             "page"
@@ -171,14 +195,14 @@ export class FollowingPage extends Component {
                                 kostList: [...this.state.kostList, ...res.data.data],
                                 infinite: false,
                                 paginateData: res.data,
-    
+
                             });
                         });
                     });
-                    
+
                 }
             }
-        }; 
+        };
     }
 
     render() {
@@ -188,6 +212,12 @@ export class FollowingPage extends Component {
                 {this.handleLoading()}
                 <UserNav />
                 <h1 style={{ textAlign: "center", fontSize: "50px" }}>Owners that You are Following</h1>
+                {/* <div style={{ textAlign: "center" }}>
+                    <input type="text" onChange={this.handleOwnerName} placeholder="Input Owner Name" />
+
+                    <button onClick={this.searchOwner} className="filter-button">Search Owner</button>
+                </div> */}
+                <hr />
                 {!this.state.loadingScreen
                     ?
                     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -223,7 +253,7 @@ export class FollowingPage extends Component {
                         </div> */}
                     </div>
                     : null}
-                    {this.handleInfinite()}
+                {this.handleInfinite()}
                 <Footer />
             </React.Fragment>
         )

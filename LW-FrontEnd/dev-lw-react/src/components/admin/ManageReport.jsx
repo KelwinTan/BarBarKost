@@ -168,7 +168,7 @@ export class ManageReport extends Component {
                                     <div>
                                         <Link style={{ padding: "unset" }} to={{
                                             pathname: `/report/${item['id']}`
-                                        }} key={item}>
+                                        }} key={item["id"]}>
                                             <div className="card-kost post-resp" style={{ height: "auto", width: "300px" }}>
                                                 <div className="card-kost-container">
                                                     <h4>Report Type: {item["report_type"]}</h4>

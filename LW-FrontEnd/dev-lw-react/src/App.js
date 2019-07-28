@@ -75,6 +75,9 @@ import FollowingPage from "./components/user/profile/FollowingPage";
 import UpdateApart from "./components/owner/UpdateApart";
 import ChatRedis from "./components/chat/ChatRedis";
 import ChatPage from "./components/user/ChatPage";
+import GuestChatPage from "./components/user/GuestChatPage";
+import OtherProfiles from "./components/user/OtherProfiles";
+import Reviews from "./components/user/Reviews";
 
 class App extends Component {
   // constructor() {
@@ -157,6 +160,13 @@ class App extends Component {
                   path="/user/:id"
                   component={GuestData}
                 />
+
+                <Route
+                  exact
+                  path="/reviews/:id"
+                  component={Reviews}
+                />
+
                 <Route
                   exact
                   path="/owner-page"
@@ -212,6 +222,11 @@ class App extends Component {
                 />
                 <Route
                   exact
+                  path="/guest-chats"
+                  component={GuestChatPage}
+                />
+                <Route
+                  exact
                   path="/owner-detail/:id"
                   component={OwnerDetail}
                 />
@@ -235,6 +250,7 @@ class App extends Component {
                 <Route exact path='/apart-:handle' component={ApartPage} />
                 <Route exact path='/apart/detail-:handle' component={ApartDetail} />
                 <Route exact path='/kost/detail-:handle' component={KostDetail} />
+                <Route exact path='/other-profile/:id' component={OtherProfiles} />
 
                 <Route exact path='/kost-:handle' component={KostPage} />
                 <Route exact path='/manage-premium' component={ManagePremium} />

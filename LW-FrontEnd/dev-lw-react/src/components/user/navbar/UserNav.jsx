@@ -11,10 +11,10 @@ const Iklan = (
   <div className="profile-iklan">
     <ul>
       <li>
-        <Link to="cari-kost">Cari Kost</Link>
+        <Link to="/search-property">Cari Kost</Link>
       </li>
       <li>
-        <Link to="cari-apartment">Cari Apartemen</Link>
+        <Link to="/search-property">Cari Apartemen</Link>
       </li>
     </ul>
   </div>

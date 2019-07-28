@@ -13,6 +13,50 @@ import LoadingScreen from '../utilities/LoadingScreen';
 import Footer from './Footer';
 import { getProfile } from "../user/login-register/UserFunctions";
 
+const BgModal = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 0;
+  align-items: center;
+  z-index:100000;
+`;
+
+const ModalContent = styled.div`
+  width: 500px;
+  height: 350px;
+  background-color: white;
+  border-radius: 5px;
+  position: relative;
+  text-align: center;
+  padding: 20px;
+`;
+
+const Close = styled.div`
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 42px;
+  color: #333;
+  transform: rotate(45deg);
+  cursor: pointer;
+  &:hover {
+    color: #666;
+  }
+`;
+
+const Content = styled.div`
+  margin: 15px auto;
+  display: block;
+  width: 50%;
+  padding: 8px;
+  margin-top: 20px;
+  border: 1px solid gray;
+  color: red;
+`;
 
 export class ApartDetail extends Component {
     constructor(props) {
@@ -22,6 +66,8 @@ export class ApartDetail extends Component {
             currApart: null,
             loadingScreen: true,
             displayModal: false,
+            displayModal1: false,
+
             user_id: "",
             type: 1,
             suggestApart: null
@@ -65,6 +111,31 @@ export class ApartDetail extends Component {
         });
 
     }
+    deleteKosan1 = () => {
+        this.setState({ displayModal1: true });
+    }
+
+    closeModal1 = () => {
+        this.setState({ displayModal1: false });
+    }
+    submitReport = () => {
+        const fd = new FormData();
+        fd.append("description", this.state.report);
+        fd.append("property_type", "Apartment");
+        fd.append("report_type", this.state.report);
+
+        fd.append("user_id", this.state.user_id);
+        fd.append("property_id", this.state.currKost['id']);
+        this.setState({ loadingScreen: true })
+        Axios.post("/api/guest-report", fd).then(res => {
+            console.log(res);
+            this.setState({ loadingScreen: false })
+        })
+    }
+
+    reportProperty = () => {
+        this.setState({ displayModal1: true });
+    }
 
     handleLoading = () => {
         if (this.state.loadingScreen === true) {
@@ -83,6 +154,32 @@ export class ApartDetail extends Component {
             console.log(res);
         });
     }
+    deleteKosan = () => {
+        this.setState({ displayModal: true });
+    }
+
+    closeModal = () => {
+        this.setState({ displayModal: false });
+    }
+
+    handleReview = (event) => {
+        const { name, value } = event.target;
+        this.setState({ reviewContent: value });
+        console.log(this.state);
+    }
+
+    submitReview = () => {
+        const fd = new FormData();
+        fd.append("review_content", this.state.reviewContent);
+        fd.append("user_id", this.state.user_id);
+        fd.append("property_id", this.state.currKost['id']);
+        this.setState({ loadingScreen: true })
+        Axios.post("/api/create-review", fd).then(res => {
+            console.log(res);
+            this.setState({ loadingScreen: false })
+        })
+    }
+
 
     render() {
         return (
@@ -152,6 +249,44 @@ export class ApartDetail extends Component {
                         </div>
                     </div>
                     : null}
+                <div style={{ textAlign: "center", display: this.state.type === 1 ? "" : "none" }}>
+                    <button onClick={this.reportProperty}>Report this Property</button>
+                    {this.state.displayModal1 ?
+                        <BgModal>
+                            <ModalContent>
+                                <Close onClick={this.closeModal1}>+</Close>
+                                <img src={logo} style={{ height: "200px" }} alt="logo" />
+                                <Content>Report Property</Content>
+                                <select
+                                    id="kost-type"
+                                    name="kostType"
+                                    onChange={this.handleReport}
+                                >
+                                    <option value="Facility">Facility Gak sesuai</option>
+                                    <option value="Foto">Foto tidak sesuai</option>
+                                    <option value="Kotor">Kotor</option>
+                                </select>
+                                <button onClick={this.submitReport}>Submit Report</button>
+                            </ModalContent>
+                        </BgModal> : ""
+                    }
+                </div>
+                <div style={{ textAlign: "center", display: this.state.type === 3 ? "" : "none" }}>
+                    <button onClick={this.reportProperty}>Ban this Property</button>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                    <button onClick={this.deleteKosan}>Add Review</button>
+                    {this.state.displayModal ?
+                        <BgModal>
+                            <ModalContent>
+                                <Close onClick={this.closeModal}>+</Close>
+                                <img src={logo} style={{ height: "200px" }} alt="logo" />
+                                <Content>Review Kosan</Content>
+                                <input type="text" placeholder="Input Review Content" onClick={this.handleReview} />
+                                <button onClick={this.submitReview}>Submit Review</button>
+                            </ModalContent>
+                        </BgModal> : ""}
+                </div>
                 <Footer />
             </React.Fragment>
         )

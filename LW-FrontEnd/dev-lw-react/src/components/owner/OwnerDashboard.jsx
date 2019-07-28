@@ -177,8 +177,16 @@ export class OwnerDashboard extends Component {
             </div>
           </div>
           <div className="owner-side-dashboard-right">
-            <div>Owner's Total Kost: {this.state.totalKost}</div>
-            <div>Owner's Total Apartment: {this.state.totalApt}</div>
+            <div style={{ display: "flex" }}>
+              <div style={{ padding: "20px", border: "10px solid white", width: "30%", textAlign: "center" }}>
+                <img src={kost} alt="hello" style={{ height: "40px", width: "30px" }} />
+                <p>Owner's Total Kost: {this.state.totalKost}</p>
+              </div>
+              <div style={{ padding: "20px", border: "10px solid white", width: "30%", textAlign: "center" }}>
+                <img src={apt} alt="hello" style={{ height: "40px", width: "30px" }} />
+                <p>Owner's Total Apartment: {this.state.totalApt}</p>
+              </div>
+            </div>
 
             <div className="display-owner-buttons">
               <Link to="/input-kost">Insert Kosan</Link>
@@ -189,7 +197,7 @@ export class OwnerDashboard extends Component {
             </div>
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </React.Fragment>
     );
   }

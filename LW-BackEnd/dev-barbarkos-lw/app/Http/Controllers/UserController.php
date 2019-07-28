@@ -234,6 +234,10 @@ class UserController extends Controller{
 
     }
 
+    public function ShowOtherProfile(Request $request){
+        return User::where('id', $request->id)->get();
+    }
+
     public function BackHome(){
         echo('hello');
         return redirect('http://localhost:3000/enter-phone-token');

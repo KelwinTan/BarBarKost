@@ -15,6 +15,52 @@ import { getProfile } from "../user/login-register/UserFunctions";
 import { RSA_NO_PADDING } from 'constants';
 import DetailLeaflet from '../map/DetailLeaflet';
 
+
+const BgModal = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 0;
+  align-items: center;
+  z-index:100000;
+`;
+
+const ModalContent = styled.div`
+  width: 500px;
+  height: 350px;
+  background-color: white;
+  border-radius: 5px;
+  position: relative;
+  text-align: center;
+  padding: 20px;
+`;
+
+const Close = styled.div`
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 42px;
+  color: #333;
+  transform: rotate(45deg);
+  cursor: pointer;
+  &:hover {
+    color: #666;
+  }
+`;
+
+const Content = styled.div`
+  margin: 15px auto;
+  display: block;
+  width: 50%;
+  padding: 8px;
+  margin-top: 20px;
+  border: 1px solid gray;
+  color: red;
+`;
+
 export class KostDetail extends Component {
     constructor(props) {
         super(props);
@@ -27,7 +73,12 @@ export class KostDetail extends Component {
             type: 1,
             suggestKost: "",
             kost_images: [],
-            latlng: []
+            latlng: [],
+            displayModal: false,
+            displayModal1: false,
+            reviewContent: "",
+            reviewLists: [],
+            report: "",
         }
     }
 
@@ -83,6 +134,14 @@ export class KostDetail extends Component {
             console.log(res);
             this.setState({
                 suggestKost: res.data,
+            })
+        });
+        const fdd = new FormData();
+        fdd.append("property", this.state.currKost["id"]);
+        await Axios.post("/api/show-review", fdd).then(res => {
+            console.log(res);
+            this.setState({
+                reviewLists: res.data,
                 loadingScreen: false
             })
         });
@@ -96,6 +155,22 @@ export class KostDetail extends Component {
         }
     };
 
+    deleteKosan = () => {
+        this.setState({ displayModal: true });
+    }
+
+    closeModal = () => {
+        this.setState({ displayModal: false });
+    }
+
+    deleteKosan1 = () => {
+        this.setState({ displayModal1: true });
+    }
+
+    closeModal1 = () => {
+        this.setState({ displayModal1: false });
+    }
+
     storeFavouriteData = () => {
         const fd = new FormData();
         fd.append('user_id', this.state.user_id);
@@ -105,6 +180,49 @@ export class KostDetail extends Component {
         Axios.post("/api/guest-favourite", fd).then(res => {
             console.log(res);
         });
+    }
+
+    handleReview = (event) => {
+        const { name, value } = event.target;
+        this.setState({ reviewContent: value });
+        console.log(this.state);
+    }
+
+    handleReport = (event) => {
+        const { name, value } = event.target;
+        this.setState({ report: value });
+        console.log(this.state);
+    }
+
+    submitReview = () => {
+        const fd = new FormData();
+        fd.append("review_content", this.state.reviewContent);
+        fd.append("user_id", this.state.user_id);
+        fd.append("property_id", this.state.currKost['id']);
+        this.setState({ loadingScreen: true })
+        Axios.post("/api/create-review", fd).then(res => {
+            console.log(res);
+            this.setState({ loadingScreen: false })
+        })
+    }
+
+    submitReport = () => {
+        const fd = new FormData();
+        fd.append("description", this.state.report);
+        fd.append("property_type", "Kost");
+        fd.append("report_type", this.state.report);
+
+        fd.append("user_id", this.state.user_id);
+        fd.append("property_id", this.state.currKost['id']);
+        this.setState({ loadingScreen: true })
+        Axios.post("/api/guest-report", fd).then(res => {
+            console.log(res);
+            this.setState({ loadingScreen: false })
+        })
+    }
+
+    reportProperty = () => {
+        this.setState({ displayModal1: true });
     }
 
     render() {
@@ -148,7 +266,7 @@ export class KostDetail extends Component {
 
                                     <button onClick={this.storeFavouriteData} style={{ display: this.state.type === 1 ? "" : "none" }}>Favourite</button>
                                     <button>Add Review</button>
-                                    <a href="tel:+`${this.state.currKost['user']['phone']}`">Call Owner</a>
+                                    <a href={ 'tel:+' +  this.state.currKost['user']['phone'] }>Call Owner</a>
                                 </div>
                             </div>
                         </div>
@@ -160,17 +278,17 @@ export class KostDetail extends Component {
                     ?
                     <div style={{ display: "flex", justifyContent: "center" }}>
 
-                        <div className="property-card  property-props">
+                        <div className="post-cards">
                             {this.state.suggestKost.map(item =>
                                 item["id"] !== null ? (
                                     <div>
                                         <Link to={{
-                                            pathname: `/kost/detail-${item["properties"]["kost_slug"]}`,
+                                            pathname: `/kost/details-${item["properties"]["kost_slug"]}`,
                                             state: {
                                                 apart_slug: item["properties"]["kost_slug"]
                                             }
-                                        }} key={item}>
-                                            <div className="card-kost" style={{ width: "200px", height: "500px", overflowY: "auto" }}>
+                                        }} key={item["id"]}>
+                                            <div className="card-kost post-resp" style={{ width: "200px", height: "500px", overflowY: "auto" }}>
                                                 <div className="card-kost-container">
                                                     <img src={`http://localhost:8000/storage/${item["properties"]['banner_picture']}`} />
                                                     <h4>Kost Name: {item["properties"]["name"]}</h4>
@@ -192,6 +310,79 @@ export class KostDetail extends Component {
                         </div>
                     </div>
                     : null}
+                <h1 style={{ textAlign: "center", fontSize: "30px" }}>Reviews</h1>
+
+                {!this.state.loadingScreen
+                    ?
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+
+                        <div className="post-cards">
+                            {this.state.reviewLists.map(item =>
+                                item["id"] !== null ? (
+                                    <div>
+                                        <div className="card-kost post-resp" style={{ width: "200px", height: "300px", overflowY: "auto" }}>
+                                            <div className="card-kost-container">
+                                                <Link to={{
+                                                    pathname: `/other-profile/${item["user"]["id"]}`,
+                                                    state: item["user"]["id"]
+                                                }} key={item["id"]}>
+                                                    <h2>User Name: {item["user"]["name"]}</h2>
+                                                </Link>
+                                                <h4>Review Content: {item["content"]}</h4>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                ) : (
+                                        ""
+                                    )
+                            )}
+                        </div>
+                        <Link to={{
+                            pathname: `/reviews/${this.state.currKost["id"]}`
+                        }}>See More Reviews</Link>
+                    </div>
+                    : null}
+                <div style={{ textAlign: "center", display: this.state.type === 1 ? "" : "none" }}>
+                    <button onClick={this.reportProperty}>Report this Property</button>
+                    {this.state.displayModal1 ?
+                        <BgModal>
+                            <ModalContent>
+                                <Close onClick={this.closeModal1}>+</Close>
+                                <img src={logo} style={{ height: "200px" }} alt="logo" />
+                                <Content>Report Property</Content>
+                                <select
+                                    id="kost-type"
+                                    name="kostType"
+                                    onChange={this.handleReport}
+                                >
+                                    <option value="Facility">Facility Gak sesuai</option>
+                                    <option value="Foto">Foto tidak sesuai</option>
+                                    <option value="Kotor">Kotor</option>
+                                </select>
+                                <button onClick={this.submitReport}>Submit Report</button>
+                            </ModalContent>
+                        </BgModal> : ""
+                    }
+                </div>
+                <div style={{ textAlign: "center", display: this.state.type === 3 ? "" : "none" }}>
+                    <button onClick={this.reportProperty}>Ban this Property</button>
+                </div>
+                <div style={{ textAlign: "center" }}>
+
+                    <button onClick={this.deleteKosan}>Add Review</button>
+                    {this.state.displayModal ?
+                        <BgModal>
+                            <ModalContent>
+                                <Close onClick={this.closeModal}>+</Close>
+                                <img src={logo} style={{ height: "200px" }} alt="logo" />
+                                <Content>Review Kosan</Content>
+                                <input type="text" placeholder="Input Review Content" onClick={this.handleReview} />
+                                <button onClick={this.submitReview}>Submit Review</button>
+                            </ModalContent>
+                        </BgModal> : ""}
+                </div>
+
                 <Footer />
             </React.Fragment>
         )

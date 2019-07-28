@@ -192,7 +192,7 @@ export class DataKost extends Component {
                                         state: {
                                             kost_slug: item['kost_slug']
                                         }
-                                    }} key={item}>
+                                    }} key={item["id"]}>
                                         <div className="card-kost post-resp" style={{ height: "450px", width: "300px" }}>
                                             <div className="card-kost-container">
                                                 <img src={`http://localhost:8000/storage/${item["banner_picture"]}`} alt="Banner" />

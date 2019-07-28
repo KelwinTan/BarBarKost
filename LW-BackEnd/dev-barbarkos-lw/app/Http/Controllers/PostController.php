@@ -119,4 +119,21 @@ class PostController extends Controller
     }
 
 
+    public function UserFilterPosts(Request $request){
+        if(is_null($request->title)){
+            $postTitle = "";
+        }else{
+            $postTitle = $request->title;
+        }
+
+        if(is_null($request->tag)){
+            $postTag = "";
+        }else{
+            $postTag = $request->tag;
+        }
+
+        $posts = Post::where('title', 'like', '%'.$postTitle.'%')->where('tags', 'like', '%'.$postTag.'%')->paginate(8);
+        return $posts;
+    }
+
 }

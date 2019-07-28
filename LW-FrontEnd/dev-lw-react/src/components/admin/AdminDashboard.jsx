@@ -176,6 +176,10 @@ export class AdminDashboard extends Component {
           </div>
           <div className="owner-side-dashboard-right">
             <h1>Total Users: {this.state.totalUsers}</h1>
+            <h1>Total Guests: 20</h1>
+            <h1>Total Users: {this.state.totalUsers}</h1>
+            <h1>Total Users: {this.state.totalUsers}</h1>
+
             <div className="display-owner-buttons">
               <Link to="/manage-guest">Manage Guest</Link>
               <Link to="/manage-owner">Manage Owner</Link>

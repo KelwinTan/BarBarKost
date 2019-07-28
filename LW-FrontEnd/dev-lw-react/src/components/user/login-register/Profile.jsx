@@ -270,11 +270,17 @@ class Profile extends Component {
                 <div className="profile-functions-link">
                   <Link to="/view-history">View History</Link>
                 </div>
+                <div className="profile-functions-link">
+                  <Link to="/guest-chats">Chats</Link>
+                </div>
+                <div className="profile-functions-link">
+                  <Link to="/guest-following-page">Following Page</Link>
+                </div>
               </div>
               <div className="profile-functions-link">
                 <Link to="/posts-page">View Posts</Link>
               </div>
-              <div className="profile-functions-link">
+              <div className="profile-functions-link" style={{ display: this.state.type === 2 ? "" : "none" }}>
                 <Link to="/chat">Chats</Link>
               </div>
               <div className="profile-functions-link" style={{ display: this.state.type === 2 ? "" : "none" }}>

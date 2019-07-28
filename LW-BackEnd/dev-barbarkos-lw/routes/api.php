@@ -24,6 +24,7 @@ Route::post('loginOwner', 'UserController@loginOwner');
 Route::post('ResetPassword', 'UserController@ResetPassword');
 Route::post('/filter-guests', 'UserController@GuestQueries');
 Route::post('/filter-owners', 'UserController@OwnerQueries');
+Route::post('/show-other-profile', 'UserController@ShowOtherProfile');
 
 Route::post('GetGuest', 'UserController@getGuestData');
 
@@ -76,11 +77,17 @@ Route::post('/owner-get-specific-apartment', 'ApartmentController@getSpecificApa
 Route::post('/owner-get-apartment', 'ApartmentController@OwnerGetApart');
 Route::post('/owner-update-apartment', 'ApartmentController@UpdateApartment');
 
+Route::post('/owner-filter-apartment', 'ApartmentController@ApartFilter');
+
+
 Route::post('/delete-apartment', 'ApartmentController@DeleteApartment');
 Route::post('/owner-total-apartment', 'ApartmentController@OwnerTotalApartment');
 
 Route::post('/SearchApartments', 'ApartmentController@SearchApartments');
 Route::post('/search-property', 'SearchController@Searching');
+
+Route::post('/search-property-area', 'SearchController@SearchPropertyNear');
+
 
 Route::middleware('auth:api')->get('/user', function(Request $request){
     return $request->user();
@@ -105,6 +112,8 @@ Route::post('/upload-image', 'ImageController@Store');
 Route::post('/get-image', 'ImageController@getImages');
 
 Route::post('/create-review', 'ReviewController@store');
+Route::post('/show-review', 'ReviewController@show');
+Route::post('/show-10-review', 'ReviewController@show10');
 
 
 Route::post('/test-redis', 'UserController@TestRedis');
@@ -117,6 +126,7 @@ Route::post('/update-post', 'PostController@UpdatePost');
 Route::post('/recommend-post', 'PostController@GetRecommend');
 Route::post('/insert-post-review', 'PostController@InsertPostReview');
 Route::post('/filter-post', 'PostController@PostFilter');
+Route::post('/user-filter-post', 'PostController@UserFilterPosts');
 
 Route::post('/insert-facility', 'FacilityController@InsertFacility');
 Route::post('/delete-facility', 'FacilityController@DeleteFacility');
@@ -129,6 +139,9 @@ Route::post('/update-facility', 'FacilityController@UpdateFacility');
 
 Route::post('/get-10-guest', 'AdminController@Get10Guests');
 Route::post('/get-10-owners', 'AdminController@Get10Owners');
+Route::post('/search-owners', 'AdminController@SearchOwner');
+
+
 
 Route::post('/reset-password', 'AdminController@ResetPassword');
 Route::post('/get-specific-user', 'AdminController@GetSpecificUser');
@@ -178,6 +191,8 @@ Route::post('/favourite-properties', 'FavouriteController@FavouriteProperties');
 
 Route::post('/user-follow-owner', 'FollowController@store');
 Route::post('/show-following', 'FollowController@show');
+Route::post('/search-following-owner', 'FollowController@SearchFollowedOwners');
+
 Route::post('/show-total-follower', 'FollowController@TotalFollowers');
 Route::post('/unfollow', 'FollowController@destroy');
 Route::post('/total-following', 'FollowController@TotalFollowing');
